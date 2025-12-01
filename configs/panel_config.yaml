@@ -6,13 +6,34 @@ attributes:
     column: ethnicity
     nested_key: simplified
     population_proportions:
-      White: 0.59
+      White: 0.60
       "Black, African American, or Afro-Caribbean": 0.12
       Asian: 0.06
-      Hispanic or Latino: 0.19
+      Hispanic or Latino: 0.18
       "American Indian or Alaska Native": 0.01
-      "Middle Eastern or North African": 0.03
-      Other: 0.0
+      "Middle Eastern or North African": 0.02
+      Other: 0.01
+  - name: religion
+    column: religion
+    nested_key: simplified
+    population_proportions:
+      Christian: 0.63
+      Unaffiliated: 0.29
+      Jewish: 0.02
+      Muslim: 0.01
+      Hindu: 0.01
+      Buddhist: 0.01
+      Other: 0.01
+      "Prefer not to say": 0.02
+  - name: marital_status
+    column: marital_status
+    nested_key: null
+    population_proportions:
+      "Married": 0.49
+      "Never been married": 0.34
+      "Divorced": 0.10
+      "Widowed": 0.05
+      "Separated": 0.02
   - name: gender
     column: gender
     nested_key: null
@@ -29,12 +50,22 @@ attributes:
       "45-54 years old": 0.16
       "55-64 years old": 0.15
       "65+ years old": 0.23
+  - name: employment_status
+    column: employment_status
+    nested_key: null
+    population_proportions:
+      "Working full-time": 0.52
+      "Working part-time": 0.12
+      "Not working but looking for a job": 0.06
+      "Not working and not looking for a job": 0.20
+      "Retired": 0.08
+      "Student": 0.02
   - name: education
     column: education
     nested_key: null
     population_proportions:
-      "Some Secondary": 0.08
-      "Secondary School Diploma or Equivalent": 0.28
-      "Some University": 0.2
-      "University Bachelors Degree": 0.25
+      "Some Secondary": 0.05
+      "Secondary School Diploma or Equivalent": 0.29
+      "Some University": 0.20
+      "University Bachelors Degree": 0.27
       "Graduate Degree": 0.19
