@@ -1,0 +1,161 @@
+#!/usr/bin/env python3
+"""
+Sortition helpers for building demographic panels from PRISM survey data.
+
+Supports:
+- Hard panel selection: sample one panel satisfying quota bounds.
+- Soft panel weighting: estimate per-rater selection probabilities via Monte Carlo.
+
+Configuration is driven by a YAML file with entries for each demographic attribute:
+  attributes:
+    - name: ethnicity
+      column: ethnicity
+      nested_key: simplified
+      population_proportions:
+        White: 0.6
+        "Black, African American, or Afro-Caribbean": 0.12
+        Asian: 0.06
+        Hispanic or Latino: 0.18
+        Other: 0.04
+      tolerance: 0.05   # +/- 5% around target proportion
+  panel_size: 300
+"""
+from __future__ import annotations
+
+import random
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Dict, Iterable, List, Optional
+
+import numpy as np
+import pandas as pd
+import yaml
+
+
+@dataclass
+class AttributeConfig:
+    name: str
+    column: str
+    nested_key: Optional[str]
+    population_proportions: Dict[str, float]
+    tolerance: float = 0.05
+
+
+@dataclass
+class PanelConfig:
+    attributes: List[AttributeConfig]
+    panel_size: int
+    locale_filter: Optional[str] = None
+
+
+def load_panel_config(path: Path) -> PanelConfig:
+    data = yaml.safe_load(path.read_text())
+    attributes = [
+        AttributeConfig(
+            name=entry["name"],
+            column=entry["column"],
+            nested_key=entry.get("nested_key"),
+            population_proportions=entry["population_proportions"],
+            tolerance=float(entry.get("tolerance", data.get("tolerance", 0.05))),
+        )
+        for entry in data["attributes"]
+    ]
+    return PanelConfig(
+        attributes=attributes,
+        panel_size=int(data["panel_size"]),
+        locale_filter=data.get("locale_filter"),
+    )
+
+
+def _extract_value(row: pd.Series, attr: AttributeConfig):
+    val = row.get(attr.column)
+    if isinstance(val, dict) and attr.nested_key:
+        return val.get(attr.nested_key)
+    return val
+
+
+def add_attribute_columns(df: pd.DataFrame, attrs: Iterable[AttributeConfig]) -> pd.DataFrame:
+    """Adds flattened attribute columns for sortition."""
+    out = df.copy()
+    for attr in attrs:
+        col_name = f"{attr.name}_flattened"
+        out[col_name] = out.apply(lambda r: _extract_value(r, attr), axis=1)
+    return out
+
+
+def _bounds_for_attribute(attr: AttributeConfig, panel_size: int):
+    bounds = {}
+    for category, proportion in attr.population_proportions.items():
+        target = proportion * panel_size
+        lower = max(0, int(np.floor(target * (1 - attr.tolerance))))
+        upper = min(panel_size, int(np.ceil(target * (1 + attr.tolerance))))
+        bounds[category] = (lower, upper)
+    return bounds
+
+
+def _is_feasible(sampled: pd.DataFrame, attrs: List[AttributeConfig], panel_size: int) -> bool:
+    for attr in attrs:
+        col = f"{attr.name}_flattened"
+        counts = sampled[col].value_counts(dropna=False).to_dict()
+        bounds = _bounds_for_attribute(attr, panel_size)
+        for category, (lower, upper) in bounds.items():
+            count = counts.get(category, 0)
+            if count < lower or count > upper:
+                return False
+    return True
+
+
+def sample_panel(
+    df: pd.DataFrame,
+    attrs: List[AttributeConfig],
+    panel_size: int,
+    max_attempts: int = 5000,
+    rng: Optional[random.Random] = None,
+) -> pd.DataFrame:
+    """Randomly sample a panel that satisfies attribute bounds."""
+    rng = rng or random.Random()
+    df = df.reset_index(drop=True)
+    indices = list(df.index)
+    for _ in range(max_attempts):
+        chosen_idx = rng.sample(indices, k=panel_size)
+        sampled = df.loc[chosen_idx]
+        if _is_feasible(sampled, attrs, panel_size):
+            return sampled
+    raise RuntimeError("Failed to sample a feasible panel; consider relaxing tolerances or panel size.")
+
+
+def estimate_selection_probabilities(
+    df: pd.DataFrame,
+    attrs: List[AttributeConfig],
+    panel_size: int,
+    num_samples: int = 2000,
+    rng_seed: int = 0,
+) -> pd.Series:
+    """Monte Carlo estimate of per-rater selection probabilities."""
+    rng = random.Random(rng_seed)
+    counts = pd.Series(0, index=df.index, dtype=float)
+    successes = 0
+    for _ in range(num_samples):
+        try:
+            panel = sample_panel(df, attrs, panel_size, rng=rng)
+        except RuntimeError:
+            continue
+        counts.loc[panel.index] += 1
+        successes += 1
+    if successes == 0:
+        raise RuntimeError("No feasible panels found during probability estimation.")
+    return counts / successes
+
+
+def filter_locale(df: pd.DataFrame, locale: Optional[str]) -> pd.DataFrame:
+    if locale is None:
+        return df
+    return df.loc[df["study_locale"] == locale]
+
+
+def prepare_panel_data(survey_df: pd.DataFrame, config: PanelConfig) -> pd.DataFrame:
+    """Filter by locale (if set) and add flattened attributes."""
+    filtered = filter_locale(survey_df, config.locale_filter)
+    if filtered.empty:
+        raise ValueError("No survey rows left after locale filtering; check locale_filter or input data.")
+    return add_attribute_columns(filtered, config.attributes)
