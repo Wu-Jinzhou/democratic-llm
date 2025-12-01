@@ -1,0 +1,7 @@
+pandas
+pyyaml
+datasets
+transformers
+trl
+torch
+openai
