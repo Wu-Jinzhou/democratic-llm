@@ -147,7 +147,20 @@ def sample_panel(
         sampled = df.loc[chosen_idx]
         if _is_feasible(sampled, attrs, panel_size):
             return sampled
-    raise RuntimeError("Failed to sample a feasible panel; consider relaxing tolerances or panel size.")
+    # If we reach here, sampling failed despite theoretical feasibility
+    details = []
+    for attr in attrs:
+        col = f"{attr.name}_flattened"
+        counts = df[col].value_counts(dropna=False).to_dict()
+        bounds = _bounds_for_attribute(attr, panel_size)
+        details.append(
+            f"{attr.name}: bounds {bounds}, available {counts}"
+        )
+    raise RuntimeError(
+        "Failed to sample a feasible panel after "
+        f"{max_attempts} attempts; consider relaxing tolerances, lowering panel_size, "
+        "or increasing max_attempts. Constraint snapshot: " + " | ".join(details)
+    )
 
 
 def estimate_selection_probabilities(
