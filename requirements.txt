@@ -5,3 +5,4 @@ transformers
 trl
 torch
 openai
+tqdm

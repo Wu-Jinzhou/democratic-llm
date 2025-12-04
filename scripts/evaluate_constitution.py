@@ -20,6 +20,7 @@ from typing import Dict, List, Tuple
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from tqdm import tqdm
 
 try:
     from openai import OpenAI
@@ -154,7 +155,7 @@ def main() -> None:
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", encoding="utf-8") as f:
-        for idx, item in enumerate(questions, 1):
+        for idx, item in enumerate(tqdm(questions, desc="Evaluating"), 1):
             clause = item["clause"]
             q = item["question"]
             ans_a_text = generate_answer(gen_a, q)
