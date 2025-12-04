@@ -15,12 +15,18 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import sys
 from pathlib import Path
 from typing import Iterable, List
 
 import pandas as pd
 
-from scripts.sortition import (
+# Ensure local imports work even when executed as a script
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.append(str(SCRIPT_DIR))
+
+from sortition import (  # type: ignore
     PanelConfig,
     estimate_selection_probabilities,
     load_panel_config,
