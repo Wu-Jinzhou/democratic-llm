@@ -163,31 +163,94 @@ def sample_panel(
     )
 
 
+def _worker_soft_panel(
+    df: pd.DataFrame,
+    attrs: List[AttributeConfig],
+    panel_size: int,
+    seed: int,
+    worker_samples: int,
+) -> tuple[pd.Series, int]:
+    rng_local = random.Random(seed)
+    local_counts = pd.Series(0, index=df.index, dtype=float)
+    local_successes = 0
+    for _ in range(worker_samples):
+        try:
+            panel = sample_panel(df, attrs, panel_size, rng=rng_local)
+        except RuntimeError:
+            continue
+        local_counts.loc[panel.index] += 1
+        local_successes += 1
+    return local_counts, local_successes
+
+
 def estimate_selection_probabilities(
     df: pd.DataFrame,
     attrs: List[AttributeConfig],
     panel_size: int,
     num_samples: int = 2000,
     rng_seed: int = 0,
+    num_workers: int = 1,
 ) -> pd.Series:
     """Monte Carlo estimate of per-rater selection probabilities."""
-    rng = random.Random(rng_seed)
     counts = pd.Series(0, index=df.index, dtype=float)
     successes = 0
-    # tqdm imported lazily to keep dependency light when not needed
-    try:
-        from tqdm import tqdm
-        iterator = tqdm(range(num_samples), desc="Sampling panels (soft weights)")
-    except ImportError:
-        iterator = range(num_samples)
 
-    for _ in iterator:
+    if num_workers <= 1:
+        rng = random.Random(rng_seed)
         try:
-            panel = sample_panel(df, attrs, panel_size, rng=rng)
-        except RuntimeError:
-            continue
-        counts.loc[panel.index] += 1
-        successes += 1
+            from tqdm import tqdm
+            iterator = tqdm(range(num_samples), desc="Sampling panels (soft weights)")
+        except ImportError:
+            iterator = range(num_samples)
+
+        for _ in iterator:
+            try:
+                panel = sample_panel(df, attrs, panel_size, rng=rng)
+            except RuntimeError:
+                continue
+            counts.loc[panel.index] += 1
+            successes += 1
+    else:
+        import concurrent.futures
+        try:
+            from tqdm import tqdm
+        except ImportError:
+            tqdm = None  # type: ignore
+
+        # Use ProcessPoolExecutor for CPU-bound sampling
+        # Break work into smaller batches to update progress bar frequently
+        batch_size = 10
+        work_items = []
+        remaining = num_samples
+        batch_idx = 0
+        
+        while remaining > 0:
+            n = min(batch_size, remaining)
+            # Ensure unique seeds for each batch
+            work_items.append((rng_seed + batch_idx, n))
+            remaining -= n
+            batch_idx += 1
+
+        pbar = tqdm(total=num_samples, desc="Sampling panels (soft weights)") if tqdm else None
+        
+        with concurrent.futures.ProcessPoolExecutor(max_workers=num_workers) as executor:
+            future_to_n = {
+                executor.submit(
+                    _worker_soft_panel, df, attrs, panel_size, seed, n_samples
+                ): n_samples
+                for seed, n_samples in work_items
+            }
+            
+            for fut in concurrent.futures.as_completed(future_to_n):
+                n_samples = future_to_n[fut]
+                local_counts, local_successes = fut.result()
+                counts = counts.add(local_counts, fill_value=0)
+                successes += local_successes
+                if pbar:
+                    pbar.update(n_samples)
+        if pbar:
+            pbar.close()
+
     if successes == 0:
         raise RuntimeError("No feasible panels found during probability estimation.")
     return counts / successes

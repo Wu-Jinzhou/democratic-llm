@@ -109,6 +109,7 @@ def prepare_soft_panel(
     panel_config: PanelConfig,
     num_samples: int,
     seed: int,
+    num_workers: int,
 ) -> List[dict]:
     prepared = prepare_panel_data(survey_df, panel_config)
     probabilities = estimate_selection_probabilities(
@@ -117,6 +118,7 @@ def prepare_soft_panel(
         panel_size=panel_config.panel_size,
         num_samples=num_samples,
         rng_seed=seed,
+        num_workers=num_workers,
     )
     weights = probabilities.copy()
     weights.index = prepared["user_id"].values
@@ -134,19 +136,28 @@ def prepare_us_rep(
     return attach_weights(build_pairs(filtered), None)
 
 
+def prepare_full(
+    survey_df: pd.DataFrame,
+    utterances_df: pd.DataFrame,
+) -> List[dict]:
+    """Use all raters / utterances without filtering or weighting."""
+    return attach_weights(build_pairs(utterances_df), None)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Prepare DPO datasets from PRISM.")
     parser.add_argument("--survey", type=Path, default=Path("prism-alignment/survey.jsonl"))
     parser.add_argument("--utterances", type=Path, default=Path("prism-alignment/utterances.jsonl"))
     parser.add_argument(
         "--mode",
-        choices=["hard", "soft", "us_rep"],
+        choices=["hard", "soft", "us_rep", "full"],
         required=True,
         help="Which dataset variant to produce.",
     )
     parser.add_argument("--panel-config", type=Path, default=Path("configs/panel_config.yaml"))
     parser.add_argument("--panel-seed", type=int, default=0)
     parser.add_argument("--num-panel-samples", type=int, default=2000)
+    parser.add_argument("--num-workers", type=int, default=1, help="Parallel workers for soft panel sampling.")
     parser.add_argument("--output", type=Path, required=True)
     return parser.parse_args()
 
@@ -175,9 +186,12 @@ def main() -> None:
             panel_config=panel_config,
             num_samples=args.num_panel_samples,
             seed=args.panel_seed,
+            num_workers=args.num_workers,
         )
     else:
         records = prepare_us_rep(survey_df=survey_df, utterances_df=utterances_df)
+    if args.mode == "full":
+        records = prepare_full(survey_df=survey_df, utterances_df=utterances_df)
 
     save_jsonl(records, args.output)
     print(f"Wrote {len(records)} records to {args.output}")

@@ -1,5 +1,5 @@
-tolerance: 0.05  # +/- 5% slack around population proportions
-panel_size: 300
+tolerance: 0.2  # +/- slack around population proportions
+panel_size: 100
 locale_filter: null  # e.g., "us", "uk", or null for no filter
 attributes:
   - name: ethnicity

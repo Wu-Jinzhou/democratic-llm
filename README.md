@@ -48,7 +48,7 @@ python scripts/prepare_data.py \
   --output artifacts/data/hard_panel.jsonl
 ```
 
-Soft panel (weights = selection probabilities from Monte Carlo sortition):
+Soft panel (weights = selection probabilities from Monte Carlo sortition). Supports parallel execution:
 ```bash
 python scripts/prepare_data.py \
   --mode soft \
@@ -57,6 +57,7 @@ python scripts/prepare_data.py \
   --panel-config configs/panel_config.yaml \
   --num-panel-samples 2000 \
   --panel-seed 0 \
+  --num-workers 8 \
   --output artifacts/data/soft_panel.jsonl
 ```
 
@@ -67,6 +68,15 @@ python scripts/prepare_data.py \
   --survey prism-alignment/survey.jsonl \
   --utterances prism-alignment/utterances.jsonl \
   --output artifacts/data/us_rep.jsonl
+```
+
+Full dataset (no filtering, no weighting):
+```bash
+python scripts/prepare_data.py \
+  --mode full \
+  --survey prism-alignment/survey.jsonl \
+  --utterances prism-alignment/utterances.jsonl \
+  --output artifacts/data/full.jsonl
 ```
 
 ## Train Llama 3.1 8B with DPO
