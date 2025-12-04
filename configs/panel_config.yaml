@@ -1,29 +1,27 @@
 tolerance: 0.05  # +/- 5% slack around population proportions
 panel_size: 300
-locale_filter: "us"
+locale_filter: null  # e.g., "us", "uk", or null for no filter
 attributes:
   - name: ethnicity
     column: ethnicity
     nested_key: simplified
     population_proportions:
       White: 0.60
-      "Black, African American, or Afro-Caribbean": 0.12
+      Black: 0.12
+      Hispanic: 0.18
       Asian: 0.06
-      Hispanic or Latino: 0.18
-      "American Indian or Alaska Native": 0.01
-      "Middle Eastern or North African": 0.02
+      Mixed: 0.02
       Other: 0.01
+      "Prefer not to say": 0.01
   - name: religion
     column: religion
     nested_key: simplified
     population_proportions:
       Christian: 0.63
-      Unaffiliated: 0.29
+      "No Affiliation": 0.29
       Jewish: 0.02
       Muslim: 0.01
-      Hindu: 0.01
-      Buddhist: 0.01
-      Other: 0.01
+      Other: 0.03
       "Prefer not to say": 0.02
   - name: marital_status
     column: marital_status
@@ -31,15 +29,17 @@ attributes:
     population_proportions:
       "Married": 0.49
       "Never been married": 0.34
-      "Divorced": 0.10
+      "Divorced / Separated": 0.10
       "Widowed": 0.05
-      "Separated": 0.02
+      "Prefer not to say": 0.02
   - name: gender
     column: gender
     nested_key: null
     population_proportions:
       Female: 0.51
-      Male: 0.49
+      Male: 0.48
+      "Non-binary / third gender": 0.005
+      "Prefer not to say": 0.005
   - name: age
     column: age
     nested_key: null
@@ -55,17 +55,23 @@ attributes:
     nested_key: null
     population_proportions:
       "Working full-time": 0.52
-      "Working part-time": 0.12
-      "Not working but looking for a job": 0.06
-      "Not working and not looking for a job": 0.20
-      "Retired": 0.08
-      "Student": 0.02
+      "Working part-time": 0.13
+      Student: 0.07
+      "Unemployed, seeking work": 0.04
+      "Unemployed, not seeking work": 0.06
+      Retired: 0.12
+      "Homemaker / Stay-at-home parent": 0.04
+      "Prefer not to say": 0.02
   - name: education
     column: education
     nested_key: null
     population_proportions:
+      "Some Primary": 0.005
+      "Completed Primary School": 0.015
       "Some Secondary": 0.05
-      "Secondary School Diploma or Equivalent": 0.29
-      "Some University": 0.20
-      "University Bachelors Degree": 0.27
-      "Graduate Degree": 0.19
+      "Completed Secondary School": 0.29
+      Vocational: 0.05
+      "Some University but no degree": 0.20
+      "University Bachelors Degree": 0.23
+      "Graduate / Professional degree": 0.15
+      "Prefer not to say": 0.01

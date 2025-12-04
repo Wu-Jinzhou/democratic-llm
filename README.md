@@ -31,7 +31,7 @@ python scripts/data_explore.py \
 
 ## Sortition configuration
 
-Quotas + attributes live in `configs/panel_config.yaml`. Defaults enforce US locale and US 2020 census-inspired proportions for ethnicity, religion, marital status, education, employment status, gender, and age with ±5% tolerance. Edit proportions / attributes there to change sortition and panel size.
+Quotas + attributes live in `configs/panel_config.yaml`. Defaults enforce US locale and US 2020 census-inspired proportions for ethnicity, religion, marital status, education, employment status, gender, and age with ±5% tolerance, using the exact category labels seen in PRISM (e.g., `Graduate / Professional degree`, `Working full-time`, `No Affiliation`).
 
 ## Build preference datasets
 
