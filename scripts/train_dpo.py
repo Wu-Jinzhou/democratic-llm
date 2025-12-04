@@ -18,6 +18,7 @@ import datasets
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from trl import DPOTrainer, DPOConfig
+from tqdm import tqdm
 
 
 @dataclass
@@ -122,6 +123,7 @@ def main() -> None:
     ref_model = load_model(cfg.model_id, cfg.hf_token)
 
     train_ds, eval_ds = build_datasets(cfg.dataset_path, cfg.eval_ratio)
+    print(f"Loaded dataset: {len(train_ds)} train rows" + (f", {len(eval_ds)} eval rows" if eval_ds else ""))
     training_args = DPOConfig(
         output_dir=str(cfg.output_dir),
         per_device_train_batch_size=cfg.per_device_train_batch_size,

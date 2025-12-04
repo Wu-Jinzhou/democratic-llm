@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Iterable, List, Sequence
 
 from openai import OpenAI
+from tqdm import tqdm
 
 
 CLAUSE_PATTERN = re.compile(r"^\s*(\d+)\.\s*(.+)")
@@ -157,7 +158,8 @@ def generate_and_save_questions(
 ) -> int:
     """Generate questions per clause and persist each clause immediately."""
     total_questions = 0
-    for clause in iter_clause_slice(clauses, clause_start, clause_end):
+    iterator = iter_clause_slice(clauses, clause_start, clause_end)
+    for clause in tqdm(list(iterator), desc="Generating questions"):
         print(f"Generating {n_questions} questions for clause {clause.idx}...", file=sys.stderr)
         questions = request_questions(
             client=client,

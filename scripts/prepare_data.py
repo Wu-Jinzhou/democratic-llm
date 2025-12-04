@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Iterable, List
 
 import pandas as pd
+from tqdm import tqdm
 
 # Ensure local imports work even when executed as a script
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -43,7 +44,7 @@ def build_pairs(utterances: pd.DataFrame) -> List[dict]:
     """Construct (prompt, chosen, rejected) pairs per interaction."""
     pairs: List[dict] = []
     grouped = utterances.groupby("interaction_id")
-    for interaction_id, group in grouped:
+    for interaction_id, group in tqdm(grouped, desc="Building pairs"):
         chosen_rows = group[group["if_chosen"] == True].sort_values("score", ascending=False)
         rejected_rows = group[group["if_chosen"] == False].sort_values("score", ascending=False)
         if chosen_rows.empty or rejected_rows.empty:

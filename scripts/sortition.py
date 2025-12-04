@@ -25,7 +25,7 @@ from __future__ import annotations
 import random
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -93,6 +93,25 @@ def _bounds_for_attribute(attr: AttributeConfig, panel_size: int):
     return bounds
 
 
+def check_panel_feasibility(
+    df: pd.DataFrame, attrs: List[AttributeConfig], panel_size: int
+) -> List[Tuple[str, str, int, int]]:
+    """
+    Return a list of unmet requirements of the form (attribute, category, needed, available).
+    If the list is empty, the panel is feasible in principle given the dataset.
+    """
+    issues: List[Tuple[str, str, int, int]] = []
+    for attr in attrs:
+        col = f"{attr.name}_flattened"
+        counts = df[col].value_counts(dropna=False).to_dict()
+        bounds = _bounds_for_attribute(attr, panel_size)
+        for category, (lower, _upper) in bounds.items():
+            available = counts.get(category, 0)
+            if available < lower:
+                issues.append((attr.name, category, lower, available))
+    return issues
+
+
 def _is_feasible(sampled: pd.DataFrame, attrs: List[AttributeConfig], panel_size: int) -> bool:
     for attr in attrs:
         col = f"{attr.name}_flattened"
@@ -116,6 +135,13 @@ def sample_panel(
     rng = rng or random.Random()
     df = df.reset_index(drop=True)
     indices = list(df.index)
+    issues = check_panel_feasibility(df, attrs, panel_size)
+    if issues:
+        details = "; ".join(
+            f"{attr}:{cat} needs {needed}, available {avail}"
+            for attr, cat, needed, avail in issues
+        )
+        raise RuntimeError(f"Panel infeasible given current data: {details}")
     for _ in range(max_attempts):
         chosen_idx = rng.sample(indices, k=panel_size)
         sampled = df.loc[chosen_idx]
@@ -135,7 +161,14 @@ def estimate_selection_probabilities(
     rng = random.Random(rng_seed)
     counts = pd.Series(0, index=df.index, dtype=float)
     successes = 0
-    for _ in range(num_samples):
+    # tqdm imported lazily to keep dependency light when not needed
+    try:
+        from tqdm import tqdm
+        iterator = tqdm(range(num_samples), desc="Sampling panels (soft weights)")
+    except ImportError:
+        iterator = range(num_samples)
+
+    for _ in iterator:
         try:
             panel = sample_panel(df, attrs, panel_size, rng=rng)
         except RuntimeError:
