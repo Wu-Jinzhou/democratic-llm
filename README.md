@@ -1,46 +1,96 @@
 # democratic-llm
 
-End-to-end pipeline for democratic alignment experiments:
-- Generate constitution-based evaluation questions
-- Build sortition panels from PRISM demographics
-- Prepare preference data for hard/soft panel DPO
-- Fine-tune Llama 3.1 8B (base) with DPO
-- Evaluate tuned models with constitutional judging
+Democratic alignment pipeline built on PRISM preference data and Sortition Foundation panel selection. It trains and evaluates models under hard/soft panel objectives and a constitutional evaluation.
 
-## Dependencies
+## Repository layout
+
+- `configs/panel_config.yaml`: demographic quotas, tolerance, locale filtering, and slack categories.
+- `scripts/prepare_data.py`: builds DPO datasets (hard/soft/us_rep/full).
+- `scripts/sortition.py`: LEGACY/LEXIMIN panel selection + weight estimation.
+- `scripts/train_dpo.py`: DPO fine-tuning for `meta-llama/Llama-3.1-8B`.
+- `generate_questions.py`: generate clause questions (OpenAI API).
+- `scripts/evaluate_constitution.py`: compare two models + judge.
+- `scripts/data_explore.py`: quick data inspection utilities.
+- `third_party/`: Sortition Foundation LEXIMIN implementation (GPLv3).
+
+## Setup
 
 ```bash
-pip install -r requirements.txt  # or: pip install pandas pyyaml datasets transformers trl torch openai
+pip install -r requirements.txt
 ```
 
 Auth tokens:
 - OpenAI: `export OPENAI_API_KEY=...`
 - Hugging Face (Meta license accepted): `export HF_TOKEN=...`
 
-The PRISM dataset should live at `prism-alignment/` (already in `.gitignore`), containing `survey.jsonl`, `utterances.jsonl`, and `conversations.jsonl`.
+Optional for LEXIMIN:
+- Install `gurobipy` + `python-mip` and a Gurobi license.
+- See `third_party/stratification.py` (GPLv3).
 
-## Data exploration (PRISM)
+## Data
 
-Peek at unique values before choosing quotas:
+Place the PRISM dataset under `prism-alignment/` (already in `.gitignore`).
+You can clone it directly from Hugging Face:
+```bash
+git clone https://huggingface.co/datasets/HannahRoseKirk/prism-alignment
+```
 
+The folder should contain:
+- `survey.jsonl` (demographics)
+- `utterances.jsonl` (preference comparisons)
+- `conversations.jsonl` (multi-turn context; not required for DPO prep)
+
+## Step-by-step guide
+
+### 1) Inspect PRISM categories
 ```bash
 python scripts/data_explore.py \
   --survey prism-alignment/survey.jsonl \
-  --columns study_locale,gender,age,education,ethnicity
+  --columns study_locale,gender,age,education,ethnicity,religion,marital_status,employment_status
 ```
 
-## Sortition configuration
+### 2) Configure quotas (sortition)
+Edit `configs/panel_config.yaml`:
+- `panel_size`: number of raters in the panel.
+- `tolerance`: relative slack around target proportions.
+- `locale_filter`: set `"us"` or `null` to include all locales.
+- `attributes`: list of demographic attributes with `population_proportions`.
+- `slack_categories`: categories that impose no bounds (useful for `Other` / `Prefer not to say`).
 
-Quotas + attributes live in `configs/panel_config.yaml`. Defaults enforce US locale and US 2020 census-inspired proportions for ethnicity, religion, marital status, education, employment status, gender, and age with ±5% tolerance, using the exact category labels seen in PRISM (e.g., `Graduate / Professional degree`, `Working full-time`, `No Affiliation`).
+Example structure:
+```yaml
+panel_size: 300
+tolerance: 0.05
+locale_filter: "us"
+attributes:
+  - name: gender
+    column: gender
+    population_proportions:
+      Female: 0.51
+      Male: 0.48
+      "Non-binary / third gender": 0.005
+      "Prefer not to say": 0.005
+    slack_categories:
+      - "Prefer not to say"
+```
 
-## Build preference datasets
+### 3) Build DPO datasets
+All datasets output JSONL with fields `prompt`, `chosen`, `rejected`, `user_id`, `interaction_id`, `weight`.
 
-Creates JSONL with `prompt`, `chosen`, `rejected`, `user_id`, and optional `weight`.
+Optional flags for `scripts/prepare_data.py`:
+- `--survey` (default: `prism-alignment/survey.jsonl`)
+- `--utterances` (default: `prism-alignment/utterances.jsonl`)
+- `--panel-config` (default: `configs/panel_config.yaml`)
+- `--panel-algorithm` (choices: `legacy`, `leximin`, `random`)
+- `--panel-seed` (default: `0`)
+- `--num-panel-samples` (default: `2000`)
+- `--num-workers` (default: `1`)
 
-Hard panel (US locale + quotas; filter raters to one sampled panel):
+Hard panel (single LEGACY/LEXIMIN panel):
 ```bash
 python scripts/prepare_data.py \
   --mode hard \
+  --panel-algorithm legacy \
   --survey prism-alignment/survey.jsonl \
   --utterances prism-alignment/utterances.jsonl \
   --panel-config configs/panel_config.yaml \
@@ -48,20 +98,21 @@ python scripts/prepare_data.py \
   --output artifacts/data/hard_panel.jsonl
 ```
 
-Soft panel (weights = selection probabilities from Monte Carlo sortition). Supports parallel execution:
+Soft panel (weights = selection probabilities):
 ```bash
 python scripts/prepare_data.py \
   --mode soft \
+  --panel-algorithm legacy \
+  --num-panel-samples 2000 \
+  --num-workers 8 \
+  --panel-seed 0 \
   --survey prism-alignment/survey.jsonl \
   --utterances prism-alignment/utterances.jsonl \
   --panel-config configs/panel_config.yaml \
-  --num-panel-samples 2000 \
-  --panel-seed 0 \
-  --num-workers 8 \
   --output artifacts/data/soft_panel.jsonl
 ```
 
-Full US-representative subset (no sortition; `included_in_US_REP=true`):
+US-representative subset (`included_in_US_REP=true`):
 ```bash
 python scripts/prepare_data.py \
   --mode us_rep \
@@ -70,7 +121,7 @@ python scripts/prepare_data.py \
   --output artifacts/data/us_rep.jsonl
 ```
 
-Full dataset (no filtering, no weighting):
+Full dataset (no filtering):
 ```bash
 python scripts/prepare_data.py \
   --mode full \
@@ -79,9 +130,24 @@ python scripts/prepare_data.py \
   --output artifacts/data/full.jsonl
 ```
 
-## Train Llama 3.1 8B with DPO
+Panel algorithms:
+- `legacy`: Sortition Foundation LEGACY algorithm (default; randomized).
+- `leximin`: Sortition Foundation LEXIMIN algorithm (exact probabilities; requires Gurobi).
+- `random`: naive rejection sampling (debug only).
 
-Uses TRL’s `DPOTrainer`; weights are honored when present (soft panel).
+### 4) Train with DPO (Llama 3.1 8B)
+Optional flags for `scripts/train_dpo.py`:
+- `--model-id` (default: `meta-llama/Llama-3.1-8B`)
+- `--output-dir` (default: `checkpoints/llama3.1-8b-dpo`)
+- `--hf-token` (default: `HF_TOKEN`)
+- `--per-device-train-batch-size` (default: `1`)
+- `--gradient-accumulation-steps` (default: `8`)
+- `--learning-rate` (default: `5e-6`)
+- `--num-train-epochs` (default: `1`)
+- `--beta` (default: `0.1`)
+- `--weight-decay` (default: `0.0`)
+- `--eval-ratio` (default: `0.02`)
+- `--seed` (default: `0`)
 
 ```bash
 python scripts/train_dpo.py \
@@ -91,30 +157,67 @@ python scripts/train_dpo.py \
   --hf-token $HF_TOKEN
 ```
 
-Switch `--dataset` to `soft_panel.jsonl` or `us_rep.jsonl` for the other variants. Adjust batch size / grad accumulation as needed for your hardware.
+Switch `--dataset` to `soft_panel.jsonl`, `us_rep.jsonl`, or `full.jsonl` as needed.
 
-## Constitution question generation
-
-Generates 10 questions per clause (written incrementally per clause).
+### 5) Generate constitution questions
+Optional flags for `generate_questions.py`:
+- `--output-dir` (default: `artifacts/questions`)
+- `--question-model` (default: `gpt-5.2`)
+- `--api-key` (default: `OPENAI_API_KEY`)
+- `--base-url` (optional OpenAI-compatible endpoint)
+- `--n-questions` (default: `40`)
+- `--num-workers` (default: `1`)
+- `--max-retries` (default: `3`)
+- `--retry-backoff` (default: `2.0`)
+- `--max-output-tokens` (default: `3000`)
+- `--start-clause` / `--end-clause` (optional clause range)
+- `--temperature` (default: `0.7`)
 
 ```bash
 python generate_questions.py \
   --constitution-path constitution.txt \
   --output-dir artifacts/questions \
-  --question-model gpt-4o-mini
+  --question-model gpt-5.2 \
+  --num-workers 8
 ```
 
-## Constitutional evaluation (model vs. model)
-
-Compare two models on generated questions and have a judge pick winners.
+### 6) Evaluate two models with a judge
+Optional flags for `scripts/evaluate_constitution.py`:
+- `--questions-dir` (default: `artifacts/questions`)
+- `--hf-token` (default: `HF_TOKEN`)
+- `--judge-model` (default: `gpt-5.2`)
+- `--use-hf-judge` (use HF judge instead of OpenAI)
+- `--output` (default: `artifacts/evaluations/compare.jsonl`)
+- `--max-questions` (default: `50`)
+- `--seed` (default: `0`)
 
 ```bash
 python scripts/evaluate_constitution.py \
   --questions-dir artifacts/questions \
   --model-a checkpoints/llama3.1-8b-hard \
   --model-b checkpoints/llama3.1-8b-soft \
-  --judge-model gpt-4o-mini \
+  --judge-model gpt-5.2 \
   --output artifacts/evaluations/compare.jsonl
 ```
 
-Use `--use-hf-judge` to judge with a Hugging Face model instead of OpenAI. The judge sees anonymized answers (order is shuffled per question).
+Add `--use-hf-judge` to judge with a Hugging Face model instead of OpenAI.
+
+## Outputs
+
+- DPO dataset JSONL: `artifacts/data/*.jsonl`
+  - fields: `prompt`, `chosen`, `rejected`, `user_id`, `interaction_id`, `weight`
+- Question files: `artifacts/questions/clause_XX.json`
+  - fields: `clause_id`, `clause`, `questions`, `question_model`
+- Evaluation JSONL: `artifacts/evaluations/compare.jsonl`
+  - fields include `question`, `answer_a`, `answer_b`, `winner`, `winner_model`, `judge_raw`
+
+## Troubleshooting
+
+- **No feasible panels**: loosen `tolerance`, reduce `panel_size`, or mark `Other`/`Prefer not to say` as slack. Verify category labels with `scripts/data_explore.py`.
+- **LEXIMIN errors**: install `gurobipy` + `python-mip` and a valid Gurobi license.
+- **Token errors**: set `OPENAI_API_KEY` for OpenAI calls, `HF_TOKEN` for Llama access.
+
+## Notes
+
+- The PRISM data are conversational, but DPO prep uses per-interaction `user_prompt` with preferred vs. rejected responses.
+- Soft panel weights are exact under `leximin`, approximate under `legacy` (Monte Carlo).

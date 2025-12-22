@@ -1,0 +1,77 @@
+tolerance: 0.1  # relative slack around target proportions
+panel_size: 100
+locale_filter: null
+# Sources:
+# - Pew Research Center (2016): "Research in the Crowdsourcing Age, a Case Study"
+# - Moss et al. (2023): "Is it ethical to use Mechanical Turk for behavioral research?"
+# Notes:
+# - Race + Hispanic are reported separately in Moss et al.; we approximate combined ethnicity
+#   by scaling race proportions to (1 - Hispanic) and assigning Hispanic as its own category.
+# - Age bins are approximated from decade bins using a uniform-within-bin assumption.
+# - Some education subcategories are not reported; those are marked as slack.
+attributes:
+  - name: ethnicity
+    column: ethnicity
+    nested_key: simplified
+    slack_categories:
+      - Mixed
+      - Other
+      - "Prefer not to say"
+    population_proportions:
+      White: 0.6670
+      Black: 0.1127
+      Hispanic: 0.1108
+      Asian: 0.0631
+      Mixed: 0.0
+      Other: 0.0464
+      "Prefer not to say": 0.0
+  - name: gender
+    column: gender
+    nested_key: null
+    slack_categories:
+      - "Prefer not to say"
+    population_proportions:
+      Female: 0.5644
+      Male: 0.4327
+      "Non-binary / third gender": 0.0029
+      "Prefer not to say": 0.0
+  - name: age
+    column: age
+    nested_key: null
+    population_proportions:
+      "18-24 years old": 0.1893
+      "25-34 years old": 0.3055
+      "35-44 years old": 0.2511
+      "45-54 years old": 0.1345
+      "55-64 years old": 0.0792
+      "65+ years old": 0.0404
+  - name: marital_status
+    column: marital_status
+    nested_key: null
+    slack_categories:
+      - "Prefer not to say"
+    population_proportions:
+      "Married": 0.4551
+      "Never been married": 0.4239
+      "Divorced / Separated": 0.1041
+      "Widowed": 0.0169
+      "Prefer not to say": 0.0
+  - name: education
+    column: education
+    nested_key: null
+    slack_categories:
+      - "Some Primary"
+      - "Completed Primary School"
+      - "Some Secondary"
+      - "Vocational"
+      - "Prefer not to say"
+    population_proportions:
+      "Some Primary": 0.0
+      "Completed Primary School": 0.0
+      "Some Secondary": 0.0
+      "Completed Secondary School": 0.3762
+      Vocational: 0.0
+      "Some University but no degree": 0.1292
+      "University Bachelors Degree": 0.3450
+      "Graduate / Professional degree": 0.1496
+      "Prefer not to say": 0.0
