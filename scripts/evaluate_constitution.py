@@ -87,16 +87,20 @@ def judge_with_openai(
         f"Answer A:\n{answer_a}\n\n"
         f"Answer B:\n{answer_b}\n"
     )
-    resp = client.chat.completions.create(
+    resp = client.responses.create(
         model=judge_model,
-        messages=[
-            {"role": "system", "content": system_prompt},
+        input=[
+            {"role": "developer", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ],
-        response_format={"type": "json_object"},
+        text={"format": {"type": "json_object"}},
         temperature=0,
+        max_output_tokens=400,
     )
-    return json.loads(resp.choices[0].message.content)
+    content = resp.output_text or ""
+    if not content.strip():
+        raise ValueError("Judge model returned empty content.")
+    return json.loads(content)
 
 
 def judge_with_hf(
@@ -128,7 +132,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model-a", required=True, help="Hugging Face model id or path for candidate A.")
     parser.add_argument("--model-b", required=True, help="Hugging Face model id or path for candidate B.")
     parser.add_argument("--hf-token", default=os.environ.get("HF_TOKEN"))
-    parser.add_argument("--judge-model", default="gpt-4o-mini", help="Judge model (OpenAI id or HF id).")
+    parser.add_argument("--judge-model", default="gpt-5.2", help="Judge model (OpenAI id or HF id).")
     parser.add_argument("--use-hf-judge", action="store_true", help="Force judge to run on HF instead of OpenAI.")
     parser.add_argument("--output", type=Path, default=Path("artifacts/evaluations/compare.jsonl"))
     parser.add_argument("--max-questions", type=int, default=50)

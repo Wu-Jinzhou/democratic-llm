@@ -2,16 +2,20 @@
 """
 Pipeline utilities for generating constitution-aligned evaluation data.
 
-The main entrypoint in this file currently focuses on generating 10 questions
-for each clause in constitution.txt using the OpenAI API. The output is a JSONL
-file with one record per question, which can be fed into downstream answer-
-generation and judging steps.
+The main entrypoint in this file currently focuses on generating questions
+for each clause in constitution.txt using the OpenAI API. The output is one
+JSON file per clause, which can be fed into downstream answer-generation and
+judging steps.
 """
 import argparse
+import concurrent.futures
 import json
 import os
+import random
 import re
 import sys
+import threading
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, List, Sequence
@@ -66,6 +70,9 @@ def request_questions(
     clause: Clause,
     n_questions: int,
     temperature: float = 0.7,
+    max_retries: int = 3,
+    retry_backoff: float = 2.0,
+    max_output_tokens: int = 3000,
 ) -> List[str]:
     """Ask the model for N questions tied to a specific clause."""
     system_prompt = (
@@ -80,42 +87,58 @@ def request_questions(
         f"Generate exactly {n_questions} user questions that test whether a model "
         f"adheres to this clause. Cover different scenarios and difficulty."
     )
-    response = client.chat.completions.create(
-        model=model,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-        response_format={"type": "json_object"},
-        temperature=temperature,
-        max_tokens=1000,
+    last_error: Exception | None = None
+    for attempt in range(max_retries + 1):
+        try:
+            response = client.responses.create(
+                model=model,
+                input=[
+                    {"role": "developer", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+                text={"format": {"type": "json_object"}},
+                temperature=temperature,
+                max_output_tokens=max_output_tokens,
+            )
+            content = response.output_text or ""
+            if not content.strip():
+                raise ValueError("Model returned empty content.")
+            payload = json.loads(content)
+            questions = payload.get("questions")
+            if not isinstance(questions, list):
+                raise ValueError(f"Unexpected response structure: {payload}")
+
+            cleaned = []
+            for q in questions:
+                if isinstance(q, str):
+                    text = q.strip()
+                elif isinstance(q, dict) and "question" in q:
+                    text = str(q["question"]).strip()
+                else:
+                    continue
+                if text:
+                    cleaned.append(text)
+
+            if len(cleaned) < n_questions:
+                raise ValueError(
+                    f"Expected {n_questions} questions, got {len(cleaned)} for clause {clause.idx}"
+                )
+            return cleaned[:n_questions]
+        except Exception as exc:  # noqa: BLE001 - retries are intentional
+            last_error = exc
+            if attempt >= max_retries:
+                break
+            delay = retry_backoff * (2**attempt) + random.random() * 0.25
+            print(
+                f"Retrying clause {clause.idx} (attempt {attempt + 1}/{max_retries}) "
+                f"after error: {exc}",
+                file=sys.stderr,
+            )
+            time.sleep(delay)
+
+    raise ValueError(
+        f"Model failed after {max_retries + 1} attempts for clause {clause.idx}: {last_error}"
     )
-    content = response.choices[0].message.content
-    try:
-        payload = json.loads(content)
-    except json.JSONDecodeError as exc:
-        raise ValueError(f"Model returned non-JSON content: {content}") from exc
-
-    questions = payload.get("questions")
-    if not isinstance(questions, list):
-        raise ValueError(f"Unexpected response structure: {payload}")
-
-    cleaned = []
-    for q in questions:
-        if isinstance(q, str):
-            text = q.strip()
-        elif isinstance(q, dict) and "question" in q:
-            text = str(q["question"]).strip()
-        else:
-            continue
-        if text:
-            cleaned.append(text)
-
-    if len(cleaned) < n_questions:
-        raise ValueError(
-            f"Expected {n_questions} questions, got {len(cleaned)} for clause {clause.idx}"
-        )
-    return cleaned[:n_questions]
 
 
 def iter_clause_slice(
@@ -155,21 +178,69 @@ def generate_and_save_questions(
     clause_end: int | None,
     temperature: float,
     output_dir: Path,
+    num_workers: int,
+    api_key: str | None,
+    base_url: str | None,
+    max_retries: int,
+    retry_backoff: float,
+    max_output_tokens: int,
 ) -> int:
     """Generate questions per clause and persist each clause immediately."""
+    clauses_list = list(iter_clause_slice(clauses, clause_start, clause_end))
     total_questions = 0
-    iterator = iter_clause_slice(clauses, clause_start, clause_end)
-    for clause in tqdm(list(iterator), desc="Generating questions"):
-        print(f"Generating {n_questions} questions for clause {clause.idx}...", file=sys.stderr)
+    if num_workers <= 1:
+        for clause in tqdm(clauses_list, desc="Generating questions"):
+            print(
+                f"Generating {n_questions} questions for clause {clause.idx}...",
+                file=sys.stderr,
+            )
+            questions = request_questions(
+                client=client,
+                model=model,
+                clause=clause,
+                n_questions=n_questions,
+                temperature=temperature,
+                max_retries=max_retries,
+                retry_backoff=retry_backoff,
+                max_output_tokens=max_output_tokens,
+            )
+            write_clause_file(clause, questions, model, output_dir)
+            total_questions += len(questions)
+        return total_questions
+
+    thread_local = threading.local()
+
+    def get_client() -> OpenAI:
+        if not hasattr(thread_local, "client"):
+            thread_local.client = build_client(api_key=api_key, base_url=base_url)
+        return thread_local.client
+
+    def worker(clause: Clause) -> int:
+        print(
+            f"Generating {n_questions} questions for clause {clause.idx}...",
+            file=sys.stderr,
+        )
         questions = request_questions(
-            client=client,
+            client=get_client(),
             model=model,
             clause=clause,
             n_questions=n_questions,
             temperature=temperature,
+            max_retries=max_retries,
+            retry_backoff=retry_backoff,
+            max_output_tokens=max_output_tokens,
         )
         write_clause_file(clause, questions, model, output_dir)
-        total_questions += len(questions)
+        return len(questions)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+        futures = {executor.submit(worker, clause): clause for clause in clauses_list}
+        for fut in tqdm(
+            concurrent.futures.as_completed(futures),
+            total=len(futures),
+            desc="Generating questions",
+        ):
+            total_questions += fut.result()
     return total_questions
 
 
@@ -191,7 +262,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--question-model",
-        default="gpt-4o-mini",
+        default="gpt-5.2",
         help="OpenAI model used to generate questions.",
     )
     parser.add_argument(
@@ -206,9 +277,33 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--n-questions",
-        default=10,
+        default=40,
         type=int,
         help="Number of questions to request per clause.",
+    )
+    parser.add_argument(
+        "--num-workers",
+        default=1,
+        type=int,
+        help="Number of parallel workers for question generation.",
+    )
+    parser.add_argument(
+        "--max-retries",
+        default=3,
+        type=int,
+        help="Retry count for API/JSON errors per clause.",
+    )
+    parser.add_argument(
+        "--retry-backoff",
+        default=2.0,
+        type=float,
+        help="Base backoff seconds for retries (exponential).",
+    )
+    parser.add_argument(
+        "--max-output-tokens",
+        default=3000,
+        type=int,
+        help="Maximum output tokens per clause response.",
     )
     parser.add_argument(
         "--start-clause",
@@ -245,6 +340,12 @@ def main() -> None:
         clause_end=args.end_clause,
         temperature=args.temperature,
         output_dir=args.output_dir,
+        num_workers=args.num_workers,
+        api_key=args.api_key,
+        base_url=args.base_url,
+        max_retries=args.max_retries,
+        retry_backoff=args.retry_backoff,
+        max_output_tokens=args.max_output_tokens,
     )
     print(
         f"Wrote {total_questions} questions across clauses to directory {args.output_dir}"

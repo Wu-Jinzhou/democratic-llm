@@ -90,12 +90,14 @@ def prepare_hard_panel(
     utterances_df: pd.DataFrame,
     panel_config: PanelConfig,
     panel_seed: int,
+    panel_algorithm: str,
 ) -> List[dict]:
     prepared = prepare_panel_data(survey_df, panel_config)
     panel = sample_panel(
         prepared,
         attrs=panel_config.attributes,
         panel_size=panel_config.panel_size,
+        algorithm=panel_algorithm,
         rng=random.Random(panel_seed),
     )
     panel_ids = set(panel["user_id"].tolist())
@@ -110,6 +112,7 @@ def prepare_soft_panel(
     num_samples: int,
     seed: int,
     num_workers: int,
+    panel_algorithm: str,
 ) -> List[dict]:
     prepared = prepare_panel_data(survey_df, panel_config)
     probabilities = estimate_selection_probabilities(
@@ -119,6 +122,7 @@ def prepare_soft_panel(
         num_samples=num_samples,
         rng_seed=seed,
         num_workers=num_workers,
+        algorithm=panel_algorithm,
     )
     weights = probabilities.copy()
     weights.index = prepared["user_id"].values
@@ -155,6 +159,12 @@ def parse_args() -> argparse.Namespace:
         help="Which dataset variant to produce.",
     )
     parser.add_argument("--panel-config", type=Path, default=Path("configs/panel_config.yaml"))
+    parser.add_argument(
+        "--panel-algorithm",
+        choices=["legacy", "leximin", "random"],
+        default="legacy",
+        help="Panel selection algorithm (Sortition Foundation LEGACY/LEXIMIN).",
+    )
     parser.add_argument("--panel-seed", type=int, default=0)
     parser.add_argument("--num-panel-samples", type=int, default=2000)
     parser.add_argument("--num-workers", type=int, default=1, help="Parallel workers for soft panel sampling.")
@@ -178,6 +188,7 @@ def main() -> None:
             utterances_df=utterances_df,
             panel_config=panel_config,
             panel_seed=args.panel_seed,
+            panel_algorithm=args.panel_algorithm,
         )
     elif args.mode == "soft":
         records = prepare_soft_panel(
@@ -187,6 +198,7 @@ def main() -> None:
             num_samples=args.num_panel_samples,
             seed=args.panel_seed,
             num_workers=args.num_workers,
+            panel_algorithm=args.panel_algorithm,
         )
     else:
         records = prepare_us_rep(survey_df=survey_df, utterances_df=utterances_df)
