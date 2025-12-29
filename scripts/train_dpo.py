@@ -190,8 +190,11 @@ def main() -> None:
         eval_dataset=eval_ds,
         tokenizer=tokenizer,
     )
-    if "beta" in inspect.signature(trainer_cls.__init__).parameters:
+    trainer_params = inspect.signature(trainer_cls.__init__).parameters
+    if "beta" in trainer_params:
         trainer_kwargs["beta"] = cfg.beta
+    if "tokenizer" not in trainer_params:
+        trainer_kwargs.pop("tokenizer", None)
     trainer = trainer_cls(**trainer_kwargs)
 
     trainer.train()
