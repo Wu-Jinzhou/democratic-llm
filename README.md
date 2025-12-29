@@ -153,10 +153,15 @@ Optional flags for `scripts/train_dpo.py`:
 - `--per-device-train-batch-size` (default: `1`)
 - `--gradient-accumulation-steps` (default: `8`)
 - `--learning-rate` (default: `5e-6`)
-- `--num-train-epochs` (default: `1`)
+- `--num-train-epochs` (default: `2`)
 - `--beta` (default: `0.1`)
 - `--weight-decay` (default: `0.0`)
 - `--eval-ratio` (default: `0.02`)
+- `--eval-strategy` (default: `steps`, choices: `no`, `steps`, `epoch`)
+- `--eval-steps` (default: `100`)
+- `--save-strategy` (default: `no`, choices: `no`, `steps`, `epoch`)
+- `--save-steps` (default: `500`, only used with `--save-strategy steps`)
+- `--save-total-limit` (optional, max checkpoints to keep)
 - `--seed` (default: `42`)
 - `--report-to` (default: `wandb`, use `none` to disable)
 - `--logging-dir` (default: `logs`)
@@ -223,12 +228,11 @@ python generate_questions.py \
 ### 6) Evaluate models with a judge
 Optional flags for `scripts/evaluate_constitution.py`:
 - `--questions-dir` (default: `artifacts/questions`)
-- `--models` (listwise mode; pass multiple model ids/paths)
-- `--model-a` / `--model-b` (pairwise mode)
+- `--models` (candidate models; all pairs are compared)
 - `--hf-token` (default: `HF_TOKEN`)
 - `--judge-model` (default: `gpt-5.2`)
 - `--use-hf-judge` (use HF judge instead of OpenAI)
-- `--output` (default: `artifacts/evaluations/listwise.jsonl`)
+- `--output` (default: `artifacts/evaluations/pairwise.jsonl`)
 - `--preferences-output` (default: `artifacts/evaluations/preferences.jsonl`)
 - `--responses-dir` (default: `artifacts/evaluations/responses`)
 - `--overwrite-responses` (regenerate cached responses)
@@ -249,7 +253,7 @@ python scripts/evaluate_constitution.py \
   --questions-per-clause 10 \
   --num-judges 3 \
   --judge-model gpt-5.2 \
-  --output artifacts/evaluations/listwise.jsonl \
+  --output artifacts/evaluations/pairwise.jsonl \
   --preferences-output artifacts/evaluations/preferences.jsonl
 ```
 
@@ -281,8 +285,8 @@ with chat-style formatting.
   - `prompt`/`chosen`/`rejected` are chat messages when `--dataset-format chat`
 - Question files: `artifacts/questions/clause_XX.json`
   - fields: `clause_id`, `clause`, `questions`, `question_model`
-- Evaluation JSONL: `artifacts/evaluations/listwise.jsonl`
-  - fields include `question`, `responses`, `rankings`, `judge_raw`
+- Evaluation JSONL: `artifacts/evaluations/pairwise.jsonl`
+  - fields include `question`, `responses`, `wins_i`, `wins_j`, `majority_winner`, `judge_raw`
 - Preferences JSONL: `artifacts/evaluations/preferences.jsonl`
   - fields include `model_i`, `model_j`, `wins_i`, `wins_j`, `majority_winner`
 - Bradley-Terry scores: `artifacts/evaluations/bradley_terry_scores.json`

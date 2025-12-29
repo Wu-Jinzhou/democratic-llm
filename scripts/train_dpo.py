@@ -44,10 +44,15 @@ class TrainConfig:
     per_device_train_batch_size: int = 1
     gradient_accumulation_steps: int = 8
     learning_rate: float = 5e-6
-    num_train_epochs: float = 1.0
+    num_train_epochs: float = 2.0
     beta: float = 0.1
     weight_decay: float = 0.0
     eval_ratio: float = 0.02
+    eval_strategy: str = "steps"
+    eval_steps: int = 100
+    save_strategy: str = "no"
+    save_steps: int = 500
+    save_total_limit: Optional[int] = None
     seed: int = 42
     report_to: str = "wandb"
     logging_dir: Path = Path("logs")
@@ -159,10 +164,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--per-device-train-batch-size", type=int, default=1)
     parser.add_argument("--gradient-accumulation-steps", type=int, default=8)
     parser.add_argument("--learning-rate", type=float, default=5e-6)
-    parser.add_argument("--num-train-epochs", type=float, default=1.0)
+    parser.add_argument("--num-train-epochs", type=float, default=2.0)
     parser.add_argument("--beta", type=float, default=0.1)
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--eval-ratio", type=float, default=0.02)
+    parser.add_argument(
+        "--eval-strategy",
+        choices=["no", "steps", "epoch"],
+        default="steps",
+        help="Evaluation strategy (ignored if eval_ratio=0).",
+    )
+    parser.add_argument("--eval-steps", type=int, default=100)
+    parser.add_argument(
+        "--save-strategy",
+        choices=["no", "steps", "epoch"],
+        default="no",
+        help="Checkpoint saving strategy (defaults to only saving the final model).",
+    )
+    parser.add_argument("--save-steps", type=int, default=500, help="Save checkpoint every N steps.")
+    parser.add_argument("--save-total-limit", type=int, default=None, help="Max number of checkpoints to keep.")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--report-to", default="wandb", help="Logging backend (wandb, tensorboard, or none).")
     parser.add_argument("--logging-dir", type=Path, default=Path("logs"))
@@ -199,6 +219,11 @@ def main() -> None:
         beta=args.beta,
         weight_decay=args.weight_decay,
         eval_ratio=args.eval_ratio,
+        eval_strategy=args.eval_strategy,
+        eval_steps=args.eval_steps,
+        save_strategy=args.save_strategy,
+        save_steps=args.save_steps,
+        save_total_limit=args.save_total_limit,
         seed=args.seed,
         report_to=args.report_to,
         logging_dir=args.logging_dir,
@@ -235,6 +260,7 @@ def main() -> None:
     train_ds, eval_ds = build_datasets(cfg.dataset_path, cfg.eval_ratio, cfg.seed)
     print(f"Loaded dataset: {len(train_ds)} train rows" + (f", {len(eval_ds)} eval rows" if eval_ds else ""))
     report_to = [] if cfg.report_to == "none" else [cfg.report_to]
+    eval_strategy = cfg.eval_strategy if eval_ds is not None else "no"
     dpo_kwargs = dict(
         output_dir=str(cfg.output_dir),
         per_device_train_batch_size=cfg.per_device_train_batch_size,
@@ -242,9 +268,8 @@ def main() -> None:
         learning_rate=cfg.learning_rate,
         num_train_epochs=cfg.num_train_epochs,
         logging_steps=10,
-        save_steps=500,
-        eval_strategy="steps" if eval_ds else "no",
-        eval_steps=500,
+        eval_strategy=eval_strategy,
+        eval_steps=cfg.eval_steps,
         warmup_ratio=0.1,
         bf16=True,
         gradient_checkpointing=True,
@@ -257,7 +282,12 @@ def main() -> None:
         run_name=cfg.run_name,
         beta=cfg.beta,
         dataloader_num_workers=dataloader_num_workers,
+        save_strategy=cfg.save_strategy,
     )
+    if cfg.save_strategy == "steps":
+        dpo_kwargs["save_steps"] = cfg.save_steps
+    if cfg.save_total_limit is not None:
+        dpo_kwargs["save_total_limit"] = cfg.save_total_limit
     if dataloader_prefetch_factor is not None:
         dpo_kwargs["dataloader_prefetch_factor"] = dataloader_prefetch_factor
     if cfg.fsdp:

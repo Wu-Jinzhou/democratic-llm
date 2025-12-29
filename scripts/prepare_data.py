@@ -37,7 +37,115 @@ from sortition import (  # type: ignore
 
 
 def load_jsonl(path: Path, nrows: int | None = None) -> pd.DataFrame:
-    return pd.read_json(path, lines=True, nrows=nrows)
+    if path.exists():
+        with path.open("rb") as f:
+            header = f.read(200)
+        if b"git-lfs" in header and b"version https://git-lfs.github.com/spec/v1" in header:
+            raise RuntimeError(
+                f"{path} looks like a Git LFS pointer file. "
+                "Run `git lfs pull` in the dataset repo (prism-alignment) to fetch the real JSONL."
+            )
+    try:
+        return pd.read_json(path, lines=True, nrows=nrows)
+    except ValueError:
+        records: List[dict] = []
+        bad_lines = 0
+        with path.open("r", encoding="utf-8") as f:
+            for line in f:
+                if nrows is not None and len(records) >= nrows:
+                    break
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    records.append(json.loads(line))
+                except json.JSONDecodeError:
+                    bad_lines += 1
+        if bad_lines:
+            print(f"Warning: skipped {bad_lines} malformed lines in {path}")
+        return pd.DataFrame.from_records(records)
+
+
+def _normalize_column(df: pd.DataFrame, target: str, candidates: List[str]) -> pd.DataFrame:
+    if target in df.columns:
+        return df
+    lower = {col.lower(): col for col in df.columns}
+    for cand in [target] + candidates:
+        found = lower.get(cand.lower())
+        if found:
+            df = df.rename(columns={found: target})
+            print(f"Mapped column '{found}' -> '{target}'")
+            return df
+    for col in df.columns:
+        series = df[col]
+        if series.dtype != object:
+            continue
+        sample = series.dropna().head(1)
+        if sample.empty:
+            continue
+        value = sample.iloc[0]
+        if isinstance(value, dict):
+            for cand in [target] + candidates:
+                if cand in value:
+                    df[target] = series.apply(
+                        lambda x: x.get(cand) if isinstance(x, dict) else None
+                    )
+                    print(f"Extracted '{target}' from dict column '{col}'")
+                    return df
+    return df
+
+
+def normalize_utterances(df: pd.DataFrame) -> pd.DataFrame:
+    df = _normalize_column(
+        df,
+        "user_id",
+        ["rater_id", "worker_id", "participant_id", "annotator_id", "respondent_id", "uid", "user"],
+    )
+    df = _normalize_column(
+        df,
+        "interaction_id",
+        ["interaction", "interactionid", "conversation_id", "conversationid"],
+    )
+    df = _normalize_column(
+        df,
+        "user_prompt",
+        ["prompt", "question", "input", "user_query", "context"],
+    )
+    df = _normalize_column(
+        df,
+        "model_response",
+        ["response", "completion", "output", "assistant_response", "assistant_reply"],
+    )
+    df = _normalize_column(
+        df,
+        "if_chosen",
+        ["chosen", "is_chosen", "preferred", "winner"],
+    )
+    df = _normalize_column(
+        df,
+        "score",
+        ["rating", "preference_score", "reward", "rank_score"],
+    )
+    required = ["user_id", "interaction_id", "user_prompt", "model_response", "if_chosen", "score"]
+    missing = [col for col in required if col not in df.columns]
+    if missing:
+        raise KeyError(
+            f"Utterances missing required columns: {missing}. Available columns: {list(df.columns)}"
+        )
+    return df
+
+
+def normalize_survey(df: pd.DataFrame) -> pd.DataFrame:
+    df = _normalize_column(
+        df,
+        "user_id",
+        ["rater_id", "worker_id", "participant_id", "annotator_id", "respondent_id", "uid", "user"],
+    )
+    if "user_id" not in df.columns:
+        raise KeyError(
+            f"Survey missing required column 'user_id'. Available columns: {list(df.columns)}"
+        )
+    return df
 
 
 def format_pair(
@@ -218,8 +326,8 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    survey_df = load_jsonl(args.survey)
-    utterances_df = load_jsonl(args.utterances)
+    survey_df = normalize_survey(load_jsonl(args.survey))
+    utterances_df = normalize_utterances(load_jsonl(args.utterances))
 
     if args.mode in {"hard", "soft"}:
         panel_config = load_panel_config(args.panel_config)
