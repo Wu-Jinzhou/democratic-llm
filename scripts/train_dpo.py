@@ -9,6 +9,7 @@ Requires:
 from __future__ import annotations
 
 import argparse
+import inspect
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -155,7 +156,7 @@ def main() -> None:
     train_ds, eval_ds = build_datasets(cfg.dataset_path, cfg.eval_ratio, cfg.seed)
     print(f"Loaded dataset: {len(train_ds)} train rows" + (f", {len(eval_ds)} eval rows" if eval_ds else ""))
     report_to = [] if cfg.report_to == "none" else [cfg.report_to]
-    training_args = DPOConfig(
+    dpo_kwargs = dict(
         output_dir=str(cfg.output_dir),
         per_device_train_batch_size=cfg.per_device_train_batch_size,
         gradient_accumulation_steps=cfg.gradient_accumulation_steps,
@@ -176,17 +177,22 @@ def main() -> None:
         logging_dir=str(cfg.logging_dir),
         run_name=cfg.run_name,
     )
+    if "beta" in inspect.signature(DPOConfig.__init__).parameters:
+        dpo_kwargs["beta"] = cfg.beta
+    training_args = DPOConfig(**dpo_kwargs)
 
     trainer_cls = WeightedDPOTrainer if "weight" in train_ds.column_names else DPOTrainer
-    trainer = trainer_cls(
+    trainer_kwargs = dict(
         model=model,
         ref_model=ref_model,
         args=training_args,
-        beta=cfg.beta,
         train_dataset=train_ds,
         eval_dataset=eval_ds,
         tokenizer=tokenizer,
     )
+    if "beta" in inspect.signature(trainer_cls.__init__).parameters:
+        trainer_kwargs["beta"] = cfg.beta
+    trainer = trainer_cls(**trainer_kwargs)
 
     trainer.train()
     trainer.save_model(str(cfg.output_dir))
