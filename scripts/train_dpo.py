@@ -9,7 +9,6 @@ Requires:
 from __future__ import annotations
 
 import argparse
-import inspect
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,7 +17,7 @@ from typing import Optional
 import datasets
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from trl import DPOTrainer, DPOConfig
+from trl import DPOTrainer, DPOConfig, DataCollatorForPreference
 from tqdm import tqdm
 
 
@@ -44,25 +43,58 @@ class TrainConfig:
     wandb_group: Optional[str] = None
 
 
+class WeightedDataCollatorForPreference(DataCollatorForPreference):
+    """Data collator that preserves per-example weights."""
+
+    def torch_call(self, examples):
+        output = super().torch_call(examples)
+        if "weight" in examples[0]:
+            output["weight"] = torch.tensor(
+                [example["weight"] for example in examples],
+                dtype=torch.float32,
+            )
+        return output
+
+
 class WeightedDPOTrainer(DPOTrainer):
     """DPO trainer that supports per-example weights (column 'weight')."""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._batch_weights = None
+
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
         weights = inputs.pop("weight", None)
-        result = self.get_batch_loss(model, inputs, train_eval="train")
-        if isinstance(result, (list, tuple)):
-            loss = result[0]
-            metrics = result[1] if len(result) > 1 else None
-        else:
-            loss, metrics = result, None
-        if weights is not None:
-            weight_tensor = weights.to(loss.device)
-            # Normalize by total weight to keep update scale comparable.
-            denom = weight_tensor.sum().clamp(min=1e-8)
-            loss = (loss * weight_tensor).sum() / denom
-        if return_outputs:
-            return loss, metrics
-        return loss
+        self._batch_weights = weights
+        try:
+            return super().compute_loss(
+                model, inputs, return_outputs=return_outputs, num_items_in_batch=num_items_in_batch
+            )
+        finally:
+            self._batch_weights = None
+
+    def dpo_loss(
+        self,
+        chosen_logps,
+        rejected_logps,
+        ref_chosen_logps,
+        ref_rejected_logps,
+        loss_type="sigmoid",
+        model_output=None,
+    ):
+        losses, chosen_rewards, rejected_rewards = super().dpo_loss(
+            chosen_logps,
+            rejected_logps,
+            ref_chosen_logps,
+            ref_rejected_logps,
+            loss_type=loss_type,
+            model_output=model_output,
+        )
+        if self._batch_weights is not None:
+            weight_tensor = self._batch_weights.to(losses.device).float()
+            scale = weight_tensor.numel() / weight_tensor.sum().clamp(min=1e-8)
+            losses = losses * weight_tensor * scale
+        return losses, chosen_rewards, rejected_rewards
 
 
 def load_tokenizer(model_id: str, token: Optional[str]):
@@ -164,7 +196,7 @@ def main() -> None:
         num_train_epochs=cfg.num_train_epochs,
         logging_steps=10,
         save_steps=500,
-        eval_strategy="steps" if eval_ds else "no",
+        evaluation_strategy="steps" if eval_ds else "no",
         eval_steps=500,
         warmup_ratio=0.1,
         bf16=True,
@@ -176,26 +208,21 @@ def main() -> None:
         report_to=report_to,
         logging_dir=str(cfg.logging_dir),
         run_name=cfg.run_name,
+        beta=cfg.beta,
     )
-    if "beta" in inspect.signature(DPOConfig.__init__).parameters:
-        dpo_kwargs["beta"] = cfg.beta
     training_args = DPOConfig(**dpo_kwargs)
 
     trainer_cls = WeightedDPOTrainer if "weight" in train_ds.column_names else DPOTrainer
-    trainer_kwargs = dict(
+    data_collator = WeightedDataCollatorForPreference(pad_token_id=tokenizer.pad_token_id)
+    trainer = trainer_cls(
         model=model,
         ref_model=ref_model,
         args=training_args,
         train_dataset=train_ds,
         eval_dataset=eval_ds,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
+        data_collator=data_collator,
     )
-    trainer_params = inspect.signature(trainer_cls.__init__).parameters
-    if "beta" in trainer_params:
-        trainer_kwargs["beta"] = cfg.beta
-    if "tokenizer" not in trainer_params:
-        trainer_kwargs.pop("tokenizer", None)
-    trainer = trainer_cls(**trainer_kwargs)
 
     trainer.train()
     trainer.save_model(str(cfg.output_dir))

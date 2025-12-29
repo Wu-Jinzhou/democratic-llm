@@ -2,7 +2,7 @@ pandas
 pyyaml
 datasets
 transformers
-trl
+trl>=0.26.2
 torch
 openai
 tqdm
