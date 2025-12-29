@@ -217,26 +217,55 @@ python generate_questions.py \
   --num-workers 8
 ```
 
-### 6) Evaluate two models with a judge
+### 6) Evaluate models with a judge
 Optional flags for `scripts/evaluate_constitution.py`:
 - `--questions-dir` (default: `artifacts/questions`)
+- `--models` (listwise mode; pass multiple model ids/paths)
+- `--model-a` / `--model-b` (pairwise mode)
 - `--hf-token` (default: `HF_TOKEN`)
 - `--judge-model` (default: `gpt-5.2`)
 - `--use-hf-judge` (use HF judge instead of OpenAI)
-- `--output` (default: `artifacts/evaluations/compare.jsonl`)
-- `--max-questions` (default: `50`)
+- `--output` (default: `artifacts/evaluations/listwise.jsonl`)
+- `--preferences-output` (default: `artifacts/evaluations/preferences.jsonl`)
+- `--responses-dir` (default: `artifacts/evaluations/responses`)
+- `--overwrite-responses` (regenerate cached responses)
+- `--max-questions` (optional global cap)
+- `--questions-per-clause` (sample N questions per clause)
+- `--num-judges` (default: `1`)
+- `--max-new-tokens` (default: `256`)
+- `--judge-max-output-tokens` (default: `400`)
+- `--judge-retries` (default: `3`)
+- `--retry-backoff` (default: `2.0`)
+- `--system-prompt` (optional)
 - `--seed` (default: `42`)
 
 ```bash
 python scripts/evaluate_constitution.py \
   --questions-dir artifacts/questions \
-  --model-a checkpoints/llama3.1-8b-hard \
-  --model-b checkpoints/llama3.1-8b-soft \
+  --models checkpoints/llama3.1-8b-hard checkpoints/llama3.1-8b-soft \
+  --questions-per-clause 10 \
+  --num-judges 3 \
   --judge-model gpt-5.2 \
-  --output artifacts/evaluations/compare.jsonl
+  --output artifacts/evaluations/listwise.jsonl \
+  --preferences-output artifacts/evaluations/preferences.jsonl
 ```
 
 Add `--use-hf-judge` to judge with a Hugging Face model instead of OpenAI.
+
+Fit Bradley-Terry scores from preferences:
+```bash
+python scripts/fit_bradley_terry.py \
+  --preferences artifacts/evaluations/preferences.jsonl \
+  --output artifacts/evaluations/bradley_terry_scores.json
+```
+
+Bootstrap confidence intervals:
+```bash
+python scripts/fit_bradley_terry.py \
+  --preferences artifacts/evaluations/preferences.jsonl \
+  --output artifacts/evaluations/bradley_terry_scores.json \
+  --bootstrap-samples 500
+```
 
 ### Notebook: compare checkpoint responses
 Use `notebooks/compare_checkpoints.ipynb` to compare multiple models side by side on a single prompt
@@ -249,8 +278,11 @@ with chat-style formatting.
   - `prompt`/`chosen`/`rejected` are chat messages when `--dataset-format chat`
 - Question files: `artifacts/questions/clause_XX.json`
   - fields: `clause_id`, `clause`, `questions`, `question_model`
-- Evaluation JSONL: `artifacts/evaluations/compare.jsonl`
-  - fields include `question`, `answer_a`, `answer_b`, `winner`, `winner_model`, `judge_raw`
+- Evaluation JSONL: `artifacts/evaluations/listwise.jsonl`
+  - fields include `question`, `responses`, `rankings`, `judge_raw`
+- Preferences JSONL: `artifacts/evaluations/preferences.jsonl`
+  - fields include `model_i`, `model_j`, `wins_i`, `wins_j`, `majority_winner`
+- Bradley-Terry scores: `artifacts/evaluations/bradley_terry_scores.json`
 
 ## Troubleshooting
 
