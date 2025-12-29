@@ -11,3 +11,4 @@ prism-alignment/
 env/
 .env
 *.log
+.venv/
