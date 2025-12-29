@@ -40,6 +40,7 @@ class TrainConfig:
     output_dir: Path
     dataset_path: Path
     hf_token: Optional[str]
+    attn_implementation: Optional[str] = None
     per_device_train_batch_size: int = 1
     gradient_accumulation_steps: int = 8
     learning_rate: float = 5e-6
@@ -125,12 +126,13 @@ def load_tokenizer(model_id: str, token: Optional[str]):
     return tok
 
 
-def load_model(model_id: str, token: Optional[str]):
+def load_model(model_id: str, token: Optional[str], attn_implementation: Optional[str] = None):
     return AutoModelForCausalLM.from_pretrained(
         model_id,
         token=token,
         torch_dtype=torch.bfloat16,
         device_map="auto",
+        attn_implementation=attn_implementation,
     )
 
 
@@ -148,6 +150,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dataset", type=Path, required=True, help="JSONL with prompt/chosen/rejected (+ optional weight).")
     parser.add_argument("--output-dir", type=Path, default=Path("checkpoints/llama3.1-8b-dpo"))
     parser.add_argument("--model-id", default="meta-llama/Llama-3.1-8B")
+    parser.add_argument(
+        "--attn-implementation",
+        default=None,
+        help="Attention backend (e.g., flash_attention_2). Requires compatible install.",
+    )
     parser.add_argument("--hf-token", default=os.environ.get("HF_TOKEN"))
     parser.add_argument("--per-device-train-batch-size", type=int, default=1)
     parser.add_argument("--gradient-accumulation-steps", type=int, default=8)
@@ -172,6 +179,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--fsdp-transformer-layer-cls-to-wrap", default=None)
     parser.add_argument("--fsdp-use-orig-params", action="store_true")
     parser.add_argument("--fsdp-config", type=Path, default=None, help="JSON file with extra fsdp_config settings.")
+    parser.add_argument("--dataloader-num-workers", type=int, default=0)
+    parser.add_argument("--dataloader-prefetch-factor", type=int, default=None)
     return parser.parse_args()
 
 
@@ -182,6 +191,7 @@ def main() -> None:
         output_dir=args.output_dir,
         dataset_path=args.dataset,
         hf_token=args.hf_token,
+        attn_implementation=args.attn_implementation,
         per_device_train_batch_size=args.per_device_train_batch_size,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         learning_rate=args.learning_rate,
@@ -201,6 +211,8 @@ def main() -> None:
         fsdp_transformer_layer_cls_to_wrap=args.fsdp_transformer_layer_cls_to_wrap,
         fsdp_use_orig_params=args.fsdp_use_orig_params,
     )
+    dataloader_num_workers = args.dataloader_num_workers
+    dataloader_prefetch_factor = args.dataloader_prefetch_factor
     if args.fsdp_config:
         cfg.fsdp_config = json.loads(args.fsdp_config.read_text())
 
@@ -217,8 +229,8 @@ def main() -> None:
             os.environ["WANDB_RUN_GROUP"] = cfg.wandb_group
 
     tokenizer = load_tokenizer(cfg.model_id, cfg.hf_token)
-    model = load_model(cfg.model_id, cfg.hf_token)
-    ref_model = load_model(cfg.model_id, cfg.hf_token)
+    model = load_model(cfg.model_id, cfg.hf_token, cfg.attn_implementation)
+    ref_model = load_model(cfg.model_id, cfg.hf_token, cfg.attn_implementation)
 
     train_ds, eval_ds = build_datasets(cfg.dataset_path, cfg.eval_ratio, cfg.seed)
     print(f"Loaded dataset: {len(train_ds)} train rows" + (f", {len(eval_ds)} eval rows" if eval_ds else ""))
@@ -244,7 +256,10 @@ def main() -> None:
         logging_dir=str(cfg.logging_dir),
         run_name=cfg.run_name,
         beta=cfg.beta,
+        dataloader_num_workers=dataloader_num_workers,
     )
+    if dataloader_prefetch_factor is not None:
+        dpo_kwargs["dataloader_prefetch_factor"] = dataloader_prefetch_factor
     if cfg.fsdp:
         dpo_kwargs["fsdp"] = cfg.fsdp
     if cfg.fsdp_min_num_params is not None:
