@@ -147,6 +147,7 @@ Panel algorithms:
 ### 4) Train with DPO (Llama 3.1 8B)
 Optional flags for `scripts/train_dpo.py`:
 - `--model-id` (default: `meta-llama/Llama-3.1-8B`)
+- `--attn-implementation` (e.g. `flash_attention_2`)
 - `--output-dir` (default: `checkpoints/llama3.1-8b-dpo`)
 - `--hf-token` (default: `HF_TOKEN`)
 - `--per-device-train-batch-size` (default: `1`)
@@ -163,6 +164,8 @@ Optional flags for `scripts/train_dpo.py`:
 - `--wandb-project` (optional)
 - `--wandb-entity` (optional)
 - `--wandb-group` (optional)
+- `--dataloader-num-workers` (default: `0`)
+- `--dataloader-prefetch-factor` (optional; set >0 when num-workers > 0)
 - `--fsdp` (e.g. `full_shard auto_wrap`, enable FSDP)
 - `--fsdp-min-num-params` (optional)
 - `--fsdp-transformer-layer-cls-to-wrap` (e.g. `LlamaDecoderLayer`)

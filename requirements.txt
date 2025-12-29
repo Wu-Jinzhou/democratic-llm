@@ -7,3 +7,4 @@ torch
 openai
 tqdm
 wandb
+hf_transfer
