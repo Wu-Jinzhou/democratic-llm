@@ -82,7 +82,7 @@ Optional flags for `scripts/prepare_data.py`:
 - `--utterances` (default: `prism-alignment/utterances.jsonl`)
 - `--panel-config` (default: `configs/panel_config.yaml`)
 - `--panel-algorithm` (choices: `legacy`, `leximin`, `random`)
-- `--panel-seed` (default: `0`)
+- `--panel-seed` (default: `42`)
 - `--num-panel-samples` (default: `2000`)
 - `--num-workers` (default: `1`)
 
@@ -94,7 +94,7 @@ python scripts/prepare_data.py \
   --survey prism-alignment/survey.jsonl \
   --utterances prism-alignment/utterances.jsonl \
   --panel-config configs/panel_config.yaml \
-  --panel-seed 0 \
+  --panel-seed 42 \
   --output artifacts/data/hard_panel.jsonl
 ```
 
@@ -105,7 +105,7 @@ python scripts/prepare_data.py \
   --panel-algorithm legacy \
   --num-panel-samples 2000 \
   --num-workers 8 \
-  --panel-seed 0 \
+  --panel-seed 42 \
   --survey prism-alignment/survey.jsonl \
   --utterances prism-alignment/utterances.jsonl \
   --panel-config configs/panel_config.yaml \
@@ -147,7 +147,7 @@ Optional flags for `scripts/train_dpo.py`:
 - `--beta` (default: `0.1`)
 - `--weight-decay` (default: `0.0`)
 - `--eval-ratio` (default: `0.02`)
-- `--seed` (default: `0`)
+- `--seed` (default: `42`)
 
 ```bash
 python scripts/train_dpo.py \
@@ -189,7 +189,7 @@ Optional flags for `scripts/evaluate_constitution.py`:
 - `--use-hf-judge` (use HF judge instead of OpenAI)
 - `--output` (default: `artifacts/evaluations/compare.jsonl`)
 - `--max-questions` (default: `50`)
-- `--seed` (default: `0`)
+- `--seed` (default: `42`)
 
 ```bash
 python scripts/evaluate_constitution.py \

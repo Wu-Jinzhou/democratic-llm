@@ -34,7 +34,7 @@ class TrainConfig:
     beta: float = 0.1
     weight_decay: float = 0.0
     eval_ratio: float = 0.02
-    seed: int = 0
+    seed: int = 42
 
 
 class WeightedDPOTrainer(DPOTrainer):
@@ -76,11 +76,11 @@ def load_model(model_id: str, token: Optional[str]):
     )
 
 
-def build_datasets(path: Path, eval_ratio: float):
+def build_datasets(path: Path, eval_ratio: float, seed: int):
     dataset = datasets.load_dataset("json", data_files=str(path))["train"]
-    dataset = dataset.shuffle(seed=0)
+    dataset = dataset.shuffle(seed=seed)
     if eval_ratio and eval_ratio > 0:
-        split = dataset.train_test_split(test_size=eval_ratio, seed=0)
+        split = dataset.train_test_split(test_size=eval_ratio, seed=seed)
         return split["train"], split["test"]
     return dataset, None
 
@@ -98,7 +98,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--beta", type=float, default=0.1)
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--eval-ratio", type=float, default=0.02)
-    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--seed", type=int, default=42)
     return parser.parse_args()
 
 
@@ -123,7 +123,7 @@ def main() -> None:
     model = load_model(cfg.model_id, cfg.hf_token)
     ref_model = load_model(cfg.model_id, cfg.hf_token)
 
-    train_ds, eval_ds = build_datasets(cfg.dataset_path, cfg.eval_ratio)
+    train_ds, eval_ds = build_datasets(cfg.dataset_path, cfg.eval_ratio, cfg.seed)
     print(f"Loaded dataset: {len(train_ds)} train rows" + (f", {len(eval_ds)} eval rows" if eval_ds else ""))
     training_args = DPOConfig(
         output_dir=str(cfg.output_dir),
