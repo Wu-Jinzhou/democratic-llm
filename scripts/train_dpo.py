@@ -50,8 +50,9 @@ class WeightedDPOTrainer(DPOTrainer):
             loss, metrics = result, None
         if weights is not None:
             weight_tensor = weights.to(loss.device)
-            # Reduce with weights; loss from TRL is already per-sample
-            loss = (loss * weight_tensor).mean()
+            # Normalize by total weight to keep update scale comparable.
+            denom = weight_tensor.sum().clamp(min=1e-8)
+            loss = (loss * weight_tensor).sum() / denom
         if return_outputs:
             return loss, metrics
         return loss
