@@ -65,7 +65,7 @@ class WeightedDPOTrainer(DPOTrainer):
 
 
 def load_tokenizer(model_id: str, token: Optional[str]):
-    tok = AutoTokenizer.from_pretrained(model_id, token=token, use_auth_token=token)
+    tok = AutoTokenizer.from_pretrained(model_id, token=token)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
     tok.padding_side = "right"
@@ -76,7 +76,6 @@ def load_model(model_id: str, token: Optional[str]):
     return AutoModelForCausalLM.from_pretrained(
         model_id,
         token=token,
-        use_auth_token=token,
         torch_dtype=torch.bfloat16,
         device_map="auto",
     )
