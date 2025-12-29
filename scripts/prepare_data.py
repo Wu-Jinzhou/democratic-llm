@@ -3,9 +3,9 @@
 Build DPO-ready datasets from PRISM data using hard/soft sortition or full US-REP subset.
 
 Outputs a JSONL with columns:
-- prompt: user prompt text
-- chosen: preferred model response
-- rejected: alternative model response
+- prompt: list of {"role","content"} messages (conversational format) or raw text
+- chosen: list of assistant messages or raw text
+- rejected: list of assistant messages or raw text
 - user_id: rater id
 - interaction_id: PRISM interaction id
 - weight: (optional) sample weight for soft panel training
@@ -17,7 +17,7 @@ import json
 import random
 import sys
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 
 import pandas as pd
 from tqdm import tqdm
@@ -40,7 +40,29 @@ def load_jsonl(path: Path, nrows: int | None = None) -> pd.DataFrame:
     return pd.read_json(path, lines=True, nrows=nrows)
 
 
-def build_pairs(utterances: pd.DataFrame) -> List[dict]:
+def format_pair(
+    prompt: str,
+    chosen: str,
+    rejected: str,
+    system_prompt: Optional[str],
+    dataset_format: str,
+) -> tuple[object, object, object]:
+    if dataset_format == "raw":
+        return prompt, chosen, rejected
+    messages: List[dict] = []
+    if system_prompt:
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": prompt})
+    chosen_messages = [{"role": "assistant", "content": chosen}]
+    rejected_messages = [{"role": "assistant", "content": rejected}]
+    return messages, chosen_messages, rejected_messages
+
+
+def build_pairs(
+    utterances: pd.DataFrame,
+    system_prompt: Optional[str],
+    dataset_format: str,
+) -> List[dict]:
     """Construct (prompt, chosen, rejected) pairs per interaction."""
     pairs: List[dict] = []
     grouped = utterances.groupby("interaction_id")
@@ -54,11 +76,18 @@ def build_pairs(utterances: pd.DataFrame) -> List[dict]:
         chosen_resp = best["model_response"]
         user_id = best["user_id"]
         for _, rej in rejected_rows.iterrows():
+            prompt_value, chosen_value, rejected_value = format_pair(
+                prompt=prompt,
+                chosen=chosen_resp,
+                rejected=rej["model_response"],
+                system_prompt=system_prompt,
+                dataset_format=dataset_format,
+            )
             pairs.append(
                 {
-                    "prompt": prompt,
-                    "chosen": chosen_resp,
-                    "rejected": rej["model_response"],
+                    "prompt": prompt_value,
+                    "chosen": chosen_value,
+                    "rejected": rejected_value,
                     "user_id": user_id,
                     "interaction_id": interaction_id,
                 }
@@ -91,6 +120,8 @@ def prepare_hard_panel(
     panel_config: PanelConfig,
     panel_seed: int,
     panel_algorithm: str,
+    system_prompt: Optional[str],
+    dataset_format: str,
 ) -> List[dict]:
     prepared = prepare_panel_data(survey_df, panel_config)
     panel = sample_panel(
@@ -102,7 +133,7 @@ def prepare_hard_panel(
     )
     panel_ids = set(panel["user_id"].tolist())
     filtered = utterances_df[utterances_df["user_id"].isin(panel_ids)]
-    return attach_weights(build_pairs(filtered), None)
+    return attach_weights(build_pairs(filtered, system_prompt, dataset_format), None)
 
 
 def prepare_soft_panel(
@@ -113,6 +144,8 @@ def prepare_soft_panel(
     seed: int,
     num_workers: int,
     panel_algorithm: str,
+    system_prompt: Optional[str],
+    dataset_format: str,
 ) -> List[dict]:
     prepared = prepare_panel_data(survey_df, panel_config)
     probabilities = estimate_selection_probabilities(
@@ -127,25 +160,29 @@ def prepare_soft_panel(
     weights = probabilities.copy()
     weights.index = prepared["user_id"].values
     filtered = utterances_df[utterances_df["user_id"].isin(prepared["user_id"])]
-    pairs = build_pairs(filtered)
+    pairs = build_pairs(filtered, system_prompt, dataset_format)
     return attach_weights(pairs, weights=weights)
 
 
 def prepare_us_rep(
     survey_df: pd.DataFrame,
     utterances_df: pd.DataFrame,
+    system_prompt: Optional[str],
+    dataset_format: str,
 ) -> List[dict]:
     ids = survey_df.loc[survey_df["included_in_US_REP"] == True, "user_id"]
     filtered = utterances_df[utterances_df["user_id"].isin(ids)]
-    return attach_weights(build_pairs(filtered), None)
+    return attach_weights(build_pairs(filtered, system_prompt, dataset_format), None)
 
 
 def prepare_full(
     survey_df: pd.DataFrame,
     utterances_df: pd.DataFrame,
+    system_prompt: Optional[str],
+    dataset_format: str,
 ) -> List[dict]:
     """Use all raters / utterances without filtering or weighting."""
-    return attach_weights(build_pairs(utterances_df), None)
+    return attach_weights(build_pairs(utterances_df, system_prompt, dataset_format), None)
 
 
 def parse_args() -> argparse.Namespace:
@@ -168,6 +205,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--panel-seed", type=int, default=42)
     parser.add_argument("--num-panel-samples", type=int, default=2000)
     parser.add_argument("--num-workers", type=int, default=1, help="Parallel workers for soft panel sampling.")
+    parser.add_argument(
+        "--dataset-format",
+        choices=["chat", "raw"],
+        default="chat",
+        help="Output dataset format for DPO (chat uses role/content messages).",
+    )
+    parser.add_argument("--system-prompt", default=None, help="Optional system prompt for chat format.")
     parser.add_argument("--output", type=Path, required=True)
     return parser.parse_args()
 
@@ -189,6 +233,8 @@ def main() -> None:
             panel_config=panel_config,
             panel_seed=args.panel_seed,
             panel_algorithm=args.panel_algorithm,
+            system_prompt=args.system_prompt,
+            dataset_format=args.dataset_format,
         )
     elif args.mode == "soft":
         records = prepare_soft_panel(
@@ -199,11 +245,23 @@ def main() -> None:
             seed=args.panel_seed,
             num_workers=args.num_workers,
             panel_algorithm=args.panel_algorithm,
+            system_prompt=args.system_prompt,
+            dataset_format=args.dataset_format,
         )
     else:
-        records = prepare_us_rep(survey_df=survey_df, utterances_df=utterances_df)
+        records = prepare_us_rep(
+            survey_df=survey_df,
+            utterances_df=utterances_df,
+            system_prompt=args.system_prompt,
+            dataset_format=args.dataset_format,
+        )
     if args.mode == "full":
-        records = prepare_full(survey_df=survey_df, utterances_df=utterances_df)
+        records = prepare_full(
+            survey_df=survey_df,
+            utterances_df=utterances_df,
+            system_prompt=args.system_prompt,
+            dataset_format=args.dataset_format,
+        )
 
     save_jsonl(records, args.output)
     print(f"Wrote {len(records)} records to {args.output}")

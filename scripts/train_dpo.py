@@ -9,6 +9,7 @@ Requires:
 from __future__ import annotations
 
 import argparse
+import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -20,6 +21,17 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from trl import DPOTrainer, DPOConfig
 from trl.trainer.dpo_trainer import DataCollatorForPreference
 from tqdm import tqdm
+
+DEFAULT_CHAT_TEMPLATE = (
+    "{% for message in messages %}"
+    "{% if message['role'] == 'system' %}System: {{ message['content'] }}\n"
+    "{% elif message['role'] == 'user' %}User: {{ message['content'] }}\n"
+    "{% elif message['role'] == 'assistant' %}Assistant: {{ message['content'] }}\n"
+    "{% elif message['role'] == 'tool' %}Tool: {{ message['content'] }}\n"
+    "{% endif %}"
+    "{% endfor %}"
+    "{% if add_generation_prompt %}Assistant: {% endif %}"
+)
 
 
 @dataclass
@@ -42,6 +54,11 @@ class TrainConfig:
     wandb_project: Optional[str] = None
     wandb_entity: Optional[str] = None
     wandb_group: Optional[str] = None
+    fsdp: Optional[str] = None
+    fsdp_min_num_params: Optional[int] = None
+    fsdp_transformer_layer_cls_to_wrap: Optional[str] = None
+    fsdp_use_orig_params: bool = False
+    fsdp_config: Optional[dict] = None
 
 
 class WeightedDataCollatorForPreference(DataCollatorForPreference):
@@ -103,6 +120,8 @@ def load_tokenizer(model_id: str, token: Optional[str]):
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
     tok.padding_side = "right"
+    if not getattr(tok, "chat_template", None):
+        tok.chat_template = DEFAULT_CHAT_TEMPLATE
     return tok
 
 
@@ -144,6 +163,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--wandb-project", default=None)
     parser.add_argument("--wandb-entity", default=None)
     parser.add_argument("--wandb-group", default=None)
+    parser.add_argument(
+        "--fsdp",
+        default=None,
+        help="Enable FSDP, e.g. 'full_shard auto_wrap'. Use with accelerate/torchrun.",
+    )
+    parser.add_argument("--fsdp-min-num-params", type=int, default=None)
+    parser.add_argument("--fsdp-transformer-layer-cls-to-wrap", default=None)
+    parser.add_argument("--fsdp-use-orig-params", action="store_true")
+    parser.add_argument("--fsdp-config", type=Path, default=None, help="JSON file with extra fsdp_config settings.")
     return parser.parse_args()
 
 
@@ -168,7 +196,13 @@ def main() -> None:
         wandb_project=args.wandb_project,
         wandb_entity=args.wandb_entity,
         wandb_group=args.wandb_group,
+        fsdp=args.fsdp,
+        fsdp_min_num_params=args.fsdp_min_num_params,
+        fsdp_transformer_layer_cls_to_wrap=args.fsdp_transformer_layer_cls_to_wrap,
+        fsdp_use_orig_params=args.fsdp_use_orig_params,
     )
+    if args.fsdp_config:
+        cfg.fsdp_config = json.loads(args.fsdp_config.read_text())
 
     if cfg.report_to == "wandb":
         try:
@@ -211,6 +245,17 @@ def main() -> None:
         run_name=cfg.run_name,
         beta=cfg.beta,
     )
+    if cfg.fsdp:
+        dpo_kwargs["fsdp"] = cfg.fsdp
+    if cfg.fsdp_min_num_params is not None:
+        dpo_kwargs["fsdp_min_num_params"] = cfg.fsdp_min_num_params
+    if cfg.fsdp_transformer_layer_cls_to_wrap:
+        dpo_kwargs["fsdp_transformer_layer_cls_to_wrap"] = cfg.fsdp_transformer_layer_cls_to_wrap
+    if cfg.fsdp_use_orig_params or cfg.fsdp_config:
+        fsdp_config = cfg.fsdp_config.copy() if cfg.fsdp_config else {}
+        if cfg.fsdp_use_orig_params:
+            fsdp_config["use_orig_params"] = True
+        dpo_kwargs["fsdp_config"] = fsdp_config
     training_args = DPOConfig(**dpo_kwargs)
 
     trainer_cls = WeightedDPOTrainer if "weight" in train_ds.column_names else DPOTrainer

@@ -80,6 +80,9 @@ attributes:
 
 ### 3) Build DPO datasets
 All datasets output JSONL with fields `prompt`, `chosen`, `rejected`, `user_id`, `interaction_id`, `weight`.
+By default the dataset uses TRL's conversational format where `prompt`, `chosen`, and `rejected` are lists of
+`{"role","content"}` messages so the chat template is applied during training. Use `--dataset-format raw` if you
+want plain strings instead.
 
 Optional flags for `scripts/prepare_data.py`:
 - `--survey` (default: `prism-alignment/survey.jsonl`)
@@ -89,6 +92,8 @@ Optional flags for `scripts/prepare_data.py`:
 - `--panel-seed` (default: `42`)
 - `--num-panel-samples` (default: `2000`)
 - `--num-workers` (default: `1`)
+- `--dataset-format` (default: `chat`, use `raw` for plain strings)
+- `--system-prompt` (optional, adds a system message for chat format)
 
 Hard panel (single LEGACY/LEXIMIN panel):
 ```bash
@@ -158,16 +163,37 @@ Optional flags for `scripts/train_dpo.py`:
 - `--wandb-project` (optional)
 - `--wandb-entity` (optional)
 - `--wandb-group` (optional)
+- `--fsdp` (e.g. `full_shard auto_wrap`, enable FSDP)
+- `--fsdp-min-num-params` (optional)
+- `--fsdp-transformer-layer-cls-to-wrap` (e.g. `LlamaDecoderLayer`)
+- `--fsdp-use-orig-params` (optional, sets `use_orig_params=True`)
+- `--fsdp-config` (optional JSON file with extra FSDP settings)
 
 ```bash
 python scripts/train_dpo.py \
   --dataset artifacts/data/hard_panel.jsonl \
   --model-id meta-llama/Llama-3.1-8B \
   --output-dir checkpoints/llama3.1-8b-hard \
-  --hf-token $HF_TOKEN
+  --hf-token $HF_TOKEN \
+  --per-device-train-batch-size 1 \
+  --gradient-accumulation-steps 8
 ```
 
 Switch `--dataset` to `soft_panel.jsonl`, `us_rep.jsonl`, or `full.jsonl` as needed.
+If the tokenizer does not include a chat template, `scripts/train_dpo.py` falls back to a simple
+`User:` / `Assistant:` template so conversational datasets still work.
+
+Multi-GPU with FSDP (example using `accelerate`):
+```bash
+accelerate launch scripts/train_dpo.py \
+  --dataset artifacts/data/soft_panel.jsonl \
+  --model-id meta-llama/Llama-3.1-8B \
+  --output-dir checkpoints/llama3.1-8b-soft \
+  --per-device-train-batch-size 1 \
+  --gradient-accumulation-steps 8 \
+  --fsdp "full_shard auto_wrap" \
+  --fsdp-transformer-layer-cls-to-wrap LlamaDecoderLayer
+```
 
 ### 5) Generate constitution questions
 Optional flags for `generate_questions.py`:
@@ -212,10 +238,15 @@ python scripts/evaluate_constitution.py \
 
 Add `--use-hf-judge` to judge with a Hugging Face model instead of OpenAI.
 
+### Notebook: compare checkpoint responses
+Use `notebooks/compare_checkpoints.ipynb` to compare multiple models side by side on a single prompt
+with chat-style formatting.
+
 ## Outputs
 
 - DPO dataset JSONL: `artifacts/data/*.jsonl`
   - fields: `prompt`, `chosen`, `rejected`, `user_id`, `interaction_id`, `weight`
+  - `prompt`/`chosen`/`rejected` are chat messages when `--dataset-format chat`
 - Question files: `artifacts/questions/clause_XX.json`
   - fields: `clause_id`, `clause`, `questions`, `question_model`
 - Evaluation JSONL: `artifacts/evaluations/compare.jsonl`
