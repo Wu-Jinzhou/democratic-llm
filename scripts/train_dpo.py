@@ -243,7 +243,7 @@ def main() -> None:
         num_train_epochs=cfg.num_train_epochs,
         logging_steps=10,
         save_steps=500,
-        evaluation_strategy="steps" if eval_ds else "no",
+        eval_strategy="steps" if eval_ds else "no",
         eval_steps=500,
         warmup_ratio=0.1,
         bf16=True,
