@@ -17,7 +17,8 @@ from typing import Optional
 import datasets
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from trl import DPOTrainer, DPOConfig, DataCollatorForPreference
+from trl import DPOTrainer, DPOConfig
+from trl.trainer.dpo_trainer import DataCollatorForPreference
 from tqdm import tqdm
 
 
