@@ -35,6 +35,12 @@ class TrainConfig:
     weight_decay: float = 0.0
     eval_ratio: float = 0.02
     seed: int = 42
+    report_to: str = "wandb"
+    logging_dir: Path = Path("logs")
+    run_name: Optional[str] = None
+    wandb_project: Optional[str] = None
+    wandb_entity: Optional[str] = None
+    wandb_group: Optional[str] = None
 
 
 class WeightedDPOTrainer(DPOTrainer):
@@ -99,6 +105,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--eval-ratio", type=float, default=0.02)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--report-to", default="wandb", help="Logging backend (wandb, tensorboard, or none).")
+    parser.add_argument("--logging-dir", type=Path, default=Path("logs"))
+    parser.add_argument("--run-name", default=None)
+    parser.add_argument("--wandb-project", default=None)
+    parser.add_argument("--wandb-entity", default=None)
+    parser.add_argument("--wandb-group", default=None)
     return parser.parse_args()
 
 
@@ -117,7 +129,25 @@ def main() -> None:
         weight_decay=args.weight_decay,
         eval_ratio=args.eval_ratio,
         seed=args.seed,
+        report_to=args.report_to,
+        logging_dir=args.logging_dir,
+        run_name=args.run_name,
+        wandb_project=args.wandb_project,
+        wandb_entity=args.wandb_entity,
+        wandb_group=args.wandb_group,
     )
+
+    if cfg.report_to == "wandb":
+        try:
+            import wandb  # noqa: F401
+        except ImportError as exc:
+            raise ImportError("W&B requested but not installed. Run: pip install wandb") from exc
+        if cfg.wandb_project:
+            os.environ["WANDB_PROJECT"] = cfg.wandb_project
+        if cfg.wandb_entity:
+            os.environ["WANDB_ENTITY"] = cfg.wandb_entity
+        if cfg.wandb_group:
+            os.environ["WANDB_RUN_GROUP"] = cfg.wandb_group
 
     tokenizer = load_tokenizer(cfg.model_id, cfg.hf_token)
     model = load_model(cfg.model_id, cfg.hf_token)
@@ -125,6 +155,7 @@ def main() -> None:
 
     train_ds, eval_ds = build_datasets(cfg.dataset_path, cfg.eval_ratio, cfg.seed)
     print(f"Loaded dataset: {len(train_ds)} train rows" + (f", {len(eval_ds)} eval rows" if eval_ds else ""))
+    report_to = [] if cfg.report_to == "none" else [cfg.report_to]
     training_args = DPOConfig(
         output_dir=str(cfg.output_dir),
         per_device_train_batch_size=cfg.per_device_train_batch_size,
@@ -142,6 +173,9 @@ def main() -> None:
         max_prompt_length=1024,
         weight_decay=cfg.weight_decay,
         seed=cfg.seed,
+        report_to=report_to,
+        logging_dir=str(cfg.logging_dir),
+        run_name=cfg.run_name,
     )
 
     trainer_cls = WeightedDPOTrainer if "weight" in train_ds.column_names else DPOTrainer
