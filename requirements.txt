@@ -6,3 +6,4 @@ trl
 torch
 openai
 tqdm
+wandb

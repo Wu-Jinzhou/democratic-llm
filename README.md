@@ -23,6 +23,10 @@ Auth tokens:
 - OpenAI: `export OPENAI_API_KEY=...`
 - Hugging Face (Meta license accepted): `export HF_TOKEN=...`
 
+Weights & Biases (optional):
+- `pip install wandb` if not already installed.
+- `export WANDB_API_KEY=...`
+
 Optional for LEXIMIN:
 - Install `gurobipy` + `python-mip` and a Gurobi license.
 - See `third_party/stratification.py` (GPLv3).
@@ -148,6 +152,12 @@ Optional flags for `scripts/train_dpo.py`:
 - `--weight-decay` (default: `0.0`)
 - `--eval-ratio` (default: `0.02`)
 - `--seed` (default: `42`)
+- `--report-to` (default: `wandb`, use `none` to disable)
+- `--logging-dir` (default: `logs`)
+- `--run-name` (optional W&B run name)
+- `--wandb-project` (optional)
+- `--wandb-entity` (optional)
+- `--wandb-group` (optional)
 
 ```bash
 python scripts/train_dpo.py \
