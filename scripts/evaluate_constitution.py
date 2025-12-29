@@ -136,7 +136,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--use-hf-judge", action="store_true", help="Force judge to run on HF instead of OpenAI.")
     parser.add_argument("--output", type=Path, default=Path("artifacts/evaluations/compare.jsonl"))
     parser.add_argument("--max-questions", type=int, default=50)
-    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--seed", type=int, default=42)
     return parser.parse_args()
 
 

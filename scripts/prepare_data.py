@@ -165,7 +165,7 @@ def parse_args() -> argparse.Namespace:
         default="legacy",
         help="Panel selection algorithm (Sortition Foundation LEGACY/LEXIMIN).",
     )
-    parser.add_argument("--panel-seed", type=int, default=0)
+    parser.add_argument("--panel-seed", type=int, default=42)
     parser.add_argument("--num-panel-samples", type=int, default=2000)
     parser.add_argument("--num-workers", type=int, default=1, help="Parallel workers for soft panel sampling.")
     parser.add_argument("--output", type=Path, required=True)

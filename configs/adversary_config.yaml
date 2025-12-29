@@ -1,5 +1,5 @@
 tolerance: 0.1  # relative slack around target proportions
-panel_size: 100
+panel_size: 145
 locale_filter: null
 # Sources:
 # - Pew Research Center (2016): "Research in the Crowdsourcing Age, a Case Study"

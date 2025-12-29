@@ -409,7 +409,7 @@ def estimate_selection_probabilities(
     attrs: List[AttributeConfig],
     panel_size: int,
     num_samples: int = 2000,
-    rng_seed: int = 0,
+    rng_seed: int = 42,
     num_workers: int = 1,
     algorithm: str = "legacy",
 ) -> pd.Series:
