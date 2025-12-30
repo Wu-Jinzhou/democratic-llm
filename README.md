@@ -144,9 +144,27 @@ Panel algorithms:
 - `leximin`: Sortition Foundation LEXIMIN algorithm (exact probabilities; requires Gurobi).
 - `random`: naive rejection sampling (debug only).
 
+LEXIMIN setup (Gurobi):
+```bash
+pip install gurobipy mip
+export GRB_LICENSE_FILE=/path/to/gurobi.lic
+```
+
+Use LEXIMIN:
+```bash
+python scripts/prepare_data.py \
+  --mode soft \
+  --panel-algorithm leximin \
+  --survey prism-alignment/survey.jsonl \
+  --utterances prism-alignment/utterances.jsonl \
+  --panel-config configs/panel_config.yaml \
+  --output artifacts/data/soft_panel.jsonl
+```
+
 ### 4) Train with DPO (Llama 3.1 8B)
 Optional flags for `scripts/train_dpo.py`:
 - `--model-id` (default: `meta-llama/Llama-3.1-8B`)
+- `--device-map` (default: `auto`, use `none` for distributed/FSDP)
 - `--attn-implementation` (e.g. `flash_attention_2`)
 - `--output-dir` (default: `checkpoints/llama3.1-8b-dpo`)
 - `--hf-token` (default: `HF_TOKEN`)
@@ -190,8 +208,14 @@ python scripts/train_dpo.py \
 Switch `--dataset` to `soft_panel.jsonl`, `us_rep.jsonl`, or `full.jsonl` as needed.
 If the tokenizer does not include a chat template, `scripts/train_dpo.py` falls back to a simple
 `User:` / `Assistant:` template so conversational datasets still work.
+For multi-GPU runs (accelerate/torchrun), `device_map=auto` is automatically disabled so FSDP/DDP can shard.
 
-Multi-GPU with FSDP (example using `accelerate`):
+Multi-GPU (Accelerate):
+```bash
+accelerate config
+```
+
+Then launch:
 ```bash
 accelerate launch scripts/train_dpo.py \
   --dataset artifacts/data/soft_panel.jsonl \
@@ -228,11 +252,12 @@ python generate_questions.py \
 ### 6) Evaluate models with a judge
 Optional flags for `scripts/evaluate_constitution.py`:
 - `--questions-dir` (default: `artifacts/questions`)
-- `--models` (candidate models; all pairs are compared)
+- `--mode` (default: `pairwise`, choices: `pairwise`, `listwise`)
+- `--models` (candidate models; listwise ranks all models, pairwise compares all pairs)
 - `--hf-token` (default: `HF_TOKEN`)
 - `--judge-model` (default: `gpt-5.2`)
 - `--use-hf-judge` (use HF judge instead of OpenAI)
-- `--output` (default: `artifacts/evaluations/pairwise.jsonl`)
+- `--output` (default: `artifacts/evaluations/pairwise.jsonl` or `listwise.jsonl` based on mode)
 - `--preferences-output` (default: `artifacts/evaluations/preferences.jsonl`)
 - `--responses-dir` (default: `artifacts/evaluations/responses`)
 - `--overwrite-responses` (regenerate cached responses)
@@ -249,15 +274,23 @@ Optional flags for `scripts/evaluate_constitution.py`:
 ```bash
 python scripts/evaluate_constitution.py \
   --questions-dir artifacts/questions \
+  --mode listwise \
   --models checkpoints/llama3.1-8b-hard checkpoints/llama3.1-8b-soft \
   --questions-per-clause 10 \
   --num-judges 1 \
   --judge-model gpt-5.2 \
-  --output artifacts/evaluations/pairwise.jsonl \
+  --output artifacts/evaluations/listwise.jsonl \
   --preferences-output artifacts/evaluations/preferences.jsonl
 ```
 
 Add `--use-hf-judge` to judge with a Hugging Face model instead of OpenAI.
+
+Judgement count formulas:
+- Let `C` = number of clauses, `Q` = questions per clause, `J` = judges per question, `M` = number of models.
+- Total questions: `C * Q`
+- Listwise judgements (one ranking per judge): `C * Q * J`
+- Pairwise judgements (one comparison per judge per model pair): `C * Q * J * (M * (M - 1) / 2)`
+- Pairwise comparisons implied by listwise rankings: `C * Q * J * (M * (M - 1) / 2)`
 
 Fit Bradley-Terry scores from preferences:
 ```bash
@@ -274,6 +307,22 @@ python scripts/fit_bradley_terry.py \
   --bootstrap-samples 500
 ```
 
+Score models from listwise rankings (choose one method at a time):
+```bash
+python scripts/score_rankings.py \
+  --listwise artifacts/evaluations/listwise.jsonl \
+  --output artifacts/evaluations/ranking_scores.json \
+  --method plackett-luce \
+  --bootstrap-samples 500
+```
+
+Methods: `plackett-luce`, `borda`, `copeland`, `kemeny`.
+
+For Kemeny ILP, install `mip` (optional; otherwise uses a heuristic for larger model counts):
+```bash
+pip install mip
+```
+
 ### Notebook: compare checkpoint responses
 Use `notebooks/compare_checkpoints.ipynb` to compare multiple models side by side on a single prompt
 with chat-style formatting.
@@ -285,11 +334,14 @@ with chat-style formatting.
   - `prompt`/`chosen`/`rejected` are chat messages when `--dataset-format chat`
 - Question files: `artifacts/questions/clause_XX.json`
   - fields: `clause_id`, `clause`, `questions`, `question_model`
-- Evaluation JSONL: `artifacts/evaluations/pairwise.jsonl`
+- Evaluation JSONL (pairwise): `artifacts/evaluations/pairwise.jsonl`
   - fields include `question`, `responses`, `wins_i`, `wins_j`, `majority_winner`, `judge_raw`
+- Evaluation JSONL (listwise): `artifacts/evaluations/listwise.jsonl`
+  - fields include `question`, `responses`, `rankings`, `judge_raw`
 - Preferences JSONL: `artifacts/evaluations/preferences.jsonl`
   - fields include `model_i`, `model_j`, `wins_i`, `wins_j`, `majority_winner`
 - Bradley-Terry scores: `artifacts/evaluations/bradley_terry_scores.json`
+- Ranking scores: `artifacts/evaluations/ranking_scores.json`
 
 ## Troubleshooting
 
