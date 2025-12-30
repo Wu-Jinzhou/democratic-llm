@@ -12,3 +12,4 @@ env/
 .env
 *.log
 .venv/
+gurobi.lic

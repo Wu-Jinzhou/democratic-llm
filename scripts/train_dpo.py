@@ -41,6 +41,7 @@ class TrainConfig:
     dataset_path: Path
     hf_token: Optional[str]
     attn_implementation: Optional[str] = None
+    device_map: Optional[str] = "auto"
     per_device_train_batch_size: int = 1
     gradient_accumulation_steps: int = 8
     learning_rate: float = 5e-6
@@ -131,12 +132,17 @@ def load_tokenizer(model_id: str, token: Optional[str]):
     return tok
 
 
-def load_model(model_id: str, token: Optional[str], attn_implementation: Optional[str] = None):
+def load_model(
+    model_id: str,
+    token: Optional[str],
+    attn_implementation: Optional[str] = None,
+    device_map: Optional[str] = "auto",
+):
     return AutoModelForCausalLM.from_pretrained(
         model_id,
         token=token,
         dtype=torch.bfloat16,
-        device_map="auto",
+        device_map=device_map,
         attn_implementation=attn_implementation,
     )
 
@@ -155,6 +161,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dataset", type=Path, required=True, help="JSONL with prompt/chosen/rejected (+ optional weight).")
     parser.add_argument("--output-dir", type=Path, default=Path("checkpoints/llama3.1-8b-dpo"))
     parser.add_argument("--model-id", default="meta-llama/Llama-3.1-8B")
+    parser.add_argument(
+        "--device-map",
+        default="auto",
+        help="Device map for model loading ('auto', 'balanced', or 'none'). "
+        "When running distributed, 'auto' is treated as 'none' so FSDP/DDP can shard.",
+    )
     parser.add_argument(
         "--attn-implementation",
         default=None,
@@ -204,14 +216,30 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def resolve_device_map(requested: str | None, distributed: bool) -> Optional[str]:
+    if requested is None:
+        return None
+    lowered = requested.lower()
+    if lowered in {"none", "null"}:
+        return None
+    if lowered == "auto" and distributed:
+        return None
+    return requested
+
+
 def main() -> None:
     args = parse_args()
+    distributed = int(os.environ.get("WORLD_SIZE", "1")) > 1 or os.environ.get("LOCAL_RANK") is not None
+    device_map = resolve_device_map(args.device_map, distributed)
+    if distributed and args.device_map.lower() == "auto":
+        print("Distributed run detected; disabling device_map so FSDP/DDP can manage sharding.")
     cfg = TrainConfig(
         model_id=args.model_id,
         output_dir=args.output_dir,
         dataset_path=args.dataset,
         hf_token=args.hf_token,
         attn_implementation=args.attn_implementation,
+        device_map=device_map,
         per_device_train_batch_size=args.per_device_train_batch_size,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         learning_rate=args.learning_rate,
@@ -254,8 +282,8 @@ def main() -> None:
             os.environ["WANDB_RUN_GROUP"] = cfg.wandb_group
 
     tokenizer = load_tokenizer(cfg.model_id, cfg.hf_token)
-    model = load_model(cfg.model_id, cfg.hf_token, cfg.attn_implementation)
-    ref_model = load_model(cfg.model_id, cfg.hf_token, cfg.attn_implementation)
+    model = load_model(cfg.model_id, cfg.hf_token, cfg.attn_implementation, cfg.device_map)
+    ref_model = load_model(cfg.model_id, cfg.hf_token, cfg.attn_implementation, cfg.device_map)
 
     train_ds, eval_ds = build_datasets(cfg.dataset_path, cfg.eval_ratio, cfg.seed)
     print(f"Loaded dataset: {len(train_ds)} train rows" + (f", {len(eval_ds)} eval rows" if eval_ds else ""))
