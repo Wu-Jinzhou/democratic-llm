@@ -135,7 +135,7 @@ def load_model(model_id: str, token: Optional[str], attn_implementation: Optiona
     return AutoModelForCausalLM.from_pretrained(
         model_id,
         token=token,
-        torch_dtype=torch.bfloat16,
+        dtype=torch.bfloat16,
         device_map="auto",
         attn_implementation=attn_implementation,
     )

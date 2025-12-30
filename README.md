@@ -251,7 +251,7 @@ python scripts/evaluate_constitution.py \
   --questions-dir artifacts/questions \
   --models checkpoints/llama3.1-8b-hard checkpoints/llama3.1-8b-soft \
   --questions-per-clause 10 \
-  --num-judges 3 \
+  --num-judges 1 \
   --judge-model gpt-5.2 \
   --output artifacts/evaluations/pairwise.jsonl \
   --preferences-output artifacts/evaluations/preferences.jsonl
