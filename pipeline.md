@@ -22,12 +22,12 @@ tokenizer.padding_side = "right"
 # Full-parameter models (no LoRA / PEFT here)
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
-    torch_dtype=torch.bfloat16,
+    dtype=torch.bfloat16,
     device_map="auto",          # requires accelerate; spreads across GPUs
 )
 ref_model = AutoModelForCausalLM.from_pretrained(
     model_name,
-    torch_dtype=torch.bfloat16,
+    dtype=torch.bfloat16,
     device_map="auto",
 )
 

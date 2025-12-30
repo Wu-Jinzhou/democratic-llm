@@ -81,7 +81,7 @@ def load_hf_model(model_id: str, hf_token: str | None):
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
         token=hf_token,
-        torch_dtype=torch.bfloat16,
+        dtype=torch.bfloat16,
         device_map="auto",
     )
     return model, tok
