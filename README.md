@@ -269,6 +269,7 @@ Optional flags for `scripts/evaluate_constitution.py`:
 - `--judge-retries` (default: `3`)
 - `--retry-backoff` (default: `2.0`)
 - `--system-prompt` (optional)
+- `--batch-size` (default: `1`, local model generation batching)
 - `--seed` (default: `42`)
 
 ```bash

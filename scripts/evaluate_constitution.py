@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Dict, List
 
 import torch
+import inspect
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from tqdm import tqdm
 
@@ -73,7 +74,10 @@ def load_questions(
 
 
 def load_hf_model(model_id: str, hf_token: str | None):
-    tok = AutoTokenizer.from_pretrained(model_id, token=hf_token)
+    tok_kwargs = {"token": hf_token}
+    if "fix_mistral_regex" in inspect.signature(AutoTokenizer.from_pretrained).parameters:
+        tok_kwargs["fix_mistral_regex"] = True
+    tok = AutoTokenizer.from_pretrained(model_id, **tok_kwargs)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
     tok.padding_side = "left"
@@ -85,6 +89,12 @@ def load_hf_model(model_id: str, hf_token: str | None):
         dtype=torch.bfloat16,
         device_map="auto",
     )
+    model.eval()
+    if hasattr(model, "generation_config"):
+        model.generation_config.do_sample = False
+        model.generation_config.temperature = 1.0
+        model.generation_config.top_p = 1.0
+        model.generation_config.pad_token_id = tok.pad_token_id
     return model, tok
 
 
@@ -103,7 +113,7 @@ def build_chat_prompt(tokenizer, messages: List[dict]) -> str:
 def generate_answer(model, tokenizer, messages: List[dict], max_new_tokens: int) -> str:
     prompt = build_chat_prompt(tokenizer, messages)
     inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
-    with torch.no_grad():
+    with torch.inference_mode():
         output = model.generate(
             **inputs,
             max_new_tokens=max_new_tokens,
@@ -112,6 +122,26 @@ def generate_answer(model, tokenizer, messages: List[dict], max_new_tokens: int)
     prompt_len = inputs["input_ids"].shape[-1]
     text = tokenizer.decode(output[0][prompt_len:], skip_special_tokens=True)
     return text.strip()
+
+
+def generate_answers(
+    model,
+    tokenizer,
+    messages_list: List[List[dict]],
+    max_new_tokens: int,
+) -> List[str]:
+    prompts = [build_chat_prompt(tokenizer, messages) for messages in messages_list]
+    inputs = tokenizer(prompts, return_tensors="pt", padding=True).to(model.device)
+    with torch.inference_mode():
+        output = model.generate(
+            **inputs,
+            max_new_tokens=max_new_tokens,
+            do_sample=False,
+        )
+    prompt_len = inputs["input_ids"].shape[-1]
+    generated = output[:, prompt_len:]
+    texts = tokenizer.batch_decode(generated, skip_special_tokens=True)
+    return [text.strip() for text in texts]
 
 
 def judge_listwise_with_openai(
@@ -314,6 +344,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--judge-retries", type=int, default=3)
     parser.add_argument("--retry-backoff", type=float, default=2.0)
     parser.add_argument("--system-prompt", default=None)
+    parser.add_argument("--batch-size", type=int, default=1, help="Batch size for local model generation.")
     parser.add_argument("--seed", type=int, default=42)
     return parser.parse_args()
 
@@ -356,26 +387,39 @@ def main() -> None:
             continue
 
         model, tokenizer = load_hf_model(model_id, args.hf_token)
+        batch_size = max(1, args.batch_size)
         with responses_path.open("w", encoding="utf-8") as f:
-            for item in tqdm(questions, desc=f"Generating responses ({model_id})"):
-                messages = []
-                if args.system_prompt:
-                    messages.append({"role": "system", "content": args.system_prompt})
-                messages.append({"role": "user", "content": item["question"]})
-                response = generate_answer(model, tokenizer, messages, max_new_tokens=args.max_new_tokens)
-                model_responses[item["question_id"]] = response
-                f.write(
-                    json.dumps(
-                        {
-                            "question_id": item["question_id"],
-                            "clause_id": item["clause_id"],
-                            "question": item["question"],
-                            "response": response,
-                        },
-                        ensure_ascii=False,
+            with tqdm(total=len(questions), desc=f"Generating responses ({model_id})") as pbar:
+                for start in range(0, len(questions), batch_size):
+                    batch = questions[start : start + batch_size]
+                    messages_list: List[List[dict]] = []
+                    for item in batch:
+                        messages: List[dict] = []
+                        if args.system_prompt:
+                            messages.append({"role": "system", "content": args.system_prompt})
+                        messages.append({"role": "user", "content": item["question"]})
+                        messages_list.append(messages)
+                    responses = generate_answers(
+                        model,
+                        tokenizer,
+                        messages_list,
+                        max_new_tokens=args.max_new_tokens,
                     )
-                    + "\n"
-                )
+                    for item, response in zip(batch, responses):
+                        model_responses[item["question_id"]] = response
+                        f.write(
+                            json.dumps(
+                                {
+                                    "question_id": item["question_id"],
+                                    "clause_id": item["clause_id"],
+                                    "question": item["question"],
+                                    "response": response,
+                                },
+                                ensure_ascii=False,
+                            )
+                            + "\n"
+                        )
+                    pbar.update(len(batch))
         responses_by_model[model_id] = model_responses
         del model
         torch.cuda.empty_cache()
