@@ -110,7 +110,24 @@ def build_chat_prompt(tokenizer, messages: List[dict]) -> str:
     return "\n".join(lines)
 
 
-def generate_answer(model, tokenizer, messages: List[dict], max_new_tokens: int) -> str:
+def _apply_stop_strings(text: str, stop_strings: List[str]) -> str:
+    if not stop_strings:
+        return text
+    indices = [text.find(s) for s in stop_strings if s]
+    indices = [idx for idx in indices if idx >= 0]
+    if not indices:
+        return text
+    cut = min(indices)
+    return text[:cut].rstrip()
+
+
+def generate_answer(
+    model,
+    tokenizer,
+    messages: List[dict],
+    max_new_tokens: int,
+    stop_strings: List[str],
+) -> str:
     prompt = build_chat_prompt(tokenizer, messages)
     inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
     with torch.inference_mode():
@@ -121,7 +138,8 @@ def generate_answer(model, tokenizer, messages: List[dict], max_new_tokens: int)
         )
     prompt_len = inputs["input_ids"].shape[-1]
     text = tokenizer.decode(output[0][prompt_len:], skip_special_tokens=True)
-    return text.strip()
+    text = text.strip()
+    return _apply_stop_strings(text, stop_strings)
 
 
 def generate_answers(
@@ -129,6 +147,7 @@ def generate_answers(
     tokenizer,
     messages_list: List[List[dict]],
     max_new_tokens: int,
+    stop_strings: List[str],
 ) -> List[str]:
     prompts = [build_chat_prompt(tokenizer, messages) for messages in messages_list]
     inputs = tokenizer(prompts, return_tensors="pt", padding=True).to(model.device)
@@ -141,7 +160,7 @@ def generate_answers(
     prompt_len = inputs["input_ids"].shape[-1]
     generated = output[:, prompt_len:]
     texts = tokenizer.batch_decode(generated, skip_special_tokens=True)
-    return [text.strip() for text in texts]
+    return [_apply_stop_strings(text.strip(), stop_strings) for text in texts]
 
 
 def judge_listwise_with_openai(
@@ -195,7 +214,7 @@ def judge_listwise_with_hf(
         "Respond with JSON: {\"ranking\": [\"A\", \"B\", ...]}"
     )
     messages = [{"role": "user", "content": prompt}]
-    output = generate_answer(model, tokenizer, messages, max_new_tokens=max_new_tokens)
+    output = generate_answer(model, tokenizer, messages, max_new_tokens=max_new_tokens, stop_strings=[])
     try:
         start = output.index("{")
         end = output.rindex("}") + 1
@@ -258,7 +277,7 @@ def judge_pairwise_with_hf(
         "Respond with JSON: {\"winner\": \"A\"} or {\"winner\": \"B\"}"
     )
     messages = [{"role": "user", "content": prompt}]
-    output = generate_answer(model, tokenizer, messages, max_new_tokens=max_new_tokens)
+    output = generate_answer(model, tokenizer, messages, max_new_tokens=max_new_tokens, stop_strings=[])
     try:
         start = output.index("{")
         end = output.rindex("}") + 1
@@ -345,6 +364,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--retry-backoff", type=float, default=2.0)
     parser.add_argument("--system-prompt", default=None)
     parser.add_argument("--batch-size", type=int, default=1, help="Batch size for local model generation.")
+    parser.add_argument(
+        "--stop-strings",
+        nargs="*",
+        default=["\nUser:", "\nHuman:"],
+        help="Stop generation when any string is encountered.",
+    )
     parser.add_argument("--seed", type=int, default=42)
     return parser.parse_args()
 
@@ -404,6 +429,7 @@ def main() -> None:
                         tokenizer,
                         messages_list,
                         max_new_tokens=args.max_new_tokens,
+                        stop_strings=args.stop_strings,
                     )
                     for item, response in zip(batch, responses):
                         model_responses[item["question_id"]] = response
