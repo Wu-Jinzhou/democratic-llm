@@ -13,3 +13,4 @@ env/
 *.log
 .venv/
 gurobi.lic
+run_train.sh
