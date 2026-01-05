@@ -16,6 +16,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from style import apply_style, style_axes
+
 
 def load_preferences(path: Path) -> List[dict]:
     records = []
@@ -109,12 +111,14 @@ def plot_metric(
     clauses = plot_df["clause_id"].astype(str).tolist()
     values = plot_df[metric].astype(float).tolist()
     height = max(6, 0.25 * len(clauses))
+    apply_style()
     fig, ax = plt.subplots(figsize=(10, height))
     ax.barh(clauses, values)
     ax.invert_yaxis()
     ax.set_xlabel(metric.replace("_", " ").title())
     ax.set_ylabel("Clause")
     ax.set_title("Clause difficulty / disagreement")
+    style_axes(ax)
     fig.tight_layout()
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path, dpi=200)

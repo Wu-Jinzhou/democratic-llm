@@ -9,65 +9,51 @@ VIZ_DIR="${VIZ_DIR:-visualization/output}"
 
 mkdir -p "$EVAL_DIR" "$VIZ_DIR"
 
-echo "Fitting Bradley-Terry (with bootstrap CIs)..."
-python scripts/fit_bradley_terry.py \
-  --preferences "$PREFERENCES_PATH" \
-  --output "$EVAL_DIR/bradley_terry_scores.json" \
-  --bootstrap-samples 500 \
-  --bootstrap-workers "${BOOTSTRAP_WORKERS:-12}" \
-  --verbose
-
 python visualization/plot_scores.py \
   --input "$EVAL_DIR/bradley_terry_scores.json" \
   --method bradley-terry \
   --output "$VIZ_DIR/bradley_terry_scores.png"
-
-echo "Scoring listwise rankings (Plackett-Luce, Borda, Copeland, Kemeny)..."
-python scripts/score_rankings.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "$EVAL_DIR/ranking_scores_plackett-luce.json" \
-  --method plackett-luce \
-  --bootstrap-samples 500 \
-  --bootstrap-workers "${BOOTSTRAP_WORKERS:-12}" \
-  --verbose
 
 python visualization/plot_scores.py \
   --input "$EVAL_DIR/ranking_scores_plackett-luce.json" \
   --method plackett-luce \
   --output "$VIZ_DIR/plackett_luce_scores.png"
 
-python scripts/score_rankings.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "$EVAL_DIR/ranking_scores_borda.json" \
-  --method borda \
-  --verbose
-
 python visualization/plot_scores.py \
   --input "$EVAL_DIR/ranking_scores_borda.json" \
   --method borda \
   --output "$VIZ_DIR/borda_scores.png"
-
-python scripts/score_rankings.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "$EVAL_DIR/ranking_scores_copeland.json" \
-  --method copeland \
-  --verbose
 
 python visualization/plot_scores.py \
   --input "$EVAL_DIR/ranking_scores_copeland.json" \
   --method copeland \
   --output "$VIZ_DIR/copeland_scores.png"
 
-python scripts/score_rankings.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "$EVAL_DIR/ranking_scores_kemeny.json" \
-  --method kemeny \
-  --verbose
-
 python visualization/plot_scores.py \
   --input "$EVAL_DIR/ranking_scores_kemeny.json" \
   --method kemeny \
   --output "$VIZ_DIR/kemeny_ranking.png"
+
+echo "Scoring Mallows (consensus + bootstrap + pairwise)..."
+python scripts/score_rankings.py \
+  --listwise "$LISTWISE_PATH" \
+  --output "$EVAL_DIR/ranking_scores_mallows.json" \
+  --method mallows \
+  --mallows-bootstrap-samples "${MALLOWS_BOOTSTRAP_SAMPLES:-500}" \
+  --mallows-bootstrap-workers "${MALLOWS_BOOTSTRAP_WORKERS:-12}" \
+  --mallows-pairwise-max-enum "${MALLOWS_PAIRWISE_MAX_ENUM:-8}" \
+  --mallows-pairwise-mc-samples "${MALLOWS_PAIRWISE_MC_SAMPLES:-20000}" \
+  --verbose
+
+python visualization/plot_scores.py \
+  --input "$EVAL_DIR/ranking_scores_mallows.json" \
+  --method mallows \
+  --output "$VIZ_DIR/mallows_consensus.png"
+
+python visualization/plot_mallows_pairwise.py \
+  --input "$EVAL_DIR/ranking_scores_mallows.json" \
+  --output "$VIZ_DIR/mallows_pairwise.png" \
+  --order consensus
 
 echo "Building clause/model visualizations..."
 python visualization/build_clause_heatmap.py \

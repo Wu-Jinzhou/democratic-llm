@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Plot preference scores from ranking/score JSON files.
-Supports: bradley-terry, plackett-luce, borda, copeland, kemeny.
+Supports: bradley-terry, plackett-luce, borda, copeland, kemeny, mallows.
 """
 from __future__ import annotations
 
@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 import matplotlib.pyplot as plt
+
+from style import apply_style, style_axes
 
 
 def _infer_method(data: object) -> str:
@@ -28,6 +30,8 @@ def _infer_method(data: object) -> str:
         return "copeland"
     if "kemeny" in data:
         return "kemeny"
+    if "mallows" in data:
+        return "mallows"
     raise ValueError("Cannot infer method from input.")
 
 
@@ -104,6 +108,18 @@ def _extract_results(data: object, method: str) -> Tuple[List[dict], List[str], 
         results = [{"model": m, "rank": i + 1} for i, m in enumerate(models)]
         return results, models, values, intervals
 
+    if method == "mallows":
+        mallows = data.get("mallows", {})
+        ranking = mallows.get("consensus")
+        if not isinstance(ranking, list):
+            raise ValueError("Mallows consensus ranking not found.")
+        models = [str(m) for m in ranking]
+        n = len(models)
+        values = [float(n - i) for i in range(n)]
+        intervals = [(val, val) for val in values]
+        results = [{"model": m, "rank": i + 1} for i, m in enumerate(models)]
+        return results, models, values, intervals
+
     raise ValueError(f"Unsupported method: {method}")
 
 
@@ -117,7 +133,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--method",
-        choices=["auto", "bradley-terry", "plackett-luce", "borda", "copeland", "kemeny"],
+        choices=["auto", "bradley-terry", "plackett-luce", "borda", "copeland", "kemeny", "mallows"],
         default="auto",
         help="Which method to plot (auto tries to infer).",
     )
@@ -128,6 +144,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    apply_style()
     data = json.loads(args.input.read_text())
     method = _infer_method(data) if args.method == "auto" else args.method
     _, models, values, intervals = _extract_results(data, method)
@@ -145,6 +162,8 @@ def main() -> None:
     ax.invert_yaxis()
     if method == "kemeny":
         xlabel = "Kemeny rank score (higher = better)"
+    elif method == "mallows":
+        xlabel = "Mallows consensus rank score (higher = better)"
     elif method in {"borda"}:
         xlabel = "Borda score"
     elif method in {"copeland"}:
@@ -154,8 +173,21 @@ def main() -> None:
     else:
         xlabel = "Score"
     ax.set_xlabel(xlabel)
-    title = args.title or f"{method.replace('-', ' ').title()} scores"
+    if method == "mallows" and isinstance(data, dict):
+        mallows = data.get("mallows", {})
+        phi = mallows.get("phi")
+        ll_test = mallows.get("log_likelihood_test")
+        details = []
+        if isinstance(phi, (int, float)):
+            details.append(f"phi={phi:.3f}")
+        if isinstance(ll_test, (int, float)):
+            details.append(f"ll_test={ll_test:.2f}")
+        suffix = f" ({', '.join(details)})" if details else ""
+        title = args.title or f"Mallows consensus{suffix}"
+    else:
+        title = args.title or f"{method.replace('-', ' ').title()} scores"
     ax.set_title(title)
+    style_axes(ax)
     fig.tight_layout()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(args.output, dpi=200)

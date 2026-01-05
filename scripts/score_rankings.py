@@ -4,6 +4,7 @@ Score models from listwise rankings:
 - Plackett-Luce fitting + bootstrap CIs
 - Borda and Copeland scores
 - Kemeny ranking (brute force / ILP / heuristic)
+- Mallows (Kendall) consensus + dispersion + held-out likelihood
 """
 from __future__ import annotations
 
@@ -11,6 +12,8 @@ import argparse
 import itertools
 import json
 import concurrent.futures
+import math
+import random
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -21,6 +24,13 @@ _PL_BOOTSTRAP_RANKINGS: List[List[str]] | None = None
 _PL_BOOTSTRAP_MODELS: List[str] | None = None
 _PL_BOOTSTRAP_MAX_ITER: int = 1000
 _PL_BOOTSTRAP_TOL: float = 1e-6
+
+_MAL_BOOT_RANKINGS: List[List[str]] | None = None
+_MAL_BOOT_MODELS: List[str] | None = None
+_MAL_BOOT_KEMENY_METHOD: str = "auto"
+_MAL_BOOT_KEMENY_BRUTE_MAX: int = 8
+_MAL_BOOT_KEMENY_ILP_MAX: int = 12
+_MAL_BOOT_KEMENY_ILP_SECONDS: int = 60
 
 
 def load_listwise(path: Path) -> List[dict]:
@@ -56,6 +66,31 @@ def extract_rankings(records: List[dict]) -> Tuple[List[List[str]], List[str], i
         filtered.append(ranking)
     models = sorted(expected)
     return filtered, models, skipped
+
+
+def apply_model_drop(
+    rankings: List[List[str]],
+    models: List[str],
+    drop_models: List[str],
+) -> Tuple[List[List[str]], List[str], int]:
+    if not drop_models:
+        return rankings, models, 0
+    drop_set = set(drop_models)
+    unknown = drop_set - set(models)
+    if unknown:
+        print(f"Warning: drop models not found in rankings: {sorted(unknown)}")
+    drop_set &= set(models)
+    remaining = [m for m in models if m not in drop_set]
+    expected = set(remaining)
+    filtered: List[List[str]] = []
+    skipped = 0
+    for ranking in rankings:
+        reduced = [m for m in ranking if m not in drop_set]
+        if set(reduced) != expected or len(reduced) != len(remaining):
+            skipped += 1
+            continue
+        filtered.append(reduced)
+    return filtered, sorted(remaining), skipped
 
 
 def pairwise_counts(rankings: List[List[str]], models: List[str]) -> np.ndarray:
@@ -105,6 +140,100 @@ def copeland_scores(w: np.ndarray, models: List[str]) -> List[dict]:
         )
     results.sort(key=lambda x: x["copeland"], reverse=True)
     return results
+
+
+def kendall_distance(ranking: List[str], reference: List[str]) -> int:
+    pos_rank = {m: i for i, m in enumerate(ranking)}
+    pos_ref = {m: i for i, m in enumerate(reference)}
+    distance = 0
+    ref_order = sorted(reference, key=lambda m: pos_ref[m])
+    for i, a in enumerate(ref_order[:-1]):
+        for b in ref_order[i + 1 :]:
+            if pos_rank[a] > pos_rank[b]:
+                distance += 1
+    return distance
+
+
+def total_kendall_distance(rankings: List[List[str]], reference: List[str]) -> int:
+    return sum(kendall_distance(r, reference) for r in rankings)
+
+
+def mallows_log_z(m: int, phi: float) -> float:
+    if phi <= 1e-12:
+        return float(math.lgamma(m + 1))
+    q = math.exp(-phi)
+    if q >= 1.0:
+        return float(math.lgamma(m + 1))
+    log_num = 0.0
+    for i in range(1, m + 1):
+        log_num += math.log1p(-q**i)
+    log_den = m * math.log1p(-q)
+    return log_num - log_den
+
+
+def mallows_log_likelihood(
+    rankings: List[List[str]], reference: List[str], phi: float
+) -> float:
+    m = len(reference)
+    dist_sum = sum(kendall_distance(r, reference) for r in rankings)
+    return -phi * dist_sum - len(rankings) * mallows_log_z(m, phi)
+
+
+def fit_mallows_phi(
+    rankings: List[List[str]],
+    reference: List[str],
+    phi_max: float,
+    phi_grid: int,
+    phi_tol: float,
+) -> Tuple[float, float]:
+    if not rankings:
+        return 0.0, float("-inf")
+    m = len(reference)
+    dist_sum = sum(kendall_distance(r, reference) for r in rankings)
+    n = len(rankings)
+
+    def ll(phi: float) -> float:
+        return -phi * dist_sum - n * mallows_log_z(m, phi)
+
+    grid = np.linspace(0.0, phi_max, max(phi_grid, 2))
+    ll_vals = [ll(phi) for phi in grid]
+    best_idx = int(np.argmax(ll_vals))
+    best_phi = float(grid[best_idx])
+
+    if 0 < best_idx < len(grid) - 1:
+        a = float(grid[best_idx - 1])
+        b = float(grid[best_idx + 1])
+        gr = (math.sqrt(5) - 1) / 2
+        c = b - gr * (b - a)
+        d = a + gr * (b - a)
+        ll_c = ll(c)
+        ll_d = ll(d)
+        while abs(b - a) > phi_tol:
+            if ll_c > ll_d:
+                b = d
+                d = c
+                ll_d = ll_c
+                c = b - gr * (b - a)
+                ll_c = ll(c)
+            else:
+                a = c
+                c = d
+                ll_c = ll_d
+                d = a + gr * (b - a)
+                ll_d = ll(d)
+        best_phi = (a + b) / 2
+    return best_phi, ll(best_phi)
+
+
+def pl_log_likelihood(rankings: List[List[str]], models: List[str], abilities: np.ndarray) -> float:
+    idx = {m: i for i, m in enumerate(models)}
+    ll = 0.0
+    for ranking in rankings:
+        ids = [idx[m] for m in ranking]
+        for t, i in enumerate(ids):
+            denom = abilities[ids[t:]].sum()
+            ll += math.log(max(abilities[i], 1e-12)) - math.log(max(denom, 1e-12))
+    return ll
 
 
 def fit_plackett_luce(
@@ -216,6 +345,44 @@ def _pl_bootstrap_worker(args: tuple[int, int, int]) -> np.ndarray:
     return scores
 
 
+def _init_mallows_bootstrap(
+    rankings: List[List[str]],
+    models: List[str],
+    kemeny_method: str,
+    kemeny_bruteforce_max: int,
+    kemeny_ilp_max: int,
+    kemeny_ilp_max_seconds: int,
+) -> None:
+    global _MAL_BOOT_RANKINGS, _MAL_BOOT_MODELS, _MAL_BOOT_KEMENY_METHOD
+    global _MAL_BOOT_KEMENY_BRUTE_MAX, _MAL_BOOT_KEMENY_ILP_MAX, _MAL_BOOT_KEMENY_ILP_SECONDS
+    _MAL_BOOT_RANKINGS = rankings
+    _MAL_BOOT_MODELS = models
+    _MAL_BOOT_KEMENY_METHOD = kemeny_method
+    _MAL_BOOT_KEMENY_BRUTE_MAX = kemeny_bruteforce_max
+    _MAL_BOOT_KEMENY_ILP_MAX = kemeny_ilp_max
+    _MAL_BOOT_KEMENY_ILP_SECONDS = kemeny_ilp_max_seconds
+
+
+def _mallows_bootstrap_worker(args: Tuple[int, int, int]) -> List[str]:
+    sample_id, seed, n_rankings = args
+    rankings = _MAL_BOOT_RANKINGS
+    models = _MAL_BOOT_MODELS
+    if rankings is None or models is None:
+        raise RuntimeError("Mallows bootstrap worker not initialized.")
+    rng = np.random.default_rng(seed + (sample_id * 1000003))
+    sample_idx = rng.integers(0, n_rankings, size=n_rankings)
+    sample = [rankings[i] for i in sample_idx]
+    consensus_b, _ = compute_consensus(
+        sample,
+        models,
+        _MAL_BOOT_KEMENY_METHOD,
+        _MAL_BOOT_KEMENY_BRUTE_MAX,
+        _MAL_BOOT_KEMENY_ILP_MAX,
+        _MAL_BOOT_KEMENY_ILP_SECONDS,
+    )
+    return consensus_b
+
+
 def kemeny_score(order: List[int], w: np.ndarray) -> float:
     score = 0.0
     for i in range(len(order)):
@@ -298,6 +465,105 @@ def kemeny_heuristic(w: np.ndarray, initial: List[int]) -> Tuple[List[int], floa
     return order, best_score
 
 
+def compute_consensus(
+    rankings: List[List[str]],
+    models: List[str],
+    method: str,
+    kemeny_bruteforce_max: int,
+    kemeny_ilp_max: int,
+    kemeny_ilp_max_seconds: int,
+) -> Tuple[List[str], str]:
+    w = pairwise_counts(rankings, models)
+    n = len(models)
+    if method == "auto":
+        if n <= kemeny_bruteforce_max:
+            resolved = "bruteforce"
+        elif n <= kemeny_ilp_max:
+            resolved = "ilp"
+        else:
+            resolved = "heuristic"
+    else:
+        resolved = method
+    if resolved == "bruteforce":
+        order, _ = kemeny_bruteforce(w)
+    elif resolved == "ilp":
+        order, _ = kemeny_ilp(w, max_seconds=kemeny_ilp_max_seconds)
+    else:
+        borda_order = [models.index(rec["model"]) for rec in borda_scores(rankings, models)]
+        order, _ = kemeny_heuristic(w, borda_order)
+    consensus = [models[i] for i in order]
+    return consensus, resolved
+
+
+def mallows_pairwise_probabilities(
+    consensus: List[str],
+    phi: float,
+    max_enum: int = 8,
+    mc_samples: int = 20000,
+    seed: int = 42,
+) -> Tuple[Dict[str, Dict[str, float]], str]:
+    models = list(consensus)
+    m = len(models)
+    idx = {m: i for i, m in enumerate(models)}
+    counts = np.zeros((m, m), dtype=float)
+
+    if m <= max_enum:
+        weights = []
+        perms = []
+        for perm in itertools.permutations(models):
+            dist = kendall_distance(list(perm), consensus)
+            weight = math.exp(-phi * dist)
+            weights.append(weight)
+            perms.append(perm)
+        total = sum(weights)
+        for perm, weight in zip(perms, weights):
+            pos = {m: i for i, m in enumerate(perm)}
+            for i in range(m):
+                for j in range(m):
+                    if i == j:
+                        continue
+                    if pos[models[i]] < pos[models[j]]:
+                        counts[i, j] += weight
+        probs = counts / max(total, 1e-12)
+        method = "exact"
+    else:
+        rng = random.Random(seed)
+        for _ in range(mc_samples):
+            # simple insertion model sampling for Kendall Mallows
+            perm = [consensus[0]]
+            for t in range(1, m):
+                # insertion position distribution proportional to exp(-phi * k)
+                weights = [math.exp(-phi * k) for k in range(t + 1)]
+                total = sum(weights)
+                r = rng.random() * total
+                c = 0.0
+                pos = 0
+                for k, w in enumerate(weights):
+                    c += w
+                    if r <= c:
+                        pos = k
+                        break
+                perm.insert(pos, consensus[t])
+            pos_map = {m: i for i, m in enumerate(perm)}
+            for i in range(m):
+                for j in range(m):
+                    if i == j:
+                        continue
+                    if pos_map[models[i]] < pos_map[models[j]]:
+                        counts[i, j] += 1.0
+        probs = counts / max(mc_samples, 1.0)
+        method = "mc"
+
+    out: Dict[str, Dict[str, float]] = {}
+    for i, mi in enumerate(models):
+        out[mi] = {}
+        for j, mj in enumerate(models):
+            if i == j:
+                continue
+            out[mi][mj] = float(probs[i, j])
+    return out, method
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Score models from listwise rankings.")
     parser.add_argument(
@@ -314,9 +580,15 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--method",
-        choices=["plackett-luce", "borda", "copeland", "kemeny"],
+        choices=["plackett-luce", "borda", "copeland", "kemeny", "mallows"],
         default="plackett-luce",
         help="Which scoring method to run.",
+    )
+    parser.add_argument(
+        "--drop-models",
+        nargs="*",
+        default=[],
+        help="Model IDs to drop before scoring (useful for IIA diagnostics).",
     )
     parser.add_argument("--pl-max-iter", type=int, default=1000)
     parser.add_argument("--pl-tol", type=float, default=1e-6)
@@ -328,6 +600,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--kemeny-bruteforce-max", type=int, default=8)
     parser.add_argument("--kemeny-ilp-max", type=int, default=12)
     parser.add_argument("--kemeny-ilp-max-seconds", type=int, default=60)
+    parser.add_argument("--mallows-test-fraction", type=float, default=0.2)
+    parser.add_argument("--mallows-seed", type=int, default=42)
+    parser.add_argument("--mallows-phi-max", type=float, default=10.0)
+    parser.add_argument("--mallows-phi-grid", type=int, default=200)
+    parser.add_argument("--mallows-phi-tol", type=float, default=1e-4)
+    parser.add_argument("--mallows-bootstrap-samples", type=int, default=0)
+    parser.add_argument("--mallows-bootstrap-seed", type=int, default=42)
+    parser.add_argument("--mallows-bootstrap-workers", type=int, default=1)
+    parser.add_argument("--mallows-pairwise-max-enum", type=int, default=8)
+    parser.add_argument("--mallows-pairwise-mc-samples", type=int, default=20000)
     parser.add_argument("--verbose", action="store_true", help="Print scoring progress.")
     parser.add_argument("--log-every", type=int, default=50, help="Log every N iterations.")
     return parser.parse_args()
@@ -342,6 +624,15 @@ def main() -> None:
         print(f"[Rankings] valid_rankings={len(rankings)} skipped={skipped}")
     elif skipped:
         print(f"Skipped {skipped} rankings with missing/extra models.")
+
+    drop_skipped = 0
+    if args.drop_models:
+        rankings, models, drop_skipped = apply_model_drop(rankings, models, args.drop_models)
+        if args.verbose:
+            print(f"[Rankings] drop_models={args.drop_models} remaining={len(models)}")
+            print(f"[Rankings] dropped_skipped={drop_skipped} remaining_rankings={len(rankings)}")
+        elif drop_skipped:
+            print(f"Skipped {drop_skipped} rankings after dropping models.")
     if not rankings:
         raise RuntimeError("No valid rankings found.")
 
@@ -349,6 +640,8 @@ def main() -> None:
         "method": args.method,
         "models": models,
         "num_rankings": len(rankings),
+        "drop_models": args.drop_models,
+        "drop_skipped": drop_skipped,
     }
 
     if args.method == "plackett-luce":
@@ -435,6 +728,169 @@ def main() -> None:
             "method": method,
             "ranking": [models[i] for i in order],
             "score": float(score),
+        }
+    elif args.method == "mallows":
+        rng = random.Random(args.mallows_seed)
+        indices = list(range(len(rankings)))
+        rng.shuffle(indices)
+        test_size = int(round(len(indices) * args.mallows_test_fraction))
+        test_idx = set(indices[:test_size])
+        train_rankings = [rankings[i] for i in indices if i not in test_idx]
+        test_rankings = [rankings[i] for i in indices if i in test_idx]
+        if args.verbose:
+            print(f"[Mallows] train={len(train_rankings)} test={len(test_rankings)}")
+
+        consensus, consensus_method = compute_consensus(
+            train_rankings,
+            models,
+            args.kemeny_method,
+            args.kemeny_bruteforce_max,
+            args.kemeny_ilp_max,
+            args.kemeny_ilp_max_seconds,
+        )
+
+        phi, ll_train = fit_mallows_phi(
+            train_rankings,
+            consensus,
+            phi_max=args.mallows_phi_max,
+            phi_grid=args.mallows_phi_grid,
+            phi_tol=args.mallows_phi_tol,
+        )
+        ll_test = mallows_log_likelihood(test_rankings, consensus, phi) if test_rankings else float("nan")
+
+        bootstrap_results = None
+        if args.mallows_bootstrap_samples > 0:
+            if args.verbose:
+                print(f"[Mallows] bootstrap samples={args.mallows_bootstrap_samples}")
+            counts = {m: np.zeros(len(models), dtype=float) for m in models}
+            exact_matches = 0
+            if args.mallows_bootstrap_workers <= 1:
+                _init_mallows_bootstrap(
+                    train_rankings,
+                    models,
+                    args.kemeny_method,
+                    args.kemeny_bruteforce_max,
+                    args.kemeny_ilp_max,
+                    args.kemeny_ilp_max_seconds,
+                )
+                iterator = range(args.mallows_bootstrap_samples)
+                if args.verbose:
+                    iterator = tqdm(iterator, desc="Mallows bootstrap", unit="sample")
+                for s in iterator:
+                    cons = _mallows_bootstrap_worker((s, args.mallows_bootstrap_seed, len(train_rankings)))
+                    if cons == consensus:
+                        exact_matches += 1
+                    for pos, m in enumerate(cons):
+                        counts[m][pos] += 1
+            else:
+                with concurrent.futures.ProcessPoolExecutor(
+                    max_workers=args.mallows_bootstrap_workers,
+                    initializer=_init_mallows_bootstrap,
+                    initargs=(
+                        train_rankings,
+                        models,
+                        args.kemeny_method,
+                        args.kemeny_bruteforce_max,
+                        args.kemeny_ilp_max,
+                        args.kemeny_ilp_max_seconds,
+                    ),
+                ) as ex:
+                    iterator = ex.map(
+                        _mallows_bootstrap_worker,
+                        [
+                            (s, args.mallows_bootstrap_seed, len(train_rankings))
+                            for s in range(args.mallows_bootstrap_samples)
+                        ],
+                    )
+                    if args.verbose:
+                        iterator = tqdm(
+                            iterator,
+                            total=args.mallows_bootstrap_samples,
+                            desc="Mallows bootstrap",
+                            unit="sample",
+                        )
+                    for cons in iterator:
+                        if cons == consensus:
+                            exact_matches += 1
+                        for pos, m in enumerate(cons):
+                            counts[m][pos] += 1
+
+            rank_probabilities = {
+                m: [float(counts[m][i] / args.mallows_bootstrap_samples) for i in range(len(models))]
+                for m in models
+            }
+            bootstrap_results = {
+                "samples": args.mallows_bootstrap_samples,
+                "seed": args.mallows_bootstrap_seed,
+                "workers": args.mallows_bootstrap_workers,
+                "exact_match_rate": exact_matches / max(args.mallows_bootstrap_samples, 1),
+                "rank_probabilities": rank_probabilities,
+            }
+
+        pairwise_probs, pairwise_method = mallows_pairwise_probabilities(
+            consensus,
+            phi,
+            max_enum=args.mallows_pairwise_max_enum,
+            mc_samples=args.mallows_pairwise_mc_samples,
+            seed=args.mallows_seed,
+        )
+
+        output["mallows"] = {
+            "consensus": consensus,
+            "consensus_method": consensus_method,
+            "phi": float(phi),
+            "log_likelihood_train": float(ll_train),
+            "log_likelihood_test": float(ll_test),
+            "params": {
+                "test_fraction": args.mallows_test_fraction,
+                "seed": args.mallows_seed,
+                "phi_max": args.mallows_phi_max,
+                "phi_grid": args.mallows_phi_grid,
+                "phi_tol": args.mallows_phi_tol,
+                "kemeny_method": consensus_method,
+                "kemeny_bruteforce_max": args.kemeny_bruteforce_max,
+                "kemeny_ilp_max": args.kemeny_ilp_max,
+                "kemeny_ilp_max_seconds": args.kemeny_ilp_max_seconds,
+                "bootstrap_samples": args.mallows_bootstrap_samples,
+                "bootstrap_workers": args.mallows_bootstrap_workers,
+            },
+            "mean_kendall_train": float(
+                total_kendall_distance(train_rankings, consensus) / max(len(train_rankings), 1)
+            ),
+            "mean_kendall_test": float(
+                total_kendall_distance(test_rankings, consensus) / max(len(test_rankings), 1)
+            )
+            if test_rankings
+            else float("nan"),
+            "n_train": len(train_rankings),
+            "n_test": len(test_rankings),
+            "bootstrap": bootstrap_results,
+            "pairwise_probabilities": {
+                "method": pairwise_method,
+                "matrix": pairwise_probs,
+            },
+        }
+
+        pl_scores, pl_abilities = fit_plackett_luce(
+            train_rankings,
+            models,
+            max_iter=args.pl_max_iter,
+            tol=args.pl_tol,
+            verbose=args.verbose,
+            log_every=args.log_every,
+        )
+        pl_train_ll = pl_log_likelihood(train_rankings, models, pl_abilities)
+        pl_test_ll = pl_log_likelihood(test_rankings, models, pl_abilities) if test_rankings else float("nan")
+        pl_results = []
+        for i, m in enumerate(models):
+            pl_results.append({"model": m, "score": float(pl_scores[i]), "ability": float(pl_abilities[i])})
+        pl_results.sort(key=lambda x: x["score"], reverse=True)
+        output["plackett_luce_compare"] = {
+            "log_likelihood_train": float(pl_train_ll),
+            "log_likelihood_test": float(pl_test_ll),
+            "results": pl_results,
+            "max_iter": args.pl_max_iter,
+            "tol": args.pl_tol,
         }
 
     args.output.parent.mkdir(parents=True, exist_ok=True)

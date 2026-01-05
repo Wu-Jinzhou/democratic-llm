@@ -16,6 +16,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from style import apply_style, style_axes
+
 
 def load_preferences(path: Path) -> List[dict]:
     records = []
@@ -103,6 +105,7 @@ def plot_distribution(
     plot_type: str,
     path: Path,
 ) -> None:
+    apply_style()
     data = [matrix[:, i] for i in range(len(models))]
     width = max(8, 0.8 * len(models))
     fig, ax = plt.subplots(figsize=(width, 6))
@@ -116,6 +119,7 @@ def plot_distribution(
     ax.set_ylabel("Per-clause win share (row-normalized)")
     ax.set_xlabel("Model")
     ax.set_title("Model consistency across clauses")
+    style_axes(ax)
     fig.tight_layout()
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path, dpi=200)

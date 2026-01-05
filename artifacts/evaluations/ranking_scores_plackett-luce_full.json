@@ -1,0 +1,57 @@
+{
+  "method": "plackett-luce",
+  "models": [
+    "checkpoints/llama3.1-8b-adversary-hard",
+    "checkpoints/llama3.1-8b-adversary-soft",
+    "checkpoints/llama3.1-8b-full-prism",
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-us-rep",
+    "meta-llama/Llama-3.1-8B"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "plackett_luce": {
+    "results": [
+      {
+        "model": "checkpoints/llama3.1-8b-full-prism",
+        "score": 0.18409120491347764,
+        "ability": 1.2021254578449836
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel",
+        "score": 0.1341878680695828,
+        "ability": 1.1436076468254004
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-adversary-soft",
+        "score": 0.13099118632783957,
+        "ability": 1.139957734053969
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-hard-panel",
+        "score": 0.12604639141952725,
+        "ability": 1.1343347904635555
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-us-rep",
+        "score": 0.0647405118329759,
+        "ability": 1.0668821451700254
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-adversary-hard",
+        "score": -0.171799325160901,
+        "ability": 0.8421481541581496
+      },
+      {
+        "model": "meta-llama/Llama-3.1-8B",
+        "score": -0.46825783740250243,
+        "ability": 0.6260920728906257
+      }
+    ],
+    "max_iter": 1000,
+    "tol": 1e-06,
+    "bootstrap_samples": 0
+  }
+}

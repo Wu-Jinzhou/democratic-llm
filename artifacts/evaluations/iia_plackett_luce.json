@@ -1,0 +1,301 @@
+{
+  "method": "plackett-luce-iia",
+  "models": [
+    "checkpoints/llama3.1-8b-adversary-hard",
+    "checkpoints/llama3.1-8b-adversary-soft",
+    "checkpoints/llama3.1-8b-full-prism",
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-us-rep",
+    "meta-llama/Llama-3.1-8B"
+  ],
+  "results": [
+    {
+      "drop_model": "checkpoints/llama3.1-8b-adversary-hard",
+      "reference_model": "checkpoints/llama3.1-8b-adversary-soft",
+      "n_models_full": 7,
+      "n_models_remaining": 6,
+      "df": 5,
+      "hausman_stat": -82.79854734101563,
+      "p_value": 1.0,
+      "min_eig_v_diff": -2.091142989847065e-05,
+      "max_eig_v_diff": 0.0002773082248770025,
+      "theta_full_aligned": {
+        "checkpoints/llama3.1-8b-full-prism": 0.053100018585638065,
+        "checkpoints/llama3.1-8b-hard-panel": -0.004944794908312317,
+        "checkpoints/llama3.1-8b-soft-panel": 0.003196681741743229,
+        "checkpoints/llama3.1-8b-us-rep": -0.06625067449486367,
+        "meta-llama/Llama-3.1-8B": -0.5992490237303421
+      },
+      "theta_reduced_aligned": {
+        "checkpoints/llama3.1-8b-full-prism": 0.050367425180467634,
+        "checkpoints/llama3.1-8b-hard-panel": -0.04755378563250086,
+        "checkpoints/llama3.1-8b-soft-panel": 0.006728822133620804,
+        "checkpoints/llama3.1-8b-us-rep": -0.15081651070091187,
+        "meta-llama/Llama-3.1-8B": -0.7648653601162477
+      },
+      "theta_diff_aligned": {
+        "checkpoints/llama3.1-8b-full-prism": -0.0027325934051704304,
+        "checkpoints/llama3.1-8b-hard-panel": -0.04260899072418854,
+        "checkpoints/llama3.1-8b-soft-panel": 0.003532140391877575,
+        "checkpoints/llama3.1-8b-us-rep": -0.0845658362060482,
+        "meta-llama/Llama-3.1-8B": -0.16561633638590567
+      },
+      "diff_norm_l2": 0.19082877326052677,
+      "diff_max_abs": 0.16561633638590567,
+      "bootstrap": {
+        "samples": 200,
+        "seed": 42,
+        "workers": 12,
+        "pl_max_iter": 1000,
+        "pl_tol": 1e-06
+      }
+    },
+    {
+      "drop_model": "checkpoints/llama3.1-8b-adversary-soft",
+      "reference_model": "checkpoints/llama3.1-8b-adversary-hard",
+      "n_models_full": 7,
+      "n_models_remaining": 6,
+      "df": 5,
+      "hausman_stat": 431.7087791419795,
+      "p_value": 4.327621794154993e-91,
+      "min_eig_v_diff": -0.0003408709239027649,
+      "max_eig_v_diff": 2.5170145599816783e-06,
+      "theta_full_aligned": {
+        "checkpoints/llama3.1-8b-full-prism": 0.35589053007437865,
+        "checkpoints/llama3.1-8b-hard-panel": 0.29784571658042824,
+        "checkpoints/llama3.1-8b-soft-panel": 0.3059871932304838,
+        "checkpoints/llama3.1-8b-us-rep": 0.23653983699387687,
+        "meta-llama/Llama-3.1-8B": -0.29645851224160147
+      },
+      "theta_reduced_aligned": {
+        "checkpoints/llama3.1-8b-full-prism": 0.24477407451446864,
+        "checkpoints/llama3.1-8b-hard-panel": 0.2622670855100986,
+        "checkpoints/llama3.1-8b-soft-panel": 0.21467286230837573,
+        "checkpoints/llama3.1-8b-us-rep": 0.2181089312760413,
+        "meta-llama/Llama-3.1-8B": -0.24794589757940083
+      },
+      "theta_diff_aligned": {
+        "checkpoints/llama3.1-8b-full-prism": -0.11111645555991001,
+        "checkpoints/llama3.1-8b-hard-panel": -0.03557863107032966,
+        "checkpoints/llama3.1-8b-soft-panel": -0.09131433092210806,
+        "checkpoints/llama3.1-8b-us-rep": -0.018430905717835566,
+        "meta-llama/Llama-3.1-8B": 0.04851261466220064
+      },
+      "diff_norm_l2": 0.15698466416733595,
+      "diff_max_abs": 0.11111645555991001,
+      "bootstrap": {
+        "samples": 200,
+        "seed": 42,
+        "workers": 12,
+        "pl_max_iter": 1000,
+        "pl_tol": 1e-06
+      }
+    },
+    {
+      "drop_model": "checkpoints/llama3.1-8b-full-prism",
+      "reference_model": "checkpoints/llama3.1-8b-adversary-hard",
+      "n_models_full": 7,
+      "n_models_remaining": 6,
+      "df": 5,
+      "hausman_stat": -724.2481133685171,
+      "p_value": 1.0,
+      "min_eig_v_diff": -0.0003343260360867996,
+      "max_eig_v_diff": 8.681615548799835e-07,
+      "theta_full_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": 0.3027905114887406,
+        "checkpoints/llama3.1-8b-hard-panel": 0.29784571658042824,
+        "checkpoints/llama3.1-8b-soft-panel": 0.3059871932304838,
+        "checkpoints/llama3.1-8b-us-rep": 0.23653983699387687,
+        "meta-llama/Llama-3.1-8B": -0.29645851224160147
+      },
+      "theta_reduced_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": 0.17264369955691813,
+        "checkpoints/llama3.1-8b-hard-panel": 0.2560284987628476,
+        "checkpoints/llama3.1-8b-soft-panel": 0.18692633923415475,
+        "checkpoints/llama3.1-8b-us-rep": 0.2119830188565613,
+        "meta-llama/Llama-3.1-8B": -0.2474842364290546
+      },
+      "theta_diff_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": -0.13014681193182245,
+        "checkpoints/llama3.1-8b-hard-panel": -0.04181721781758063,
+        "checkpoints/llama3.1-8b-soft-panel": -0.11906085399632904,
+        "checkpoints/llama3.1-8b-us-rep": -0.024556818137315584,
+        "meta-llama/Llama-3.1-8B": 0.048974275812546875
+      },
+      "diff_norm_l2": 0.18937760248970292,
+      "diff_max_abs": 0.13014681193182245,
+      "bootstrap": {
+        "samples": 200,
+        "seed": 42,
+        "workers": 12,
+        "pl_max_iter": 1000,
+        "pl_tol": 1e-06
+      }
+    },
+    {
+      "drop_model": "checkpoints/llama3.1-8b-hard-panel",
+      "reference_model": "checkpoints/llama3.1-8b-adversary-hard",
+      "n_models_full": 7,
+      "n_models_remaining": 6,
+      "df": 5,
+      "hausman_stat": 30.341064766012963,
+      "p_value": 1.2635211223565413e-05,
+      "min_eig_v_diff": -0.00024074980186023355,
+      "max_eig_v_diff": 4.400525669287922e-06,
+      "theta_full_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": 0.3027905114887406,
+        "checkpoints/llama3.1-8b-full-prism": 0.35589053007437865,
+        "checkpoints/llama3.1-8b-soft-panel": 0.3059871932304838,
+        "checkpoints/llama3.1-8b-us-rep": 0.23653983699387687,
+        "meta-llama/Llama-3.1-8B": -0.29645851224160147
+      },
+      "theta_reduced_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": 0.30068873914050387,
+        "checkpoints/llama3.1-8b-full-prism": 0.34727219644173585,
+        "checkpoints/llama3.1-8b-soft-panel": 0.28519444445981,
+        "checkpoints/llama3.1-8b-us-rep": 0.22573145736396294,
+        "meta-llama/Llama-3.1-8B": -0.28538864245173756
+      },
+      "theta_diff_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": -0.002101772348236719,
+        "checkpoints/llama3.1-8b-full-prism": -0.008618333632642805,
+        "checkpoints/llama3.1-8b-soft-panel": -0.020792748770673775,
+        "checkpoints/llama3.1-8b-us-rep": -0.010808379629913933,
+        "meta-llama/Llama-3.1-8B": 0.011069869789863906
+      },
+      "diff_norm_l2": 0.027393331495759884,
+      "diff_max_abs": 0.020792748770673775,
+      "bootstrap": {
+        "samples": 200,
+        "seed": 42,
+        "workers": 12,
+        "pl_max_iter": 1000,
+        "pl_tol": 1e-06
+      }
+    },
+    {
+      "drop_model": "checkpoints/llama3.1-8b-soft-panel",
+      "reference_model": "checkpoints/llama3.1-8b-adversary-hard",
+      "n_models_full": 7,
+      "n_models_remaining": 6,
+      "df": 5,
+      "hausman_stat": -336.3606768953325,
+      "p_value": 1.0,
+      "min_eig_v_diff": -0.0002289073583273795,
+      "max_eig_v_diff": 8.2026938522405e-06,
+      "theta_full_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": 0.3027905114887406,
+        "checkpoints/llama3.1-8b-full-prism": 0.35589053007437865,
+        "checkpoints/llama3.1-8b-hard-panel": 0.29784571658042824,
+        "checkpoints/llama3.1-8b-us-rep": 0.23653983699387687,
+        "meta-llama/Llama-3.1-8B": -0.29645851224160147
+      },
+      "theta_reduced_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": 0.19345536129392077,
+        "checkpoints/llama3.1-8b-full-prism": 0.23021529126849877,
+        "checkpoints/llama3.1-8b-hard-panel": 0.25859960541736715,
+        "checkpoints/llama3.1-8b-us-rep": 0.21620546102936145,
+        "meta-llama/Llama-3.1-8B": -0.2264652198224268
+      },
+      "theta_diff_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": -0.10933515019481982,
+        "checkpoints/llama3.1-8b-full-prism": -0.12567523880587989,
+        "checkpoints/llama3.1-8b-hard-panel": -0.03924611116306109,
+        "checkpoints/llama3.1-8b-us-rep": -0.020334375964515428,
+        "meta-llama/Llama-3.1-8B": 0.06999329241917468
+      },
+      "diff_norm_l2": 0.18601410104614235,
+      "diff_max_abs": 0.12567523880587989,
+      "bootstrap": {
+        "samples": 200,
+        "seed": 42,
+        "workers": 12,
+        "pl_max_iter": 1000,
+        "pl_tol": 1e-06
+      }
+    },
+    {
+      "drop_model": "checkpoints/llama3.1-8b-us-rep",
+      "reference_model": "checkpoints/llama3.1-8b-adversary-hard",
+      "n_models_full": 7,
+      "n_models_remaining": 6,
+      "df": 5,
+      "hausman_stat": -91.9120404485928,
+      "p_value": 1.0,
+      "min_eig_v_diff": -0.00024273634351405657,
+      "max_eig_v_diff": -4.484333779974219e-06,
+      "theta_full_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": 0.3027905114887406,
+        "checkpoints/llama3.1-8b-full-prism": 0.35589053007437865,
+        "checkpoints/llama3.1-8b-hard-panel": 0.29784571658042824,
+        "checkpoints/llama3.1-8b-soft-panel": 0.3059871932304838,
+        "meta-llama/Llama-3.1-8B": -0.29645851224160147
+      },
+      "theta_reduced_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": 0.28685031557421203,
+        "checkpoints/llama3.1-8b-full-prism": 0.349523598485733,
+        "checkpoints/llama3.1-8b-hard-panel": 0.27197683819319823,
+        "checkpoints/llama3.1-8b-soft-panel": 0.3162137136345048,
+        "meta-llama/Llama-3.1-8B": -0.33808656213528476
+      },
+      "theta_diff_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": -0.015940195914528554,
+        "checkpoints/llama3.1-8b-full-prism": -0.006366931588645652,
+        "checkpoints/llama3.1-8b-hard-panel": -0.02586887838723001,
+        "checkpoints/llama3.1-8b-soft-panel": 0.010226520404021,
+        "meta-llama/Llama-3.1-8B": -0.041628049893683294
+      },
+      "diff_norm_l2": 0.05292733499984848,
+      "diff_max_abs": 0.041628049893683294,
+      "bootstrap": {
+        "samples": 200,
+        "seed": 42,
+        "workers": 12,
+        "pl_max_iter": 1000,
+        "pl_tol": 1e-06
+      }
+    },
+    {
+      "drop_model": "meta-llama/Llama-3.1-8B",
+      "reference_model": "checkpoints/llama3.1-8b-adversary-hard",
+      "n_models_full": 7,
+      "n_models_remaining": 6,
+      "df": 5,
+      "hausman_stat": 106.93404899582242,
+      "p_value": 1.8204767659208885e-21,
+      "min_eig_v_diff": -8.373138047690325e-06,
+      "max_eig_v_diff": 0.0003234992738287924,
+      "theta_full_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": 0.3027905114887406,
+        "checkpoints/llama3.1-8b-full-prism": 0.35589053007437865,
+        "checkpoints/llama3.1-8b-hard-panel": 0.29784571658042824,
+        "checkpoints/llama3.1-8b-soft-panel": 0.3059871932304838,
+        "checkpoints/llama3.1-8b-us-rep": 0.23653983699387687
+      },
+      "theta_reduced_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": 0.3580155548009458,
+        "checkpoints/llama3.1-8b-full-prism": 0.4221528754243139,
+        "checkpoints/llama3.1-8b-hard-panel": 0.33431899365109413,
+        "checkpoints/llama3.1-8b-soft-panel": 0.38722466850377046,
+        "checkpoints/llama3.1-8b-us-rep": 0.2016899168038655
+      },
+      "theta_diff_aligned": {
+        "checkpoints/llama3.1-8b-adversary-soft": 0.055225043312205235,
+        "checkpoints/llama3.1-8b-full-prism": 0.06626234534993525,
+        "checkpoints/llama3.1-8b-hard-panel": 0.03647327707066589,
+        "checkpoints/llama3.1-8b-soft-panel": 0.08123747527328667,
+        "checkpoints/llama3.1-8b-us-rep": -0.034849920190011374
+      },
+      "diff_norm_l2": 0.12878217301478734,
+      "diff_max_abs": 0.08123747527328667,
+      "bootstrap": {
+        "samples": 200,
+        "seed": 42,
+        "workers": 12,
+        "pl_max_iter": 1000,
+        "pl_tol": 1e-06
+      }
+    }
+  ]
+}

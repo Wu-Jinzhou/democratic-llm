@@ -15,3 +15,4 @@ env/
 gurobi.lic
 run_train.sh
 runpodctl
+paper/
