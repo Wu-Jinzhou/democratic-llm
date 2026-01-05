@@ -18,6 +18,8 @@ import os
 import random
 import string
 import time
+import hashlib
+import concurrent.futures
 from pathlib import Path
 from typing import Dict, List
 
@@ -302,6 +304,11 @@ def label_sequence(n: int) -> List[str]:
     return out[:n]
 
 
+def seed_for_question(question_id: str, base_seed: int) -> int:
+    digest = hashlib.sha256(f"{question_id}:{base_seed}".encode("utf-8")).digest()
+    return int.from_bytes(digest[:8], "big", signed=False)
+
+
 def parse_ranking(payload: Dict, labels: List[str]) -> List[str]:
     ranking = payload.get("ranking")
     if not isinstance(ranking, list):
@@ -364,6 +371,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--retry-backoff", type=float, default=2.0)
     parser.add_argument("--system-prompt", default=None)
     parser.add_argument("--batch-size", type=int, default=1, help="Batch size for local model generation.")
+    parser.add_argument(
+        "--judge-workers",
+        type=int,
+        default=1,
+        help="Parallel workers for judging (OpenAI judge only).",
+    )
     parser.add_argument(
         "--stop-strings",
         nargs="*",
@@ -478,10 +491,15 @@ def main() -> None:
     model_pairs = [(model_ids[i], model_ids[j]) for i in range(len(model_ids)) for j in range(i + 1, len(model_ids))]
     labels = label_sequence(len(model_ids))
 
-    for idx, item in enumerate(tqdm(questions, desc="Judging"), 1):
+    if args.use_hf_judge and args.judge_workers > 1:
+        print("HF judge does not support parallel judging; using --judge-workers 1.")
+        args.judge_workers = 1
+
+    def process_question(item: dict, idx: int):
         clause = item["clause"]
         q = item["question"]
         question_id = item["question_id"]
+        rng_local = random.Random(seed_for_question(question_id, args.seed))
 
         responses = []
         for model_id in model_ids:
@@ -490,12 +508,15 @@ def main() -> None:
                 raise ValueError(f"Missing response for model {model_id} on {question_id}")
             responses.append((model_id, response))
 
+        local_pref_records: List[dict] = []
+        local_output_records: List[dict] = []
+
         if args.mode == "listwise":
             rankings: List[List[str]] = []
             raw_judgments: List[dict] = []
             for judge_idx in range(args.num_judges):
                 order = responses[:]
-                rng.shuffle(order)
+                rng_local.shuffle(order)
                 labeled_answers = [(labels[i], order[i][1]) for i in range(len(order))]
                 label_to_model = {labels[i]: order[i][0] for i in range(len(order))}
                 attempt = 0
@@ -528,7 +549,7 @@ def main() -> None:
                     majority_winner = model_i
                 elif wins_j > wins_i:
                     majority_winner = model_j
-                preference_records.append(
+                local_pref_records.append(
                     {
                         "question_id": question_id,
                         "clause_id": item["clause_id"],
@@ -541,7 +562,7 @@ def main() -> None:
                     }
                 )
 
-            output_records.append(
+            local_output_records.append(
                 {
                     "idx": idx,
                     "question_id": question_id,
@@ -568,7 +589,7 @@ def main() -> None:
                 raw_judgments: List[dict] = []
                 for judge_idx in range(args.num_judges):
                     order = [(model_i, response_i), (model_j, response_j)]
-                    rng.shuffle(order)
+                    rng_local.shuffle(order)
                     label_to_model = {"A": order[0][0], "B": order[1][0]}
                     answer_a = order[0][1]
                     answer_b = order[1][1]
@@ -605,7 +626,7 @@ def main() -> None:
                 elif wins_j > wins_i:
                     majority_winner = model_j
 
-                preference_records.append(
+                local_pref_records.append(
                     {
                         "question_id": question_id,
                         "clause_id": item["clause_id"],
@@ -618,7 +639,7 @@ def main() -> None:
                     }
                 )
 
-                output_records.append(
+                local_output_records.append(
                     {
                         "idx": idx,
                         "question_id": question_id,
@@ -638,6 +659,23 @@ def main() -> None:
                         "judge_raw": raw_judgments,
                     }
                 )
+        return local_pref_records, local_output_records
+
+    if args.judge_workers > 1:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=args.judge_workers) as ex:
+            futures = {ex.submit(process_question, item, idx): idx for idx, item in enumerate(questions, 1)}
+            for fut in tqdm(concurrent.futures.as_completed(futures), total=len(futures), desc="Judging"):
+                pref, out = fut.result()
+                preference_records.extend(pref)
+                output_records.extend(out)
+    else:
+        for idx, item in enumerate(tqdm(questions, desc="Judging"), 1):
+            pref, out = process_question(item, idx)
+            preference_records.extend(pref)
+            output_records.extend(out)
+
+    preference_records.sort(key=lambda r: (r.get("question_id", ""), r.get("model_i", ""), r.get("model_j", "")))
+    output_records.sort(key=lambda r: (r.get("idx", 0), r.get("model_i", ""), r.get("model_j", "")))
 
     write_jsonl(args.output, output_records)
     write_jsonl(args.preferences_output, preference_records)

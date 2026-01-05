@@ -270,6 +270,7 @@ Optional flags for `scripts/evaluate_constitution.py`:
 - `--retry-backoff` (default: `2.0`)
 - `--system-prompt` (optional)
 - `--batch-size` (default: `1`, local model generation batching)
+- `--judge-workers` (default: `1`, parallel OpenAI judging)
 - `--stop-strings` (default: `\nUser:` `\nHuman:`)
 - `--seed` (default: `42`)
 
