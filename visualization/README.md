@@ -67,3 +67,33 @@ python visualization/clause_difficulty.py \
 Outputs:
 - `visualization/output/clause_difficulty.csv` (entropy/variance per clause)
 - `visualization/output/clause_difficulty.png`
+
+## Preference score plots (Bradley–Terry, Plackett–Luce, Borda, Copeland, Kemeny)
+
+This script plots scores from the ranking/score JSON files.
+
+Inputs:
+- `artifacts/evaluations/ranking_scores.json` (from `scripts/score_rankings.py`)
+- `artifacts/evaluations/bradley_terry_scores.json` (from `scripts/fit_bradley_terry.py`)
+
+Examples:
+```bash
+python visualization/plot_scores.py \
+  --input artifacts/evaluations/ranking_scores.json \
+  --method plackett-luce \
+  --output visualization/output/plackett_luce_scores.png
+```
+
+```bash
+python visualization/plot_scores.py \
+  --input artifacts/evaluations/ranking_scores.json \
+  --method borda \
+  --output visualization/output/borda_scores.png
+```
+
+```bash
+python visualization/plot_scores.py \
+  --input artifacts/evaluations/bradley_terry_scores.json \
+  --method bradley-terry \
+  --output visualization/output/bradley_terry_scores.png
+```
