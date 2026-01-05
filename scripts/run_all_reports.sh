@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+set -x
 
 LISTWISE_PATH="${LISTWISE_PATH:-artifacts/evaluations/listwise.jsonl}"
 PREFERENCES_PATH="${PREFERENCES_PATH:-artifacts/evaluations/preferences.jsonl}"
@@ -12,7 +13,9 @@ echo "Fitting Bradley-Terry (with bootstrap CIs)..."
 python scripts/fit_bradley_terry.py \
   --preferences "$PREFERENCES_PATH" \
   --output "$EVAL_DIR/bradley_terry_scores.json" \
-  --bootstrap-samples 500
+  --bootstrap-samples 500 \
+  --bootstrap-workers "${BOOTSTRAP_WORKERS:-12}" \
+  --verbose
 
 python visualization/plot_scores.py \
   --input "$EVAL_DIR/bradley_terry_scores.json" \
@@ -24,7 +27,9 @@ python scripts/score_rankings.py \
   --listwise "$LISTWISE_PATH" \
   --output "$EVAL_DIR/ranking_scores_plackett-luce.json" \
   --method plackett-luce \
-  --bootstrap-samples 500
+  --bootstrap-samples 500 \
+  --bootstrap-workers "${BOOTSTRAP_WORKERS:-12}" \
+  --verbose
 
 python visualization/plot_scores.py \
   --input "$EVAL_DIR/ranking_scores_plackett-luce.json" \
@@ -34,7 +39,8 @@ python visualization/plot_scores.py \
 python scripts/score_rankings.py \
   --listwise "$LISTWISE_PATH" \
   --output "$EVAL_DIR/ranking_scores_borda.json" \
-  --method borda
+  --method borda \
+  --verbose
 
 python visualization/plot_scores.py \
   --input "$EVAL_DIR/ranking_scores_borda.json" \
@@ -44,7 +50,8 @@ python visualization/plot_scores.py \
 python scripts/score_rankings.py \
   --listwise "$LISTWISE_PATH" \
   --output "$EVAL_DIR/ranking_scores_copeland.json" \
-  --method copeland
+  --method copeland \
+  --verbose
 
 python visualization/plot_scores.py \
   --input "$EVAL_DIR/ranking_scores_copeland.json" \
@@ -54,7 +61,8 @@ python visualization/plot_scores.py \
 python scripts/score_rankings.py \
   --listwise "$LISTWISE_PATH" \
   --output "$EVAL_DIR/ranking_scores_kemeny.json" \
-  --method kemeny
+  --method kemeny \
+  --verbose
 
 python visualization/plot_scores.py \
   --input "$EVAL_DIR/ranking_scores_kemeny.json" \

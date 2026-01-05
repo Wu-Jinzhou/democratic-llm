@@ -1,0 +1,64 @@
+{
+  "method": "copeland",
+  "models": [
+    "checkpoints/llama3.1-8b-adversary-hard",
+    "checkpoints/llama3.1-8b-adversary-soft",
+    "checkpoints/llama3.1-8b-full-prism",
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-us-rep",
+    "meta-llama/Llama-3.1-8B"
+  ],
+  "num_rankings": 15000,
+  "copeland": [
+    {
+      "model": "checkpoints/llama3.1-8b-hard-panel",
+      "wins": 47857.0,
+      "losses": 42143.0,
+      "copeland": 5714.0,
+      "win_rate": 0.5317444444444445
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-soft-panel",
+      "wins": 47290.0,
+      "losses": 42710.0,
+      "copeland": 4580.0,
+      "win_rate": 0.5254444444444445
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-full-prism",
+      "wins": 46671.0,
+      "losses": 43329.0,
+      "copeland": 3342.0,
+      "win_rate": 0.5185666666666666
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-adversary-soft",
+      "wins": 45518.0,
+      "losses": 44482.0,
+      "copeland": 1036.0,
+      "win_rate": 0.5057555555555555
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-us-rep",
+      "wins": 45080.0,
+      "losses": 44920.0,
+      "copeland": 160.0,
+      "win_rate": 0.5008888888888889
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-adversary-hard",
+      "wins": 43503.0,
+      "losses": 46497.0,
+      "copeland": -2994.0,
+      "win_rate": 0.48336666666666667
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "wins": 39081.0,
+      "losses": 50919.0,
+      "copeland": -11838.0,
+      "win_rate": 0.43423333333333336
+    }
+  ]
+}

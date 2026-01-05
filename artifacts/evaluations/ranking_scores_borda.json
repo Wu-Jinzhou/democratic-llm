@@ -1,0 +1,50 @@
+{
+  "method": "borda",
+  "models": [
+    "checkpoints/llama3.1-8b-adversary-hard",
+    "checkpoints/llama3.1-8b-adversary-soft",
+    "checkpoints/llama3.1-8b-full-prism",
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-us-rep",
+    "meta-llama/Llama-3.1-8B"
+  ],
+  "num_rankings": 15000,
+  "borda": [
+    {
+      "model": "checkpoints/llama3.1-8b-hard-panel",
+      "borda": 47857.0,
+      "borda_avg": 3.1904666666666666
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-soft-panel",
+      "borda": 47290.0,
+      "borda_avg": 3.1526666666666667
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-full-prism",
+      "borda": 46671.0,
+      "borda_avg": 3.1114
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-adversary-soft",
+      "borda": 45518.0,
+      "borda_avg": 3.0345333333333335
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-us-rep",
+      "borda": 45080.0,
+      "borda_avg": 3.005333333333333
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-adversary-hard",
+      "borda": 43503.0,
+      "borda_avg": 2.9002
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "borda": 39081.0,
+      "borda_avg": 2.6054
+    }
+  ]
+}

@@ -20,6 +20,7 @@ import string
 import time
 import hashlib
 import concurrent.futures
+from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List
 
@@ -340,12 +341,54 @@ def safe_model_id(model_id: str) -> str:
     return model_id.replace("/", "__").replace(":", "_")
 
 
-def write_jsonl(path: Path, records: List[dict]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        for rec in records:
-            f.write(json.dumps(rec, ensure_ascii=False))
-            f.write("\n")
+def append_jsonl(fp, records: List[dict]) -> None:
+    for rec in records:
+        fp.write(json.dumps(rec, ensure_ascii=False))
+        fp.write("\n")
+    fp.flush()
+
+
+def load_existing_state(
+    output_path: Path,
+    preferences_path: Path,
+    mode: str,
+) -> tuple[set, set, dict, dict]:
+    existing_questions: set[str] = set()
+    existing_pref_pairs: set[tuple[str, str, str]] = set()
+    existing_output_pairs: set[tuple[str, str, str]] = set()
+    pref_counts: dict[str, int] = defaultdict(int)
+    out_counts: dict[str, int] = defaultdict(int)
+
+    if preferences_path.exists():
+        with preferences_path.open("r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                rec = json.loads(line)
+                key = (rec["question_id"], rec["model_i"], rec["model_j"])
+                if key in existing_pref_pairs:
+                    continue
+                existing_pref_pairs.add(key)
+                pref_counts[rec["question_id"]] += 1
+
+    if output_path.exists():
+        with output_path.open("r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                rec = json.loads(line)
+                if mode == "listwise":
+                    existing_questions.add(rec["question_id"])
+                else:
+                    key = (rec["question_id"], rec["model_i"], rec["model_j"])
+                    if key in existing_output_pairs:
+                        continue
+                    existing_output_pairs.add(key)
+                    out_counts[rec["question_id"]] += 1
+
+    return existing_questions, existing_pref_pairs, pref_counts, out_counts
 
 
 def parse_args() -> argparse.Namespace:
@@ -486,14 +529,63 @@ def main() -> None:
                 client, args.judge_model, clause, q, answer_a, answer_b, max_tokens
             )
 
-    preference_records: List[dict] = []
-    output_records: List[dict] = []
     model_pairs = [(model_ids[i], model_ids[j]) for i in range(len(model_ids)) for j in range(i + 1, len(model_ids))]
     labels = label_sequence(len(model_ids))
 
     if args.use_hf_judge and args.judge_workers > 1:
         print("HF judge does not support parallel judging; using --judge-workers 1.")
         args.judge_workers = 1
+
+    existing_questions, existing_pref_pairs, pref_counts, out_counts = load_existing_state(
+        args.output, args.preferences_output, args.mode
+    )
+    expected_pairs = len(model_pairs)
+    pending: List[tuple[int, dict]] = []
+    for idx, item in enumerate(questions, 1):
+        qid = item["question_id"]
+        if args.mode == "listwise":
+            if qid in existing_questions:
+                continue
+        else:
+            if pref_counts.get(qid, 0) >= expected_pairs and out_counts.get(qid, 0) >= expected_pairs:
+                continue
+        pending.append((idx, item))
+
+    if not pending:
+        print("No pending judgements to run; outputs already complete.")
+        return
+
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.preferences_output.parent.mkdir(parents=True, exist_ok=True)
+
+    def filter_new_preferences(records: List[dict]) -> List[dict]:
+        new_records: List[dict] = []
+        for rec in records:
+            key = (rec["question_id"], rec["model_i"], rec["model_j"])
+            if key in existing_pref_pairs:
+                continue
+            existing_pref_pairs.add(key)
+            pref_counts[rec["question_id"]] += 1
+            new_records.append(rec)
+        return new_records
+
+    def filter_new_outputs(records: List[dict]) -> List[dict]:
+        new_records: List[dict] = []
+        for rec in records:
+            if args.mode == "listwise":
+                qid = rec["question_id"]
+                if qid in existing_questions:
+                    continue
+                existing_questions.add(qid)
+                new_records.append(rec)
+            else:
+                key = (rec["question_id"], rec["model_i"], rec["model_j"])
+                if key in existing_output_pairs:
+                    continue
+                existing_output_pairs.add(key)
+                out_counts[rec["question_id"]] += 1
+                new_records.append(rec)
+        return new_records
 
     def process_question(item: dict, idx: int):
         clause = item["clause"]
@@ -661,24 +753,31 @@ def main() -> None:
                 )
         return local_pref_records, local_output_records
 
-    if args.judge_workers > 1:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=args.judge_workers) as ex:
-            futures = {ex.submit(process_question, item, idx): idx for idx, item in enumerate(questions, 1)}
-            for fut in tqdm(concurrent.futures.as_completed(futures), total=len(futures), desc="Judging"):
-                pref, out = fut.result()
-                preference_records.extend(pref)
-                output_records.extend(out)
-    else:
-        for idx, item in enumerate(tqdm(questions, desc="Judging"), 1):
-            pref, out = process_question(item, idx)
-            preference_records.extend(pref)
-            output_records.extend(out)
-
-    preference_records.sort(key=lambda r: (r.get("question_id", ""), r.get("model_i", ""), r.get("model_j", "")))
-    output_records.sort(key=lambda r: (r.get("idx", 0), r.get("model_i", ""), r.get("model_j", "")))
-
-    write_jsonl(args.output, output_records)
-    write_jsonl(args.preferences_output, preference_records)
+    with args.output.open("a", encoding="utf-8") as out_f, args.preferences_output.open(
+        "a", encoding="utf-8"
+    ) as pref_f:
+        if args.judge_workers > 1:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=args.judge_workers) as ex:
+                futures = {ex.submit(process_question, item, idx): idx for idx, item in pending}
+                for fut in tqdm(
+                    concurrent.futures.as_completed(futures), total=len(futures), desc="Judging"
+                ):
+                    pref, out = fut.result()
+                    new_pref = filter_new_preferences(pref)
+                    new_out = filter_new_outputs(out)
+                    if new_pref:
+                        append_jsonl(pref_f, new_pref)
+                    if new_out:
+                        append_jsonl(out_f, new_out)
+        else:
+            for idx, item in tqdm(pending, desc="Judging"):
+                pref, out = process_question(item, idx)
+                new_pref = filter_new_preferences(pref)
+                new_out = filter_new_outputs(out)
+                if new_pref:
+                    append_jsonl(pref_f, new_pref)
+                if new_out:
+                    append_jsonl(out_f, new_out)
 
 
 if __name__ == "__main__":

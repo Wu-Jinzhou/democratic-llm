@@ -1,0 +1,26 @@
+{
+  "method": "kemeny",
+  "models": [
+    "checkpoints/llama3.1-8b-adversary-hard",
+    "checkpoints/llama3.1-8b-adversary-soft",
+    "checkpoints/llama3.1-8b-full-prism",
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-us-rep",
+    "meta-llama/Llama-3.1-8B"
+  ],
+  "num_rankings": 15000,
+  "kemeny": {
+    "method": "bruteforce",
+    "ranking": [
+      "checkpoints/llama3.1-8b-soft-panel",
+      "checkpoints/llama3.1-8b-hard-panel",
+      "checkpoints/llama3.1-8b-full-prism",
+      "checkpoints/llama3.1-8b-adversary-soft",
+      "checkpoints/llama3.1-8b-us-rep",
+      "checkpoints/llama3.1-8b-adversary-hard",
+      "meta-llama/Llama-3.1-8B"
+    ],
+    "score": 167755.0
+  }
+}
