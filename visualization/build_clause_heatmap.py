@@ -15,6 +15,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from style import apply_style, style_axes
+
 
 def load_preferences(path: Path) -> List[dict]:
     records = []
@@ -93,6 +95,7 @@ def save_heatmap(
     path: Path,
     cmap: str,
 ) -> None:
+    apply_style(grid=False)
     width = max(8, 0.8 * len(models))
     height = max(6, 0.25 * len(clauses))
     fig, ax = plt.subplots(figsize=(width, height))
@@ -105,6 +108,7 @@ def save_heatmap(
     ax.set_ylabel("Clause")
     ax.set_title("Clause-by-model normalized preference scores")
     fig.colorbar(im, ax=ax, fraction=0.03, pad=0.02)
+    style_axes(ax, grid=False)
     fig.tight_layout()
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path, dpi=200)

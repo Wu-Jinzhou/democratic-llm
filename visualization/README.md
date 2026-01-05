@@ -2,6 +2,9 @@
 
 This folder contains scripts for generating descriptive plots from evaluation outputs.
 
+All plots use a shared publication-style theme (sans-serif fonts, clean axes).
+If you want to tweak it, edit `visualization/style.py`.
+
 ## Clause-by-model heatmap
 
 Build a heatmap where rows are clauses and columns are models. Each row is normalized to sum to 1.
@@ -97,3 +100,19 @@ python visualization/plot_scores.py \
   --method bradley-terry \
   --output visualization/output/bradley_terry_scores.png
 ```
+
+## Mallows pairwise heatmap
+
+Plot a heatmap of pairwise win probabilities implied by the Mallows fit:
+each cell is \(P(\text{row} \succ \text{col})\).
+
+```bash
+python visualization/plot_mallows_pairwise.py \
+  --input artifacts/evaluations/ranking_scores_mallows.json \
+  --output visualization/output/mallows_pairwise.png \
+  --order consensus
+```
+
+Options:
+- `--order consensus|models|alpha` to control model ordering
+- `--annotate` to write probabilities inside each cell
