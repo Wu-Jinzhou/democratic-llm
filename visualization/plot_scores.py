@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+import matplotlib.cm as cm
 
 from style import apply_style, style_axes
 
@@ -144,7 +146,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    apply_style()
+    apply_style(grid=False)
     data = json.loads(args.input.read_text())
     method = _infer_method(data) if args.method == "auto" else args.method
     _, models, values, intervals = _extract_results(data, method)
@@ -153,10 +155,19 @@ def main() -> None:
 
     fig, ax = plt.subplots(figsize=(10, max(4, 0.5 * len(models))))
     y = list(range(len(models)))
-    if any(err_low) or any(err_high):
-        ax.barh(y, values, xerr=[err_low, err_high], capsize=4)
+    vmin = min(values) if values else 0.0
+    vmax = max(values) if values else 1.0
+    if vmin < 0 < vmax:
+        norm = mcolors.TwoSlopeNorm(vcenter=0.0, vmin=vmin, vmax=vmax)
+        cmap = cm.get_cmap("coolwarm")
     else:
-        ax.barh(y, values)
+        norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
+        cmap = cm.get_cmap("magma")
+    colors = cmap(norm(values))
+    if any(err_low) or any(err_high):
+        ax.barh(y, values, xerr=[err_low, err_high], capsize=4, color=colors, edgecolor="none")
+    else:
+        ax.barh(y, values, color=colors, edgecolor="none")
     ax.set_yticks(y)
     ax.set_yticklabels(models)
     ax.invert_yaxis()
@@ -187,7 +198,7 @@ def main() -> None:
     else:
         title = args.title or f"{method.replace('-', ' ').title()} scores"
     ax.set_title(title)
-    style_axes(ax)
+    style_axes(ax, grid=False)
     fig.tight_layout()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(args.output, dpi=200)

@@ -15,6 +15,8 @@ from typing import Dict, List, Tuple
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+import matplotlib.cm as cm
 
 from style import apply_style, style_axes
 
@@ -111,14 +113,24 @@ def plot_metric(
     clauses = plot_df["clause_id"].astype(str).tolist()
     values = plot_df[metric].astype(float).tolist()
     height = max(6, 0.25 * len(clauses))
-    apply_style()
+    apply_style(grid=False)
     fig, ax = plt.subplots(figsize=(10, height))
-    ax.barh(clauses, values)
+    vmin = min(values) if values else 0.0
+    vmax = max(values) if values else 1.0
+    norm = mcolors.PowerNorm(gamma=0.7, vmin=vmin, vmax=max(vmax, vmin + 1e-6))
+    cmap = cm.get_cmap("magma")
+    colors = cmap(norm(values))
+    ax.barh(clauses, values, color=colors, edgecolor="none")
     ax.invert_yaxis()
     ax.set_xlabel(metric.replace("_", " ").title())
     ax.set_ylabel("Clause")
     ax.set_title("Clause difficulty / disagreement")
-    style_axes(ax)
+    style_axes(ax, grid=False)
+    ax.tick_params(axis="y", labelsize=8)
+    sm = cm.ScalarMappable(norm=norm, cmap=cmap)
+    sm.set_array([])
+    cbar = fig.colorbar(sm, ax=ax, fraction=0.03, pad=0.02)
+    cbar.set_label(metric.replace("_", " ").title())
     fig.tight_layout()
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path, dpi=200)

@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from style import apply_style, style_axes
+from style import apply_style, style_axes, categorical_palette
 
 
 def load_preferences(path: Path) -> List[dict]:
@@ -105,21 +105,43 @@ def plot_distribution(
     plot_type: str,
     path: Path,
 ) -> None:
-    apply_style()
+    apply_style(grid=False)
     data = [matrix[:, i] for i in range(len(models))]
+    colors = categorical_palette(len(models))
     width = max(8, 0.8 * len(models))
     fig, ax = plt.subplots(figsize=(width, 6))
     if plot_type == "violin":
-        ax.violinplot(data, showmeans=True, showextrema=True)
+        parts = ax.violinplot(data, showmeans=True, showextrema=True)
+        for body, color in zip(parts["bodies"], colors):
+            body.set_facecolor(color)
+            body.set_edgecolor("#222222")
+            body.set_alpha(0.7)
+        for key in ("cmeans", "cmins", "cmaxes", "cbars"):
+            if key in parts:
+                parts[key].set_color("#222222")
+                parts[key].set_linewidth(0.8)
         ax.set_xticks(range(1, len(models) + 1))
         ax.set_xticklabels(models, rotation=45, ha="right")
     else:
-        ax.boxplot(data, labels=models, showfliers=True)
+        box = ax.boxplot(
+            data,
+            labels=models,
+            showfliers=True,
+            patch_artist=True,
+            boxprops={"linewidth": 0.8, "edgecolor": "#222222"},
+            medianprops={"color": "#222222", "linewidth": 1.2},
+            whiskerprops={"color": "#222222", "linewidth": 0.8},
+            capprops={"color": "#222222", "linewidth": 0.8},
+        )
+        for patch, color in zip(box["boxes"], colors):
+            patch.set_facecolor(color)
+            patch.set_alpha(0.7)
         ax.tick_params(axis="x", rotation=45)
     ax.set_ylabel("Per-clause win share (row-normalized)")
     ax.set_xlabel("Model")
     ax.set_title("Model consistency across clauses")
-    style_axes(ax)
+    style_axes(ax, grid=False)
+    ax.tick_params(axis="x", labelsize=9)
     fig.tight_layout()
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path, dpi=200)

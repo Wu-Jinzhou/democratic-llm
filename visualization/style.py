@@ -7,7 +7,21 @@ from __future__ import annotations
 import matplotlib as mpl
 
 
-def apply_style(grid: bool = True) -> None:
+_CATEGORY_PALETTE = [
+    "#4C78A8",
+    "#F58518",
+    "#54A24B",
+    "#E45756",
+    "#72B7B2",
+    "#EECA3B",
+    "#B279A2",
+    "#FF9DA6",
+    "#9D755D",
+    "#BAB0AC",
+]
+
+
+def apply_style(grid: bool = False) -> None:
     mpl.rcParams.update(
         {
             "font.family": "sans-serif",
@@ -31,14 +45,22 @@ def apply_style(grid: bool = True) -> None:
             "figure.dpi": 200,
             "savefig.dpi": 300,
             "savefig.bbox": "tight",
+            "axes.prop_cycle": mpl.cycler(color=_CATEGORY_PALETTE),
         }
     )
 
 
-def style_axes(ax, grid: bool = True) -> None:
+def style_axes(ax, grid: bool = False) -> None:
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
     if grid:
         ax.grid(True, axis="y", alpha=0.4)
     else:
         ax.grid(False)
+    ax.tick_params(axis="both", which="both", length=3, color="#222222")
+
+
+def categorical_palette(n: int) -> list[str]:
+    if n <= 0:
+        return []
+    return [_CATEGORY_PALETTE[i % len(_CATEGORY_PALETTE)] for i in range(n)]

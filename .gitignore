@@ -16,3 +16,5 @@ gurobi.lic
 run_train.sh
 runpodctl
 paper/
+private_tools/*
+run_everything.sh

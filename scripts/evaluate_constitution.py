@@ -421,6 +421,18 @@ def parse_args() -> argparse.Namespace:
         help="Parallel workers for judging (OpenAI judge only).",
     )
     parser.add_argument(
+        "--shuffle-order",
+        action="store_true",
+        default=True,
+        help="Randomize model order when presenting to the judge (default).",
+    )
+    parser.add_argument(
+        "--no-shuffle-order",
+        action="store_false",
+        dest="shuffle_order",
+        help="Disable random order; present models in fixed order.",
+    )
+    parser.add_argument(
         "--stop-strings",
         nargs="*",
         default=["\nUser:", "\nHuman:"],
@@ -606,9 +618,12 @@ def main() -> None:
         if args.mode == "listwise":
             rankings: List[List[str]] = []
             raw_judgments: List[dict] = []
+            judge_orders: List[List[str]] = []
+            judge_label_maps: List[dict] = []
             for judge_idx in range(args.num_judges):
                 order = responses[:]
-                rng_local.shuffle(order)
+                if args.shuffle_order:
+                    rng_local.shuffle(order)
                 labeled_answers = [(labels[i], order[i][1]) for i in range(len(order))]
                 label_to_model = {labels[i]: order[i][0] for i in range(len(order))}
                 attempt = 0
@@ -619,6 +634,8 @@ def main() -> None:
                         ranking_models = [label_to_model[label] for label in ranking_labels]
                         rankings.append(ranking_models)
                         raw_judgments.append(payload)
+                        judge_orders.append([model_id for model_id, _ in order])
+                        judge_label_maps.append(label_to_model)
                         break
                     except Exception as exc:
                         attempt += 1
@@ -665,6 +682,8 @@ def main() -> None:
                     "responses": {model_id: resp for model_id, resp in responses},
                     "rankings": rankings,
                     "judge_raw": raw_judgments,
+                    "judge_orders": judge_orders,
+                    "judge_label_to_model": judge_label_maps,
                 }
             )
         else:
@@ -685,6 +704,7 @@ def main() -> None:
                     label_to_model = {"A": order[0][0], "B": order[1][0]}
                     answer_a = order[0][1]
                     answer_b = order[1][1]
+                    order_models = [order[0][0], order[1][0]]
                     attempt = 0
                     while True:
                         try:
@@ -701,6 +721,7 @@ def main() -> None:
                                 {
                                     "winner_label": winner_label,
                                     "label_to_model": label_to_model,
+                                    "presentation_order": order_models,
                                     "payload": payload,
                                 }
                             )

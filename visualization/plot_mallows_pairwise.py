@@ -14,6 +14,7 @@ from typing import List
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 from style import apply_style, style_axes
 
@@ -38,7 +39,7 @@ def parse_args() -> argparse.Namespace:
         default="consensus",
         help="Row/column order for models.",
     )
-    parser.add_argument("--cmap", default="viridis")
+    parser.add_argument("--cmap", default="RdBu_r")
     parser.add_argument("--annotate", action="store_true", help="Write values inside cells.")
     return parser.parse_args()
 
@@ -70,7 +71,8 @@ def main() -> None:
             values[i, j] = float(matrix.get(mi, {}).get(mj, np.nan))
 
     fig, ax = plt.subplots(figsize=(10, max(4, 0.5 * n)))
-    im = ax.imshow(values, vmin=0.0, vmax=1.0, cmap=args.cmap)
+    norm = mcolors.TwoSlopeNorm(vcenter=0.5, vmin=0.0, vmax=1.0)
+    im = ax.imshow(values, cmap=args.cmap, norm=norm)
     ax.set_xticks(range(n))
     ax.set_yticks(range(n))
     ax.set_xticklabels(models, rotation=45, ha="right")
@@ -82,14 +84,16 @@ def main() -> None:
     if isinstance(phi, (int, float)):
         title += f" (phi={phi:.3f})"
     ax.set_title(title)
-    fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+    cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+    cbar.set_label("P(row ≻ col)")
     style_axes(ax, grid=False)
 
     if args.annotate:
         for i in range(n):
             for j in range(n):
                 val = values[i, j]
-                ax.text(j, i, f"{val:.2f}", ha="center", va="center", fontsize=7, color="white")
+                text_color = "white" if val >= 0.7 or val <= 0.3 else "black"
+                ax.text(j, i, f"{val:.2f}", ha="center", va="center", fontsize=7, color=text_color)
 
     fig.tight_layout()
     args.output.parent.mkdir(parents=True, exist_ok=True)

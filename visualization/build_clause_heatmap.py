@@ -14,6 +14,7 @@ from typing import Dict, List, Tuple
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 from style import apply_style, style_axes
 
@@ -99,7 +100,8 @@ def save_heatmap(
     width = max(8, 0.8 * len(models))
     height = max(6, 0.25 * len(clauses))
     fig, ax = plt.subplots(figsize=(width, height))
-    im = ax.imshow(matrix, aspect="auto", cmap=cmap, vmin=0, vmax=1)
+    norm = mcolors.PowerNorm(gamma=0.6, vmin=0.0, vmax=1.0)
+    im = ax.imshow(matrix, aspect="auto", cmap=cmap, norm=norm)
     ax.set_xticks(range(len(models)))
     ax.set_xticklabels(models, rotation=45, ha="right")
     ax.set_yticks(range(len(clauses)))
@@ -107,7 +109,10 @@ def save_heatmap(
     ax.set_xlabel("Model")
     ax.set_ylabel("Clause")
     ax.set_title("Clause-by-model normalized preference scores")
-    fig.colorbar(im, ax=ax, fraction=0.03, pad=0.02)
+    cbar = fig.colorbar(im, ax=ax, fraction=0.03, pad=0.02)
+    cbar.set_label("Row-normalized win share")
+    ax.tick_params(axis="x", length=0, labelsize=9)
+    ax.tick_params(axis="y", length=0, labelsize=8)
     style_axes(ax, grid=False)
     fig.tight_layout()
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -126,7 +131,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=Path("visualization/output"))
     parser.add_argument("--heatmap-name", default="clause_model_heatmap.png")
     parser.add_argument("--csv-name", default="clause_model_scores.csv")
-    parser.add_argument("--cmap", default="viridis")
+    parser.add_argument("--cmap", default="magma")
     return parser.parse_args()
 
 

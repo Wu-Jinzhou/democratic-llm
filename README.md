@@ -272,6 +272,8 @@ Optional flags for `scripts/evaluate_constitution.py`:
 - `--batch-size` (default: `1`, local model generation batching)
 - `--judge-workers` (default: `1`, parallel OpenAI judging)
 - `--stop-strings` (default: `\nUser:` `\nHuman:`)
+- `--shuffle-order` (randomize model order when judging; default on)
+- `--no-shuffle-order` (disable randomization)
 - `--seed` (default: `42`)
 
 ```bash
@@ -324,6 +326,22 @@ Methods: `plackett-luce`, `borda`, `copeland`, `kemeny`.
 For Kemeny ILP, install `mip` (optional; otherwise uses a heuristic for larger model counts):
 ```bash
 pip install mip
+```
+
+### Ablation / diagnostics
+
+Order bias (does presentation order affect ranking?):
+```bash
+python scripts/ablations/ablation_order_bias.py \
+  --listwise artifacts/evaluations/listwise.jsonl \
+  --output artifacts/evaluations/order_bias.json
+```
+
+Verbosity bias (is response length driving preference?):
+```bash
+python scripts/ablations/ablation_verbosity_bias.py \
+  --listwise artifacts/evaluations/listwise.jsonl \
+  --output artifacts/evaluations/verbosity_bias.json
 ```
 
 ### Notebook: compare checkpoint responses
