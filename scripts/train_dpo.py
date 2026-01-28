@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
@@ -20,6 +21,12 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from trl import DPOTrainer, DPOConfig
 from trl.trainer.dpo_trainer import DataCollatorForPreference
 from tqdm import tqdm
+
+# Ensure repo-local imports work even when executed from another working directory.
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SCRIPT_DIR.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.append(str(REPO_ROOT))
 
 from dempo.utils import DEFAULT_CHAT_TEMPLATE
 
