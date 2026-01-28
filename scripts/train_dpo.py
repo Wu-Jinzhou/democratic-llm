@@ -42,6 +42,7 @@ class TrainConfig:
     gradient_accumulation_steps: int = 8
     learning_rate: float = 5e-6
     num_train_epochs: float = 2.0
+    num_train_steps: int = -1
     beta: float = 0.1
     weight_decay: float = 0.0
     eval_ratio: float = 0.02
@@ -112,6 +113,19 @@ class WeightedDPOTrainer(DPOTrainer):
         )
         if self._batch_weights is not None:
             weight_tensor = self._batch_weights.to(losses.device).float()
+            # Per-batch self-normalization: use weighted *mean* instead of weighted sum so update
+            # magnitudes remain comparable across training variants.
+            denom = weight_tensor.sum()
+            count = torch.tensor(
+                weight_tensor.numel(),
+                device=weight_tensor.device,
+                dtype=weight_tensor.dtype,
+            )
+            if getattr(self, "accelerator", None) is not None:
+                denom = self.accelerator.reduce(denom, reduction="sum")
+                count = self.accelerator.reduce(count, reduction="sum")
+            mean_w = denom / count.clamp_min(1.0)
+            weight_tensor = weight_tensor / mean_w.clamp_min(1e-12)
             losses = losses * weight_tensor
         return losses, chosen_rewards, rejected_rewards
 
@@ -235,6 +249,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--gradient-accumulation-steps", type=int, default=8)
     parser.add_argument("--learning-rate", type=float, default=5e-6)
     parser.add_argument("--num-train-epochs", type=float, default=2.0)
+    parser.add_argument(
+        "--num-train-steps",
+        type=int,
+        default=-1,
+        help="If > 0, train for exactly this many optimizer steps (overrides --num-train-epochs).",
+    )
+    parser.add_argument(
+        "--max-steps",
+        dest="num_train_steps",
+        type=int,
+        default=argparse.SUPPRESS,
+        help=argparse.SUPPRESS,
+    )
     parser.add_argument("--beta", type=float, default=0.1)
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--eval-ratio", type=float, default=0.02)
@@ -315,6 +342,7 @@ def main() -> None:
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         learning_rate=args.learning_rate,
         num_train_epochs=args.num_train_epochs,
+        num_train_steps=args.num_train_steps,
         beta=args.beta,
         weight_decay=args.weight_decay,
         eval_ratio=args.eval_ratio,
@@ -361,6 +389,11 @@ def main() -> None:
 
     train_ds, eval_ds = build_datasets(cfg.dataset_path, cfg.eval_ratio, cfg.seed)
     print(f"Loaded dataset: {len(train_ds)} train rows" + (f", {len(eval_ds)} eval rows" if eval_ds else ""))
+    if cfg.num_train_steps and cfg.num_train_steps > 0:
+        print(
+            f"Using num_train_steps={cfg.num_train_steps}; "
+            "--num-train-epochs will be ignored by Trainer."
+        )
     report_to = [] if cfg.report_to == "none" else [cfg.report_to]
     eval_strategy = cfg.eval_strategy if eval_ds is not None else "no"
     dpo_kwargs = dict(
@@ -388,6 +421,8 @@ def main() -> None:
         remove_unused_columns=False,
         save_strategy=cfg.save_strategy,
     )
+    if cfg.num_train_steps and cfg.num_train_steps > 0:
+        dpo_kwargs["max_steps"] = cfg.num_train_steps
     if cfg.max_length is not None:
         dpo_kwargs["max_length"] = cfg.max_length
     if cfg.max_prompt_length is not None:

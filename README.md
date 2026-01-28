@@ -181,6 +181,7 @@ Optional flags for `scripts/train_dpo.py`:
 - `--gradient-accumulation-steps` (default: `8`)
 - `--learning-rate` (default: `5e-6`)
 - `--num-train-epochs` (default: `2`)
+- `--num-train-steps` (default: `-1`; if > 0, overrides `--num-train-epochs`)
 - `--beta` (default: `0.1`)
 - `--weight-decay` (default: `0.0`)
 - `--eval-ratio` (default: `0.02`)
