@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
@@ -20,7 +21,6 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from trl import DPOTrainer, DPOConfig
 from trl.trainer.dpo_trainer import DataCollatorForPreference
-from tqdm import tqdm
 
 # Ensure repo-local imports work even when executed from another working directory.
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -56,7 +56,7 @@ class TrainConfig:
     report_to: str = "wandb"
     logging_dir: Path = Path("logs")
     run_name: Optional[str] = None
-    wandb_project: Optional[str] = None
+    wandb_project: Optional[str] = "DemPO"
     wandb_entity: Optional[str] = None
     wandb_group: Optional[str] = None
 
@@ -80,6 +80,7 @@ class WeightedDPOTrainer(DPOTrainer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._batch_weights = None
+        self._ensure_length_column()
 
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
         weights = inputs.pop("weight", None)
@@ -113,6 +114,61 @@ class WeightedDPOTrainer(DPOTrainer):
             losses = losses * weight_tensor
         return losses, chosen_rewards, rejected_rewards
 
+    def _ensure_length_column(self) -> None:
+        """
+        Transformers' LengthGroupedSampler expects either:
+        - a dataset column named `args.length_column_name`, or
+        - examples with an `input_ids` field (to infer lengths).
+
+        TRL's DPO preprocessing produces `prompt_input_ids`, `chosen_input_ids`,
+        and `rejected_input_ids` instead of `input_ids`, so we attach a `length`
+        column *after* TRL tokenization to make `group_by_length=True` work.
+        """
+
+        if not getattr(self.args, "group_by_length", False):
+            return
+
+        length_col = getattr(self.args, "length_column_name", "length")
+
+        def _add_length(ds, name: str):
+            if ds is None:
+                return ds
+            if not hasattr(ds, "column_names") or not hasattr(ds, "add_column"):
+                return ds
+            if length_col in ds.column_names:
+                return ds
+
+            cols = set(ds.column_names)
+            if {"prompt_input_ids", "chosen_input_ids", "rejected_input_ids"}.issubset(cols):
+                prompts = ds["prompt_input_ids"]
+                chosen = ds["chosen_input_ids"]
+                rejected = ds["rejected_input_ids"]
+                lengths = [
+                    int(len(p) + max(len(c), len(r)))
+                    for p, c, r in zip(prompts, chosen, rejected)
+                ]
+            elif "input_ids" in cols:
+                lengths = [int(len(ids)) for ids in ds["input_ids"]]
+            else:
+                print(
+                    f"Warning: group_by_length=True but couldn't infer lengths for {name}; "
+                    f"missing expected token columns: {ds.column_names}"
+                )
+                return ds
+
+            try:
+                return ds.add_column(length_col, lengths)
+            except Exception as exc:
+                print(f"Warning: failed to add '{length_col}' column for {name}: {exc}")
+                return ds
+
+        self.train_dataset = _add_length(getattr(self, "train_dataset", None), "train_dataset")
+        eval_ds = getattr(self, "eval_dataset", None)
+        if isinstance(eval_ds, dict):
+            self.eval_dataset = {k: _add_length(v, f"eval_dataset[{k}]") for k, v in eval_ds.items()}
+        else:
+            self.eval_dataset = _add_length(eval_ds, "eval_dataset")
+
 
 def load_tokenizer(model_id: str, token: Optional[str]):
     tok = AutoTokenizer.from_pretrained(model_id, token=token)
@@ -137,7 +193,11 @@ def load_model(
     )
 
 
-def build_datasets(path: Path, eval_ratio: float, seed: int):
+def build_datasets(
+    path: Path,
+    eval_ratio: float,
+    seed: int,
+):
     dataset = datasets.load_dataset("json", data_files=str(path))["train"]
     dataset = dataset.shuffle(seed=seed)
     if eval_ratio and eval_ratio > 0:
@@ -196,7 +256,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--report-to", default="wandb", help="Logging backend (wandb, tensorboard, or none).")
     parser.add_argument("--logging-dir", type=Path, default=Path("logs"))
     parser.add_argument("--run-name", default=None)
-    parser.add_argument("--wandb-project", default=None)
+    parser.add_argument("--wandb-project", default=os.environ.get("WANDB_PROJECT", "DemPO"))
     parser.add_argument("--wandb-entity", default=None)
     parser.add_argument("--wandb-group", default=None)
     parser.add_argument("--dataloader-num-workers", type=int, default=0)
@@ -229,7 +289,8 @@ def main() -> None:
     if args.run_name is None:
         dataset_tag = args.dataset.stem
         model_tag = args.model_id.split("/")[-1]
-        args.run_name = f"dpo-{model_tag}-{dataset_tag}"
+        ts = time.strftime("%Y%m%d-%H%M%S")
+        args.run_name = f"dpo-{model_tag}-{dataset_tag}-{ts}"
     cfg = TrainConfig(
         model_id=args.model_id,
         output_dir=args.output_dir,
@@ -306,6 +367,9 @@ def main() -> None:
         run_name=cfg.run_name,
         beta=cfg.beta,
         dataloader_num_workers=dataloader_num_workers,
+        group_by_length=True,
+        length_column_name="length",
+        remove_unused_columns=False,
         save_strategy=cfg.save_strategy,
     )
     if cfg.max_length is not None:
@@ -320,9 +384,8 @@ def main() -> None:
         dpo_kwargs["dataloader_prefetch_factor"] = dataloader_prefetch_factor
     training_args = DPOConfig(**dpo_kwargs)
 
-    trainer_cls = WeightedDPOTrainer if "weight" in train_ds.column_names else DPOTrainer
     data_collator = WeightedDataCollatorForPreference(pad_token_id=tokenizer.pad_token_id)
-    trainer = trainer_cls(
+    trainer = WeightedDPOTrainer(
         model=model,
         ref_model=ref_model,
         args=training_args,
