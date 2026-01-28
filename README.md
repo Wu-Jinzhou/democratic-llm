@@ -177,7 +177,7 @@ Optional flags for `scripts/train_dpo.py`:
 - `--device-map` (default: `auto`, use `none` for distributed)
 - `--output-dir` (default: `checkpoints/llama3.1-8b-dpo`)
 - `--hf-token` (default: `HF_TOKEN`)
-- `--per-device-train-batch-size` (default: `1`)
+- `--per-device-batch-size` (default: `1`, also used for eval)
 - `--gradient-accumulation-steps` (default: `8`)
 - `--learning-rate` (default: `5e-6`)
 - `--num-train-epochs` (default: `2`)
@@ -185,7 +185,8 @@ Optional flags for `scripts/train_dpo.py`:
 - `--weight-decay` (default: `0.0`)
 - `--eval-ratio` (default: `0.02`)
 - `--eval-strategy` (default: `steps`, choices: `no`, `steps`, `epoch`)
-- `--eval-steps` (default: `100`)
+- `--eval-steps` (default: `500`)
+- `--logging-steps` (default: `500`)
 - `--save-strategy` (default: `no`, choices: `no`, `steps`, `epoch`)
 - `--save-steps` (default: `500`, only used with `--save-strategy steps`)
 - `--save-total-limit` (optional, max checkpoints to keep)
@@ -207,7 +208,7 @@ python scripts/train_dpo.py \
   --model-id meta-llama/Llama-3.1-8B \
   --output-dir checkpoints/llama3.1-8b-hard \
   --hf-token $HF_TOKEN \
-  --per-device-train-batch-size 1 \
+  --per-device-batch-size 1 \
   --gradient-accumulation-steps 8
 ```
 
@@ -227,7 +228,7 @@ accelerate launch scripts/train_dpo.py \
   --dataset artifacts/data/soft_panel.jsonl \
   --model-id meta-llama/Llama-3.1-8B \
   --output-dir checkpoints/llama3.1-8b-soft \
-  --per-device-train-batch-size 1 \
+  --per-device-batch-size 1 \
   --gradient-accumulation-steps 8
 ```
 

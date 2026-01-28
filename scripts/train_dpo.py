@@ -38,7 +38,7 @@ class TrainConfig:
     dataset_path: Path
     hf_token: Optional[str]
     device_map: Optional[str] = "auto"
-    per_device_train_batch_size: int = 1
+    per_device_batch_size: int = 1
     gradient_accumulation_steps: int = 8
     learning_rate: float = 5e-6
     num_train_epochs: float = 2.0
@@ -46,7 +46,8 @@ class TrainConfig:
     weight_decay: float = 0.0
     eval_ratio: float = 0.02
     eval_strategy: str = "steps"
-    eval_steps: int = 100
+    eval_steps: int = 500
+    logging_steps: int = 500
     save_strategy: str = "no"
     save_steps: int = 500
     save_total_limit: Optional[int] = None
@@ -218,7 +219,19 @@ def parse_args() -> argparse.Namespace:
         "When running distributed, 'auto' is treated as 'none' so FSDP/DDP can shard.",
     )
     parser.add_argument("--hf-token", default=os.environ.get("HF_TOKEN"))
-    parser.add_argument("--per-device-train-batch-size", type=int, default=1)
+    parser.add_argument(
+        "--per-device-batch-size",
+        type=int,
+        default=1,
+        help="Per-device batch size. Used for both training and evaluation.",
+    )
+    parser.add_argument(
+        "--per-device-train-batch-size",
+        dest="per_device_batch_size",
+        type=int,
+        default=argparse.SUPPRESS,
+        help=argparse.SUPPRESS,
+    )
     parser.add_argument("--gradient-accumulation-steps", type=int, default=8)
     parser.add_argument("--learning-rate", type=float, default=5e-6)
     parser.add_argument("--num-train-epochs", type=float, default=2.0)
@@ -231,7 +244,8 @@ def parse_args() -> argparse.Namespace:
         default="steps",
         help="Evaluation strategy (ignored if eval_ratio=0).",
     )
-    parser.add_argument("--eval-steps", type=int, default=100)
+    parser.add_argument("--eval-steps", type=int, default=500)
+    parser.add_argument("--logging-steps", type=int, default=500, help="Log metrics every N steps.")
     parser.add_argument(
         "--save-strategy",
         choices=["no", "steps", "epoch"],
@@ -297,7 +311,7 @@ def main() -> None:
         dataset_path=args.dataset,
         hf_token=args.hf_token,
         device_map=device_map,
-        per_device_train_batch_size=args.per_device_train_batch_size,
+        per_device_batch_size=args.per_device_batch_size,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         learning_rate=args.learning_rate,
         num_train_epochs=args.num_train_epochs,
@@ -306,6 +320,7 @@ def main() -> None:
         eval_ratio=args.eval_ratio,
         eval_strategy=args.eval_strategy,
         eval_steps=args.eval_steps,
+        logging_steps=args.logging_steps,
         save_strategy=args.save_strategy,
         save_steps=args.save_steps,
         save_total_limit=args.save_total_limit,
@@ -350,11 +365,12 @@ def main() -> None:
     eval_strategy = cfg.eval_strategy if eval_ds is not None else "no"
     dpo_kwargs = dict(
         output_dir=str(cfg.output_dir),
-        per_device_train_batch_size=cfg.per_device_train_batch_size,
+        per_device_train_batch_size=cfg.per_device_batch_size,
+        per_device_eval_batch_size=cfg.per_device_batch_size,
         gradient_accumulation_steps=cfg.gradient_accumulation_steps,
         learning_rate=cfg.learning_rate,
         num_train_epochs=cfg.num_train_epochs,
-        logging_steps=10,
+        logging_steps=cfg.logging_steps,
         eval_strategy=eval_strategy,
         eval_steps=cfg.eval_steps,
         warmup_ratio=0.1,
