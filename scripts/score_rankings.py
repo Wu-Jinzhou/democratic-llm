@@ -32,6 +32,13 @@ _MAL_BOOT_KEMENY_BRUTE_MAX: int = 8
 _MAL_BOOT_KEMENY_ILP_MAX: int = 12
 _MAL_BOOT_KEMENY_ILP_SECONDS: int = 60
 
+_KEM_BOOT_RANKINGS: List[List[str]] | None = None
+_KEM_BOOT_MODELS: List[str] | None = None
+_KEM_BOOT_METHOD: str = "auto"
+_KEM_BOOT_BRUTE_MAX: int = 8
+_KEM_BOOT_ILP_MAX: int = 12
+_KEM_BOOT_ILP_SECONDS: int = 60
+
 
 def load_listwise(path: Path) -> List[dict]:
     records = []
@@ -142,6 +149,102 @@ def copeland_scores(w: np.ndarray, models: List[str]) -> List[dict]:
     return results
 
 
+def _rank_ids(rankings: List[List[str]], models: List[str]) -> np.ndarray:
+    idx = {m: i for i, m in enumerate(models)}
+    n = len(rankings)
+    m = len(models)
+    out = np.empty((n, m), dtype=np.int16)
+    for r_i, ranking in enumerate(rankings):
+        for pos, model in enumerate(ranking):
+            out[r_i, pos] = idx[model]
+    return out
+
+
+def _position_contrib(rank_ids: np.ndarray, weights: np.ndarray) -> np.ndarray:
+    """Return [n_rankings, n_models] contribution matrix from per-position weights."""
+    n_rankings, n_models = rank_ids.shape
+    contrib = np.zeros((n_rankings, n_models), dtype=np.float32)
+    rows = np.arange(n_rankings)
+    for pos, w in enumerate(weights.tolist()):
+        contrib[rows, rank_ids[:, pos]] = float(w)
+    return contrib
+
+
+def bootstrap_borda_and_copeland(
+    rankings: List[List[str]],
+    models: List[str],
+    num_samples: int,
+    seed: int,
+    alpha: float,
+    verbose: bool = False,
+) -> Dict[str, dict]:
+    """
+    Bootstrap (ranking-level resampling) for:
+    - Borda average score
+    - Copeland (wins - losses) and win_rate
+
+    Returns dict keyed by model id with summary stats.
+    """
+    if num_samples <= 0:
+        return {}
+    if not rankings:
+        return {}
+    m = len(models)
+    if m <= 1:
+        return {}
+
+    rank_ids = _rank_ids(rankings, models)
+    n_rankings = rank_ids.shape[0]
+    pos = np.arange(m, dtype=np.float32)
+
+    borda_pos = (m - 1 - pos).astype(np.float32)            # wins vs others
+    copeland_pos = (m - 1 - 2 * pos).astype(np.float32)     # wins - losses
+
+    borda_contrib = _position_contrib(rank_ids, borda_pos)       # [N, m]
+    copeland_contrib = _position_contrib(rank_ids, copeland_pos) # [N, m]
+
+    rng = np.random.default_rng(seed)
+    borda_samples = np.empty((num_samples, m), dtype=np.float32)
+    copeland_samples = np.empty((num_samples, m), dtype=np.float32)
+    win_rate_samples = np.empty((num_samples, m), dtype=np.float32)
+
+    iterator = range(num_samples)
+    if verbose:
+        iterator = tqdm(iterator, desc="Borda/Copeland bootstrap", unit="sample")
+    denom = float(n_rankings) * float(m - 1)
+    for s in iterator:
+        idx = rng.integers(0, n_rankings, size=n_rankings)
+        wins = borda_contrib[idx].sum(axis=0)  # wins count across resampled rankings
+        cop = copeland_contrib[idx].sum(axis=0)
+        borda_samples[s, :] = wins / float(n_rankings)
+        copeland_samples[s, :] = cop
+        win_rate_samples[s, :] = wins / denom
+
+    q_lo = alpha / 2
+    q_hi = 1 - alpha / 2
+
+    stats: Dict[str, dict] = {}
+    for i, model in enumerate(models):
+        b = borda_samples[:, i]
+        c = copeland_samples[:, i]
+        wr = win_rate_samples[:, i]
+        stats[model] = {
+            "borda_avg_mean": float(b.mean()),
+            "borda_avg_std": float(b.std()),
+            "borda_avg_ci_lower": float(np.quantile(b, q_lo)),
+            "borda_avg_ci_upper": float(np.quantile(b, q_hi)),
+            "copeland_mean": float(c.mean()),
+            "copeland_std": float(c.std()),
+            "copeland_ci_lower": float(np.quantile(c, q_lo)),
+            "copeland_ci_upper": float(np.quantile(c, q_hi)),
+            "win_rate_mean": float(wr.mean()),
+            "win_rate_std": float(wr.std()),
+            "win_rate_ci_lower": float(np.quantile(wr, q_lo)),
+            "win_rate_ci_upper": float(np.quantile(wr, q_hi)),
+        }
+    return stats
+
+
 def kendall_distance(ranking: List[str], reference: List[str]) -> int:
     pos_rank = {m: i for i, m in enumerate(ranking)}
     pos_ref = {m: i for i, m in enumerate(reference)}
@@ -244,6 +347,17 @@ def fit_plackett_luce(
     verbose: bool = False,
     log_every: int = 50,
 ) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Fit a Plackett–Luce model via an MM / iterative scaling update.
+
+    For each item i:
+      w_i^{new} = c_i / d_i
+    where c_i is the number of times i is chosen (appears in the ranking),
+    and d_i = sum_{ranks} sum_{stages t where i is in the remaining set} 1 / sum_{j in remaining} w_j.
+
+    Note: d_i must accrue contributions for *all* items still available at each stage,
+    not just the winner at that stage.
+    """
     n = len(models)
     idx = {m: i for i, m in enumerate(models)}
     w = np.ones(n, dtype=float)
@@ -256,7 +370,7 @@ def fit_plackett_luce(
             for t, i in enumerate(ids):
                 count[i] += 1.0
                 denom_sum = w[ids[t:]].sum()
-                denom[i] += 1.0 / max(denom_sum, 1e-12)
+                denom[ids[t:]] += 1.0 / max(denom_sum, 1e-12)
         for i in range(n):
             if denom[i] > 0:
                 w[i] = count[i] / denom[i]
@@ -361,6 +475,44 @@ def _init_mallows_bootstrap(
     _MAL_BOOT_KEMENY_BRUTE_MAX = kemeny_bruteforce_max
     _MAL_BOOT_KEMENY_ILP_MAX = kemeny_ilp_max
     _MAL_BOOT_KEMENY_ILP_SECONDS = kemeny_ilp_max_seconds
+
+
+def _init_kemeny_bootstrap(
+    rankings: List[List[str]],
+    models: List[str],
+    method: str,
+    kemeny_bruteforce_max: int,
+    kemeny_ilp_max: int,
+    kemeny_ilp_max_seconds: int,
+) -> None:
+    global _KEM_BOOT_RANKINGS, _KEM_BOOT_MODELS, _KEM_BOOT_METHOD
+    global _KEM_BOOT_BRUTE_MAX, _KEM_BOOT_ILP_MAX, _KEM_BOOT_ILP_SECONDS
+    _KEM_BOOT_RANKINGS = rankings
+    _KEM_BOOT_MODELS = models
+    _KEM_BOOT_METHOD = method
+    _KEM_BOOT_BRUTE_MAX = kemeny_bruteforce_max
+    _KEM_BOOT_ILP_MAX = kemeny_ilp_max
+    _KEM_BOOT_ILP_SECONDS = kemeny_ilp_max_seconds
+
+
+def _kemeny_bootstrap_worker(args: Tuple[int, int, int]) -> List[str]:
+    sample_id, seed, n_rankings = args
+    rankings = _KEM_BOOT_RANKINGS
+    models = _KEM_BOOT_MODELS
+    if rankings is None or models is None:
+        raise RuntimeError("Kemeny bootstrap worker not initialized.")
+    rng = np.random.default_rng(seed + (sample_id * 1000003))
+    sample_idx = rng.integers(0, n_rankings, size=n_rankings)
+    sample = [rankings[i] for i in sample_idx]
+    consensus, _ = compute_consensus(
+        sample,
+        models,
+        _KEM_BOOT_METHOD,
+        _KEM_BOOT_BRUTE_MAX,
+        _KEM_BOOT_ILP_MAX,
+        _KEM_BOOT_ILP_SECONDS,
+    )
+    return consensus
 
 
 def _mallows_bootstrap_worker(args: Tuple[int, int, int]) -> List[str]:
@@ -532,17 +684,19 @@ def mallows_pairwise_probabilities(
             # simple insertion model sampling for Kendall Mallows
             perm = [consensus[0]]
             for t in range(1, m):
-                # insertion position distribution proportional to exp(-phi * k)
+                # Sample the number of inversions k ~ proportional to exp(-phi * k), then insert at position (t - k).
+                # k=0 keeps the item at the end (closest to consensus); larger k moves it earlier (more inversions).
                 weights = [math.exp(-phi * k) for k in range(t + 1)]
                 total = sum(weights)
                 r = rng.random() * total
                 c = 0.0
-                pos = 0
+                inv = 0
                 for k, w in enumerate(weights):
                     c += w
                     if r <= c:
-                        pos = k
+                        inv = k
                         break
+                pos = t - inv
                 perm.insert(pos, consensus[t])
             pos_map = {m: i for i, m in enumerate(perm)}
             for i in range(m):
@@ -643,6 +797,11 @@ def main() -> None:
         "drop_models": args.drop_models,
         "drop_skipped": drop_skipped,
     }
+    if args.bootstrap_samples > 0 and args.method in {"borda", "copeland", "kemeny", "plackett-luce"}:
+        output["bootstrap_samples"] = args.bootstrap_samples
+        output["bootstrap_seed"] = args.bootstrap_seed
+        output["bootstrap_workers"] = args.bootstrap_workers
+        output["bootstrap_alpha"] = args.bootstrap_alpha
 
     if args.method == "plackett-luce":
         pl_scores, pl_abilities = fit_plackett_luce(
@@ -697,12 +856,36 @@ def main() -> None:
     elif args.method == "borda":
         if args.verbose:
             print("[Borda] scoring rankings")
-        output["borda"] = borda_scores(rankings, models)
+        borda = borda_scores(rankings, models)
+        if args.bootstrap_samples > 0:
+            stats = bootstrap_borda_and_copeland(
+                rankings,
+                models,
+                num_samples=args.bootstrap_samples,
+                seed=args.bootstrap_seed,
+                alpha=args.bootstrap_alpha,
+                verbose=args.verbose,
+            )
+            for rec in borda:
+                rec.update(stats.get(rec["model"], {}))
+        output["borda"] = borda
     elif args.method == "copeland":
         if args.verbose:
             print("[Copeland] scoring rankings")
         w = pairwise_counts(rankings, models)
-        output["copeland"] = copeland_scores(w, models)
+        copeland = copeland_scores(w, models)
+        if args.bootstrap_samples > 0:
+            stats = bootstrap_borda_and_copeland(
+                rankings,
+                models,
+                num_samples=args.bootstrap_samples,
+                seed=args.bootstrap_seed,
+                alpha=args.bootstrap_alpha,
+                verbose=args.verbose,
+            )
+            for rec in copeland:
+                rec.update(stats.get(rec["model"], {}))
+        output["copeland"] = copeland
     elif args.method == "kemeny":
         w = pairwise_counts(rankings, models)
         n = len(models)
@@ -729,6 +912,66 @@ def main() -> None:
             "ranking": [models[i] for i in order],
             "score": float(score),
         }
+        if args.bootstrap_samples > 0:
+            if args.verbose:
+                print(f"[Kemeny] bootstrap samples={args.bootstrap_samples}")
+            reference = output["kemeny"]["ranking"]
+            counts = {m: np.zeros(len(models), dtype=float) for m in models}
+            exact_matches = 0
+            if args.bootstrap_workers <= 1:
+                _init_kemeny_bootstrap(
+                    rankings,
+                    models,
+                    method,
+                    args.kemeny_bruteforce_max,
+                    args.kemeny_ilp_max,
+                    args.kemeny_ilp_max_seconds,
+                )
+                iterator = range(args.bootstrap_samples)
+                if args.verbose:
+                    iterator = tqdm(iterator, desc="Kemeny bootstrap", unit="sample")
+                for s in iterator:
+                    cons = _kemeny_bootstrap_worker((s, args.bootstrap_seed, len(rankings)))
+                    if cons == reference:
+                        exact_matches += 1
+                    for pos, m in enumerate(cons):
+                        counts[m][pos] += 1
+            else:
+                with concurrent.futures.ProcessPoolExecutor(
+                    max_workers=args.bootstrap_workers,
+                    initializer=_init_kemeny_bootstrap,
+                    initargs=(
+                        rankings,
+                        models,
+                        method,
+                        args.kemeny_bruteforce_max,
+                        args.kemeny_ilp_max,
+                        args.kemeny_ilp_max_seconds,
+                    ),
+                ) as ex:
+                    iterator = ex.map(
+                        _kemeny_bootstrap_worker,
+                        [(s, args.bootstrap_seed, len(rankings)) for s in range(args.bootstrap_samples)],
+                    )
+                    if args.verbose:
+                        iterator = tqdm(iterator, total=args.bootstrap_samples, desc="Kemeny bootstrap", unit="sample")
+                    for cons in iterator:
+                        if cons == reference:
+                            exact_matches += 1
+                        for pos, m in enumerate(cons):
+                            counts[m][pos] += 1
+
+            rank_probabilities = {
+                m: [float(counts[m][i] / args.bootstrap_samples) for i in range(len(models))]
+                for m in models
+            }
+            output["kemeny"]["bootstrap"] = {
+                "samples": args.bootstrap_samples,
+                "seed": args.bootstrap_seed,
+                "workers": args.bootstrap_workers,
+                "exact_match_rate": exact_matches / max(args.bootstrap_samples, 1),
+                "rank_probabilities": rank_probabilities,
+            }
     elif args.method == "mallows":
         rng = random.Random(args.mallows_seed)
         indices = list(range(len(rankings)))

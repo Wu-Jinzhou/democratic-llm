@@ -209,10 +209,12 @@ def main() -> None:
             stat, min_eig, max_eig = hausman_stat(diff, v_diff)
             try:
                 from scipy.stats import chi2  # type: ignore
-
-                p_value = float(chi2.sf(stat, df))
-            except Exception:
-                p_value = None
+            except Exception as exc:
+                raise ImportError(
+                    "SciPy is required to compute chi-square p-values for the Hausman–McFadden test. "
+                    "Install it with: pip install scipy"
+                ) from exc
+            p_value = float(chi2.sf(stat, df))
         else:
             v_diff = np.zeros_like(np.outer(diff, diff))
             stat = None

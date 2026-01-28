@@ -116,3 +116,71 @@ python visualization/plot_mallows_pairwise.py \
 Options:
 - `--order consensus|models|alpha` to control model ordering
 - `--annotate` to write probabilities inside each cell
+
+## Additional plots
+
+Top-1 win rate per model:
+```bash
+python visualization/top1_win_rate.py \
+  --listwise artifacts/evaluations/listwise.jsonl \
+  --output-dir visualization/output
+```
+
+Top-k win rate per model (stacked):
+```bash
+python visualization/topk_win_rate.py \
+  --listwise artifacts/evaluations/listwise.jsonl \
+  --k-list 1 2 3 \
+  --output-dir visualization/output
+```
+
+Pairwise win-rate heatmap from preferences:
+```bash
+python visualization/pairwise_winrate_heatmap.py \
+  --preferences artifacts/evaluations/preferences.jsonl \
+  --output-dir visualization/output
+```
+
+Rank distribution heatmap (model vs rank position):
+```bash
+python visualization/rank_distribution_heatmap.py \
+  --listwise artifacts/evaluations/listwise.jsonl \
+  --preferences artifacts/evaluations/preferences.jsonl \
+  --output-dir visualization/output
+```
+
+Clause-level leader (top model per clause):
+```bash
+python visualization/clause_leader_heatmap.py \
+  --preferences artifacts/evaluations/preferences.jsonl \
+  --output-dir visualization/output
+```
+
+Win-share trajectory across clauses:
+```bash
+python visualization/win_share_trajectory.py \
+  --preferences artifacts/evaluations/preferences.jsonl \
+  --output-dir visualization/output
+```
+
+Top-1 margin distribution (decisiveness):
+```bash
+python visualization/margin_distribution.py \
+  --listwise artifacts/evaluations/listwise.jsonl \
+  --output-dir visualization/output
+```
+
+Judge agreement (entropy + majority margin):
+```bash
+python visualization/judge_agreement.py \
+  --listwise artifacts/evaluations/listwise.jsonl \
+  --output-dir visualization/output
+```
+
+Model vs baseline deltas (row-normalized win share):
+```bash
+python visualization/model_vs_baseline_delta.py \
+  --preferences artifacts/evaluations/preferences.jsonl \
+  --baseline-models checkpoints/llama3.1-8b-full-prism meta-llama/Llama-3.1-8B \
+  --output-dir visualization/output
+```

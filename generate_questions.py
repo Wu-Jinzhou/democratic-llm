@@ -53,6 +53,16 @@ def load_clauses(path: Path) -> List[Clause]:
     return clauses
 
 
+def _decode_unicode_escapes(text: str) -> str:
+    """Convert literal \\uXXXX sequences into unicode characters."""
+    if "\\u" not in text and "\\U" not in text and "\\x" not in text:
+        return text
+    try:
+        return text.encode("utf-8").decode("unicode_escape")
+    except Exception:
+        return text
+
+
 def build_client(api_key: str | None = None, base_url: str | None = None) -> OpenAI:
     """Create a reusable OpenAI client instance."""
     key = api_key or os.environ.get("OPENAI_API_KEY")
@@ -122,7 +132,7 @@ def request_questions(
                 else:
                     continue
                 if text:
-                    cleaned.append(text)
+                    cleaned.append(_decode_unicode_escapes(text))
 
             if len(cleaned) < n_questions:
                 raise ValueError(
@@ -170,7 +180,7 @@ def write_clause_file(
         "questions": list(questions),
         "question_model": model,
     }
-    path.write_text(json.dumps(payload, ensure_ascii=True, indent=2), encoding="utf-8")
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return path
 
 

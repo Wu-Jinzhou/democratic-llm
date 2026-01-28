@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Build a clause-by-model heatmap from preference JSONL.
-Each clause row is normalized to sum to 1 across models.
+Plot per-clause win-share deltas vs baseline models.
 """
 from __future__ import annotations
 
@@ -36,6 +35,16 @@ def _clause_key(value) -> str:
     return str(value)
 
 
+def sort_clause_ids(ids: List[str]) -> List[str]:
+    def key(value: str):
+        try:
+            return (0, int(value))
+        except ValueError:
+            return (1, value)
+
+    return sorted(ids, key=key)
+
+
 def aggregate_wins(records: List[dict]) -> Tuple[Dict[str, Dict[str, float]], List[str]]:
     wins_by_clause: Dict[str, Dict[str, float]] = defaultdict(lambda: defaultdict(float))
     models = set()
@@ -54,16 +63,6 @@ def aggregate_wins(records: List[dict]) -> Tuple[Dict[str, Dict[str, float]], Li
     return wins_by_clause, sorted(models)
 
 
-def sort_clause_ids(ids: List[str]) -> List[str]:
-    def key(value: str):
-        try:
-            return (0, int(value))
-        except ValueError:
-            return (1, value)
-
-    return sorted(ids, key=key)
-
-
 def build_matrix(
     wins_by_clause: Dict[str, Dict[str, float]], models: List[str]
 ) -> Tuple[List[str], np.ndarray]:
@@ -77,43 +76,31 @@ def build_matrix(
     return clauses, normalized
 
 
-def save_csv(
-    clauses: List[str],
-    models: List[str],
-    matrix: np.ndarray,
-    path: Path,
-) -> None:
+def save_csv(clauses: List[str], models: List[str], matrix: np.ndarray, path: Path) -> None:
     df = pd.DataFrame(matrix, index=clauses, columns=models)
     df.index.name = "clause_id"
     path.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(path)
 
 
-def save_heatmap(
-    clauses: List[str],
-    models: List[str],
-    matrix: np.ndarray,
-    path: Path,
-    cmap: str,
-) -> None:
+def plot(clauses: List[str], models: List[str], matrix: np.ndarray, path: Path) -> None:
     apply_style(grid=False)
-    width = max(8, 0.8 * len(models))
-    height = max(6, 0.25 * len(clauses))
-    fig, ax = plt.subplots(figsize=(width, height))
-    norm = mcolors.PowerNorm(gamma=0.6, vmin=0.0, vmax=1.0)
-    cmap_obj = truncated_cmap(cmap, minval=0.35, maxval=0.95)
-    im = ax.imshow(matrix, aspect="auto", cmap=cmap_obj, norm=norm)
+    vmax = np.nanmax(np.abs(matrix)) if matrix.size else 1.0
+    norm = mcolors.TwoSlopeNorm(vcenter=0.0, vmin=-vmax, vmax=vmax)
+    cmap = truncated_cmap("Blues", minval=0.35, maxval=0.95)
+    fig, ax = plt.subplots(figsize=(10, max(6, 0.25 * len(clauses))))
+    im = ax.imshow(matrix, aspect="auto", cmap=cmap, norm=norm)
     ax.set_xticks(range(len(models)))
     ax.set_xticklabels(display_model_names(models), rotation=45, ha="right")
     ax.set_yticks(range(len(clauses)))
     ax.set_yticklabels(clauses)
     ax.set_xlabel("Model")
     ax.set_ylabel("Clause")
-    ax.set_title("Clause-by-model normalized preference scores")
+    ax.set_title("Win-share delta vs baseline (row-normalized)")
     cbar = fig.colorbar(im, ax=ax, fraction=0.03, pad=0.02)
-    cbar.set_label("Row-normalized win share")
-    ax.tick_params(axis="x", length=0, labelsize=9)
-    ax.tick_params(axis="y", length=0, labelsize=8)
+    cbar.set_label("Delta win share")
+    ax.tick_params(axis="x", labelsize=9, length=0)
+    ax.tick_params(axis="y", labelsize=8, length=0)
     style_axes(ax, grid=False)
     fig.tight_layout()
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -122,17 +109,18 @@ def save_heatmap(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Create a clause-by-model heatmap from preference data.")
+    parser = argparse.ArgumentParser(description="Plot model vs baseline win-share deltas.")
     parser.add_argument(
         "--preferences",
         type=Path,
         default=Path("artifacts/evaluations/preferences.jsonl"),
-        help="Pairwise preference JSONL from judging.",
+        help="Pairwise preference JSONL.",
     )
+    parser.add_argument("--baseline-models", nargs="+", required=True)
+    parser.add_argument("--compare-models", nargs="+", default=None)
     parser.add_argument("--output-dir", type=Path, default=Path("visualization/output"))
-    parser.add_argument("--heatmap-name", default="clause_model_heatmap.png")
-    parser.add_argument("--csv-name", default="clause_model_scores.csv")
-    parser.add_argument("--cmap", default="Blues")
+    parser.add_argument("--plot-name", default="model_vs_baseline_delta.png")
+    parser.add_argument("--csv-name", default="model_vs_baseline_delta.csv")
     return parser.parse_args()
 
 
@@ -142,17 +130,27 @@ def main() -> None:
     wins_by_clause, models = aggregate_wins(records)
     if not wins_by_clause:
         raise RuntimeError("No clause data found in preferences.")
-    if not models:
-        raise RuntimeError("No models found in preferences.")
     clauses, matrix = build_matrix(wins_by_clause, models)
 
-    output_dir = args.output_dir
-    csv_path = output_dir / args.csv_name
-    heatmap_path = output_dir / args.heatmap_name
-    save_csv(clauses, models, matrix, csv_path)
-    save_heatmap(clauses, models, matrix, heatmap_path, args.cmap)
-    print(f"Wrote CSV to {csv_path}")
-    print(f"Wrote heatmap to {heatmap_path}")
+    baseline = args.baseline_models
+    baseline_idx = [models.index(m) for m in baseline if m in models]
+    if not baseline_idx:
+        raise ValueError("No baseline models found in data.")
+
+    compare_models = args.compare_models
+    if compare_models is None:
+        compare_models = [m for m in models if m not in baseline]
+
+    compare_idx = [models.index(m) for m in compare_models if m in models]
+    if not compare_idx:
+        raise ValueError("No comparison models found in data.")
+
+    baseline_avg = np.mean(matrix[:, baseline_idx], axis=1, keepdims=True)
+    delta = matrix[:, compare_idx] - baseline_avg
+
+    save_csv(clauses, [models[i] for i in compare_idx], delta, args.output_dir / args.csv_name)
+    plot(clauses, [models[i] for i in compare_idx], delta, args.output_dir / args.plot_name)
+    print(f"Wrote plot to {args.output_dir / args.plot_name}")
 
 
 if __name__ == "__main__":

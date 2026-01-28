@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from style import apply_style, style_axes, categorical_palette
+from style import apply_style, style_axes, single_hue_palette, display_model_names
 
 
 def load_preferences(path: Path) -> List[dict]:
@@ -107,7 +107,7 @@ def plot_distribution(
 ) -> None:
     apply_style(grid=False)
     data = [matrix[:, i] for i in range(len(models))]
-    colors = categorical_palette(len(models))
+    colors = single_hue_palette(len(models), cmap_name="Blues", start=0.45, end=0.9)
     width = max(8, 0.8 * len(models))
     fig, ax = plt.subplots(figsize=(width, 6))
     if plot_type == "violin":
@@ -121,11 +121,11 @@ def plot_distribution(
                 parts[key].set_color("#222222")
                 parts[key].set_linewidth(0.8)
         ax.set_xticks(range(1, len(models) + 1))
-        ax.set_xticklabels(models, rotation=45, ha="right")
+        ax.set_xticklabels(display_model_names(models), rotation=45, ha="right")
     else:
         box = ax.boxplot(
             data,
-            labels=models,
+            labels=display_model_names(models),
             showfliers=True,
             patch_artist=True,
             boxprops={"linewidth": 0.8, "edgecolor": "#222222"},

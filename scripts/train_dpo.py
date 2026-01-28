@@ -9,7 +9,6 @@ Requires:
 from __future__ import annotations
 
 import argparse
-import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -22,16 +21,7 @@ from trl import DPOTrainer, DPOConfig
 from trl.trainer.dpo_trainer import DataCollatorForPreference
 from tqdm import tqdm
 
-DEFAULT_CHAT_TEMPLATE = (
-    "{% for message in messages %}"
-    "{% if message['role'] == 'system' %}System: {{ message['content'] }}\n"
-    "{% elif message['role'] == 'user' %}User: {{ message['content'] }}\n"
-    "{% elif message['role'] == 'assistant' %}Assistant: {{ message['content'] }}\n"
-    "{% elif message['role'] == 'tool' %}Tool: {{ message['content'] }}\n"
-    "{% endif %}"
-    "{% endfor %}"
-    "{% if add_generation_prompt %}Assistant: {% endif %}"
-)
+from dempo.utils import DEFAULT_CHAT_TEMPLATE
 
 
 @dataclass
@@ -40,7 +30,6 @@ class TrainConfig:
     output_dir: Path
     dataset_path: Path
     hf_token: Optional[str]
-    attn_implementation: Optional[str] = None
     device_map: Optional[str] = "auto"
     per_device_train_batch_size: int = 1
     gradient_accumulation_steps: int = 8
@@ -54,6 +43,8 @@ class TrainConfig:
     save_strategy: str = "no"
     save_steps: int = 500
     save_total_limit: Optional[int] = None
+    max_length: Optional[int] = None
+    max_prompt_length: Optional[int] = None
     seed: int = 42
     report_to: str = "wandb"
     logging_dir: Path = Path("logs")
@@ -61,11 +52,6 @@ class TrainConfig:
     wandb_project: Optional[str] = None
     wandb_entity: Optional[str] = None
     wandb_group: Optional[str] = None
-    fsdp: Optional[str] = None
-    fsdp_min_num_params: Optional[int] = None
-    fsdp_transformer_layer_cls_to_wrap: Optional[str] = None
-    fsdp_use_orig_params: bool = False
-    fsdp_config: Optional[dict] = None
 
 
 class WeightedDataCollatorForPreference(DataCollatorForPreference):
@@ -117,8 +103,7 @@ class WeightedDPOTrainer(DPOTrainer):
         )
         if self._batch_weights is not None:
             weight_tensor = self._batch_weights.to(losses.device).float()
-            scale = weight_tensor.numel() / weight_tensor.sum().clamp(min=1e-8)
-            losses = losses * weight_tensor * scale
+            losses = losses * weight_tensor
         return losses, chosen_rewards, rejected_rewards
 
 
@@ -135,7 +120,6 @@ def load_tokenizer(model_id: str, token: Optional[str]):
 def load_model(
     model_id: str,
     token: Optional[str],
-    attn_implementation: Optional[str] = None,
     device_map: Optional[str] = "auto",
 ):
     return AutoModelForCausalLM.from_pretrained(
@@ -143,7 +127,6 @@ def load_model(
         token=token,
         dtype=torch.bfloat16,
         device_map=device_map,
-        attn_implementation=attn_implementation,
     )
 
 
@@ -157,7 +140,7 @@ def build_datasets(path: Path, eval_ratio: float, seed: int):
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Train Llama-3.1-8B with DPO on PRISM-prepared data.")
+    parser = argparse.ArgumentParser(description="Train Llama-3.1-8B (base) with DPO on PRISM-prepared data.")
     parser.add_argument("--dataset", type=Path, required=True, help="JSONL with prompt/chosen/rejected (+ optional weight).")
     parser.add_argument("--output-dir", type=Path, default=Path("checkpoints/llama3.1-8b-dpo"))
     parser.add_argument("--model-id", default="meta-llama/Llama-3.1-8B")
@@ -166,11 +149,6 @@ def parse_args() -> argparse.Namespace:
         default="auto",
         help="Device map for model loading ('auto', 'balanced', or 'none'). "
         "When running distributed, 'auto' is treated as 'none' so FSDP/DDP can shard.",
-    )
-    parser.add_argument(
-        "--attn-implementation",
-        default=None,
-        help="Attention backend (e.g., flash_attention_2). Requires compatible install.",
     )
     parser.add_argument("--hf-token", default=os.environ.get("HF_TOKEN"))
     parser.add_argument("--per-device-train-batch-size", type=int, default=1)
@@ -195,6 +173,18 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--save-steps", type=int, default=500, help="Save checkpoint every N steps.")
     parser.add_argument("--save-total-limit", type=int, default=None, help="Max number of checkpoints to keep.")
+    parser.add_argument(
+        "--max-length",
+        type=int,
+        default=None,
+        help="Optional max sequence length. If omitted, uses model max_position_embeddings.",
+    )
+    parser.add_argument(
+        "--max-prompt-length",
+        type=int,
+        default=None,
+        help="Optional max prompt length. If omitted, uses max_length.",
+    )
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--report-to", default="wandb", help="Logging backend (wandb, tensorboard, or none).")
     parser.add_argument("--logging-dir", type=Path, default=Path("logs"))
@@ -202,15 +192,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--wandb-project", default=None)
     parser.add_argument("--wandb-entity", default=None)
     parser.add_argument("--wandb-group", default=None)
-    parser.add_argument(
-        "--fsdp",
-        default=None,
-        help="Enable FSDP, e.g. 'full_shard auto_wrap'. Use with accelerate/torchrun.",
-    )
-    parser.add_argument("--fsdp-min-num-params", type=int, default=None)
-    parser.add_argument("--fsdp-transformer-layer-cls-to-wrap", default=None)
-    parser.add_argument("--fsdp-use-orig-params", action="store_true")
-    parser.add_argument("--fsdp-config", type=Path, default=None, help="JSON file with extra fsdp_config settings.")
     parser.add_argument("--dataloader-num-workers", type=int, default=0)
     parser.add_argument("--dataloader-prefetch-factor", type=int, default=None)
     return parser.parse_args()
@@ -229,16 +210,24 @@ def resolve_device_map(requested: str | None, distributed: bool) -> Optional[str
 
 def main() -> None:
     args = parse_args()
+    if "instruct" in args.model_id.lower():
+        print(
+            "Warning: model-id looks like an instruction-tuned checkpoint. "
+            "This paper's experiments use the base model; results may not be comparable."
+        )
     distributed = int(os.environ.get("WORLD_SIZE", "1")) > 1 or os.environ.get("LOCAL_RANK") is not None
     device_map = resolve_device_map(args.device_map, distributed)
     if distributed and args.device_map.lower() == "auto":
         print("Distributed run detected; disabling device_map so FSDP/DDP can manage sharding.")
+    if args.run_name is None:
+        dataset_tag = args.dataset.stem
+        model_tag = args.model_id.split("/")[-1]
+        args.run_name = f"dpo-{model_tag}-{dataset_tag}"
     cfg = TrainConfig(
         model_id=args.model_id,
         output_dir=args.output_dir,
         dataset_path=args.dataset,
         hf_token=args.hf_token,
-        attn_implementation=args.attn_implementation,
         device_map=device_map,
         per_device_train_batch_size=args.per_device_train_batch_size,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
@@ -252,6 +241,8 @@ def main() -> None:
         save_strategy=args.save_strategy,
         save_steps=args.save_steps,
         save_total_limit=args.save_total_limit,
+        max_length=args.max_length,
+        max_prompt_length=args.max_prompt_length,
         seed=args.seed,
         report_to=args.report_to,
         logging_dir=args.logging_dir,
@@ -259,15 +250,9 @@ def main() -> None:
         wandb_project=args.wandb_project,
         wandb_entity=args.wandb_entity,
         wandb_group=args.wandb_group,
-        fsdp=args.fsdp,
-        fsdp_min_num_params=args.fsdp_min_num_params,
-        fsdp_transformer_layer_cls_to_wrap=args.fsdp_transformer_layer_cls_to_wrap,
-        fsdp_use_orig_params=args.fsdp_use_orig_params,
     )
     dataloader_num_workers = args.dataloader_num_workers
     dataloader_prefetch_factor = args.dataloader_prefetch_factor
-    if args.fsdp_config:
-        cfg.fsdp_config = json.loads(args.fsdp_config.read_text())
 
     if cfg.report_to == "wandb":
         try:
@@ -282,8 +267,14 @@ def main() -> None:
             os.environ["WANDB_RUN_GROUP"] = cfg.wandb_group
 
     tokenizer = load_tokenizer(cfg.model_id, cfg.hf_token)
-    model = load_model(cfg.model_id, cfg.hf_token, cfg.attn_implementation, cfg.device_map)
-    ref_model = load_model(cfg.model_id, cfg.hf_token, cfg.attn_implementation, cfg.device_map)
+    model = load_model(cfg.model_id, cfg.hf_token, cfg.device_map)
+    ref_model = load_model(cfg.model_id, cfg.hf_token, cfg.device_map)
+
+    model_max = getattr(model.config, "max_position_embeddings", None)
+    if cfg.max_length is None and isinstance(model_max, int) and model_max > 0:
+        cfg.max_length = model_max
+    if cfg.max_prompt_length is None and cfg.max_length is not None:
+        cfg.max_prompt_length = cfg.max_length
 
     train_ds, eval_ds = build_datasets(cfg.dataset_path, cfg.eval_ratio, cfg.seed)
     print(f"Loaded dataset: {len(train_ds)} train rows" + (f", {len(eval_ds)} eval rows" if eval_ds else ""))
@@ -301,8 +292,6 @@ def main() -> None:
         warmup_ratio=0.1,
         bf16=True,
         gradient_checkpointing=True,
-        max_length=2048,
-        max_prompt_length=1024,
         weight_decay=cfg.weight_decay,
         seed=cfg.seed,
         report_to=report_to,
@@ -312,23 +301,16 @@ def main() -> None:
         dataloader_num_workers=dataloader_num_workers,
         save_strategy=cfg.save_strategy,
     )
+    if cfg.max_length is not None:
+        dpo_kwargs["max_length"] = cfg.max_length
+    if cfg.max_prompt_length is not None:
+        dpo_kwargs["max_prompt_length"] = cfg.max_prompt_length
     if cfg.save_strategy == "steps":
         dpo_kwargs["save_steps"] = cfg.save_steps
     if cfg.save_total_limit is not None:
         dpo_kwargs["save_total_limit"] = cfg.save_total_limit
     if dataloader_prefetch_factor is not None:
         dpo_kwargs["dataloader_prefetch_factor"] = dataloader_prefetch_factor
-    if cfg.fsdp:
-        dpo_kwargs["fsdp"] = cfg.fsdp
-    if cfg.fsdp_min_num_params is not None:
-        dpo_kwargs["fsdp_min_num_params"] = cfg.fsdp_min_num_params
-    if cfg.fsdp_transformer_layer_cls_to_wrap:
-        dpo_kwargs["fsdp_transformer_layer_cls_to_wrap"] = cfg.fsdp_transformer_layer_cls_to_wrap
-    if cfg.fsdp_use_orig_params or cfg.fsdp_config:
-        fsdp_config = cfg.fsdp_config.copy() if cfg.fsdp_config else {}
-        if cfg.fsdp_use_orig_params:
-            fsdp_config["use_orig_params"] = True
-        dpo_kwargs["fsdp_config"] = fsdp_config
     training_args = DPOConfig(**dpo_kwargs)
 
     trainer_cls = WeightedDPOTrainer if "weight" in train_ds.column_names else DPOTrainer

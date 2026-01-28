@@ -6,7 +6,9 @@ Expects JSONL with fields:
 - model_i, model_j
 - wins_i, wins_j
 
-Outputs a JSON list of models with scores (log-ability), win counts, and optional bootstrap CIs.
+Outputs a JSON object with:
+- method, models, and fitting params
+- results: a list of models with scores (log-ability), win counts, and optional bootstrap CIs
 """
 from __future__ import annotations
 
@@ -35,7 +37,10 @@ def load_preferences(path: Path) -> List[dict]:
     return records
 
 
-def prepare_records(records: List[dict]) -> Tuple[List[str], List[Tuple[str | None, int, int, float, float]]]:
+def prepare_records(
+    records: List[dict],
+    bt_mode: str,
+) -> Tuple[List[str], List[Tuple[str | None, int, int, float, float]]]:
     models = sorted({rec["model_i"] for rec in records} | {rec["model_j"] for rec in records})
     idx = {m: i for i, m in enumerate(models)}
     prepared = []
@@ -43,7 +48,16 @@ def prepare_records(records: List[dict]) -> Tuple[List[str], List[Tuple[str | No
         qid = rec.get("question_id")
         i = idx[rec["model_i"]]
         j = idx[rec["model_j"]]
-        prepared.append((qid, i, j, float(rec.get("wins_i", 0)), float(rec.get("wins_j", 0))))
+        wins_i = float(rec.get("wins_i", 0))
+        wins_j = float(rec.get("wins_j", 0))
+        if bt_mode == "majority":
+            if wins_i > wins_j:
+                wins_i, wins_j = 1.0, 0.0
+            elif wins_j > wins_i:
+                wins_i, wins_j = 0.0, 1.0
+            else:
+                continue
+        prepared.append((qid, i, j, wins_i, wins_j))
     return models, prepared
 
 
@@ -96,8 +110,9 @@ def fit_bradley_terry(
     tol: float = 1e-6,
     verbose: bool = False,
     log_every: int = 50,
+    bt_mode: str = "majority",
 ):
-    models, prepared = prepare_records(records)
+    models, prepared = prepare_records(records, bt_mode)
     w = aggregate_matrix(prepared, len(models))
     scores, abilities = fit_bradley_terry_matrix(
         w, max_iter=max_iter, tol=tol, verbose=verbose, log_every=log_every
@@ -211,6 +226,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--bootstrap-workers", type=int, default=1, help="Parallel workers for bootstrap.")
     parser.add_argument("--verbose", action="store_true", help="Print fitting progress.")
     parser.add_argument("--log-every", type=int, default=50, help="Log every N iterations.")
+    parser.add_argument(
+        "--bt-mode",
+        choices=["votes", "majority"],
+        default="majority",
+        help="Use raw vote counts or majority-winner outcomes per question.",
+    )
     return parser.parse_args()
 
 
@@ -225,6 +246,7 @@ def main() -> None:
         tol=args.tol,
         verbose=args.verbose,
         log_every=args.log_every,
+        bt_mode=args.bt_mode,
     )
     if args.bootstrap_samples > 0:
         score_samples = bootstrap_scores(
@@ -251,8 +273,28 @@ def main() -> None:
             rec["score_ci_upper"] = float(upper[i])
             rec["ability_ci_lower"] = float(np.exp(lower[i]))
             rec["ability_ci_upper"] = float(np.exp(upper[i]))
+    output = {
+        "method": "bradley-terry",
+        "models": models,
+        "num_comparisons": len(prepared),
+        "bt_mode": args.bt_mode,
+        "max_iter": int(args.max_iter),
+        "tol": float(args.tol),
+        "bootstrap_samples": int(args.bootstrap_samples),
+        "bootstrap": (
+            {
+                "samples": int(args.bootstrap_samples),
+                "seed": int(args.bootstrap_seed),
+                "alpha": float(args.bootstrap_alpha),
+                "workers": int(args.bootstrap_workers),
+            }
+            if args.bootstrap_samples > 0
+            else None
+        ),
+        "results": results,
+    }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(results, indent=2))
+    args.output.write_text(json.dumps(output, indent=2))
     print(f"Wrote scores to {args.output}")
     for rank, rec in enumerate(results, 1):
         print(f"{rank:02d}. {rec['model']}: score={rec['score']:.4f} wins={rec['wins']:.0f}")

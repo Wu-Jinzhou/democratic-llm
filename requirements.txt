@@ -10,3 +10,4 @@ tqdm
 wandb
 hf_transfer
 matplotlib
+scipy

@@ -87,13 +87,23 @@ want plain strings instead.
 Optional flags for `scripts/prepare_data.py`:
 - `--survey` (default: `prism-alignment/survey.jsonl`)
 - `--utterances` (default: `prism-alignment/utterances.jsonl`)
+- `--conversations` (default: `prism-alignment/conversations.jsonl`)
 - `--panel-config` (default: `configs/panel_config.yaml`)
-- `--panel-algorithm` (choices: `legacy`, `leximin`, `random`)
+- `--panel-algorithm` (choices: `legacy`, `leximin`, `random`; default: `leximin`)
 - `--panel-seed` (default: `42`)
 - `--num-panel-samples` (default: `2000`)
 - `--num-workers` (default: `1`)
 - `--dataset-format` (default: `chat`, use `raw` for plain strings)
+- `--use-conversations` (default; use full conversation history per turn)
+- `--no-use-conversations` (disable multi-turn; use utterances only)
+- `--delta` (default: `0.0`, score margin threshold for pairwise prefs)
 - `--system-prompt` (optional, adds a system message for chat format)
+- `--rater-normalization` (choices: `none`, `panel`, `all`; default: `panel`)
+
+Notes:
+- The sortition pool is filtered to raters who appear in preference data (survey-only rows are dropped).
+- Placeholder prompts/responses (e.g., `EMPTY STRING`) are removed before building histories or pairs.
+- For soft panel, any pairs with $\pi_i=0$ are dropped before normalization.
 
 Hard panel (single LEGACY/LEXIMIN panel):
 ```bash
@@ -161,11 +171,10 @@ python scripts/prepare_data.py \
   --output artifacts/data/soft_panel.jsonl
 ```
 
-### 4) Train with DPO (Llama 3.1 8B)
+### 4) Train with DPO (Llama 3.1 8B Base)
 Optional flags for `scripts/train_dpo.py`:
 - `--model-id` (default: `meta-llama/Llama-3.1-8B`)
-- `--device-map` (default: `auto`, use `none` for distributed/FSDP)
-- `--attn-implementation` (e.g. `flash_attention_2`)
+- `--device-map` (default: `auto`, use `none` for distributed)
 - `--output-dir` (default: `checkpoints/llama3.1-8b-dpo`)
 - `--hf-token` (default: `HF_TOKEN`)
 - `--per-device-train-batch-size` (default: `1`)
@@ -180,6 +189,8 @@ Optional flags for `scripts/train_dpo.py`:
 - `--save-strategy` (default: `no`, choices: `no`, `steps`, `epoch`)
 - `--save-steps` (default: `500`, only used with `--save-strategy steps`)
 - `--save-total-limit` (optional, max checkpoints to keep)
+- `--max-length` (optional; default uses model max position)
+- `--max-prompt-length` (optional; default uses `--max-length`)
 - `--seed` (default: `42`)
 - `--report-to` (default: `wandb`, use `none` to disable)
 - `--logging-dir` (default: `logs`)
@@ -189,11 +200,6 @@ Optional flags for `scripts/train_dpo.py`:
 - `--wandb-group` (optional)
 - `--dataloader-num-workers` (default: `0`)
 - `--dataloader-prefetch-factor` (optional; set >0 when num-workers > 0)
-- `--fsdp` (e.g. `full_shard auto_wrap`, enable FSDP)
-- `--fsdp-min-num-params` (optional)
-- `--fsdp-transformer-layer-cls-to-wrap` (e.g. `LlamaDecoderLayer`)
-- `--fsdp-use-orig-params` (optional, sets `use_orig_params=True`)
-- `--fsdp-config` (optional JSON file with extra FSDP settings)
 
 ```bash
 python scripts/train_dpo.py \
@@ -208,7 +214,7 @@ python scripts/train_dpo.py \
 Switch `--dataset` to `soft_panel.jsonl`, `us_rep.jsonl`, or `full.jsonl` as needed.
 If the tokenizer does not include a chat template, `scripts/train_dpo.py` falls back to a simple
 `User:` / `Assistant:` template so conversational datasets still work.
-For multi-GPU runs (accelerate/torchrun), `device_map=auto` is automatically disabled so FSDP/DDP can shard.
+For multi-GPU runs (accelerate/torchrun), `device_map=auto` is automatically disabled so DDP can shard.
 
 Multi-GPU (Accelerate):
 ```bash
@@ -222,9 +228,7 @@ accelerate launch scripts/train_dpo.py \
   --model-id meta-llama/Llama-3.1-8B \
   --output-dir checkpoints/llama3.1-8b-soft \
   --per-device-train-batch-size 1 \
-  --gradient-accumulation-steps 8 \
-  --fsdp "full_shard auto_wrap" \
-  --fsdp-transformer-layer-cls-to-wrap LlamaDecoderLayer
+  --gradient-accumulation-steps 8
 ```
 
 ### 5) Generate constitution questions
@@ -252,7 +256,7 @@ python generate_questions.py \
 ### 6) Evaluate models with a judge
 Optional flags for `scripts/evaluate_constitution.py`:
 - `--questions-dir` (default: `artifacts/questions`)
-- `--mode` (default: `pairwise`, choices: `pairwise`, `listwise`)
+- `--mode` (default: `listwise`, choices: `pairwise`, `listwise`)
 - `--models` (candidate models; listwise ranks all models, pairwise compares all pairs)
 - `--hf-token` (default: `HF_TOKEN`)
 - `--judge-model` (default: `gpt-5.2`)
@@ -263,11 +267,12 @@ Optional flags for `scripts/evaluate_constitution.py`:
 - `--overwrite-responses` (regenerate cached responses)
 - `--max-questions` (optional global cap)
 - `--questions-per-clause` (sample N questions per clause)
-- `--num-judges` (default: `1`)
+- `--num-judges` (default: `5`)
 - `--max-new-tokens` (default: `256`)
 - `--judge-max-output-tokens` (default: `400`)
 - `--judge-retries` (default: `3`)
 - `--retry-backoff` (default: `2.0`)
+- `--judge-timeout` (default: `60.0`) OpenAI judge request timeout in seconds
 - `--system-prompt` (optional)
 - `--batch-size` (default: `1`, local model generation batching)
 - `--judge-workers` (default: `1`, parallel OpenAI judging)
@@ -303,6 +308,9 @@ python scripts/fit_bradley_terry.py \
   --preferences artifacts/evaluations/preferences.jsonl \
   --output artifacts/evaluations/bradley_terry_scores.json
 ```
+
+Optional flags:
+- `--bt-mode` (choices: `majority`, `votes`; default: `majority`)
 
 Bootstrap confidence intervals:
 ```bash

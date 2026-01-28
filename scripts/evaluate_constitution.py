@@ -16,9 +16,9 @@ import argparse
 import json
 import os
 import random
+import re
 import string
 import time
-import hashlib
 import concurrent.futures
 from collections import defaultdict
 from pathlib import Path
@@ -29,21 +29,35 @@ import inspect
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from tqdm import tqdm
 
+from dempo.utils import (
+    DEFAULT_CHAT_TEMPLATE,
+    append_jsonl,
+    build_chat_prompt,
+    build_listwise_judge_prompts,
+    build_pairwise_judge_prompts,
+    seed_for_order,
+    seed_for_question,
+)
+
 try:
     from openai import OpenAI
 except ImportError:
     OpenAI = None  # type: ignore
 
-DEFAULT_CHAT_TEMPLATE = (
-    "{% for message in messages %}"
-    "{% if message['role'] == 'system' %}System: {{ message['content'] }}\n"
-    "{% elif message['role'] == 'user' %}User: {{ message['content'] }}\n"
-    "{% elif message['role'] == 'assistant' %}Assistant: {{ message['content'] }}\n"
-    "{% elif message['role'] == 'tool' %}Tool: {{ message['content'] }}\n"
-    "{% endif %}"
-    "{% endfor %}"
-    "{% if add_generation_prompt %}Assistant: {% endif %}"
+DEFAULT_SYSTEM_PROMPT = (
+    "You are a helpful assistant. Answer the user's question directly in a single response. "
+    "Do not ask follow-up questions. Do not include role labels like 'User:' or 'Assistant:'."
 )
+
+
+def _decode_unicode_escapes(text: str) -> str:
+    """Convert literal \\uXXXX sequences into unicode characters."""
+    if "\\u" not in text and "\\U" not in text and "\\x" not in text:
+        return text
+    try:
+        return text.encode("utf-8").decode("unicode_escape")
+    except Exception:
+        return text
 
 
 def load_questions(
@@ -62,7 +76,7 @@ def load_questions(
             rng = random.Random(clause_seed)
             indices = rng.sample(indices, questions_per_clause)
         for idx in indices:
-            q = questions[idx]
+            q = _decode_unicode_escapes(str(questions[idx])).strip()
             records.append(
                 {
                     "question_id": f"{data['clause_id']}:{idx}",
@@ -99,18 +113,6 @@ def load_hf_model(model_id: str, hf_token: str | None):
         model.generation_config.top_p = 1.0
         model.generation_config.pad_token_id = tok.pad_token_id
     return model, tok
-
-
-def build_chat_prompt(tokenizer, messages: List[dict]) -> str:
-    if getattr(tokenizer, "chat_template", None):
-        return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    lines = []
-    for msg in messages:
-        role = msg.get("role", "user")
-        prefix = "Assistant" if role == "assistant" else "System" if role == "system" else "User"
-        lines.append(f"{prefix}: {msg['content']}")
-    lines.append("Assistant:")
-    return "\n".join(lines)
 
 
 def _apply_stop_strings(text: str, stop_strings: List[str]) -> str:
@@ -174,17 +176,7 @@ def judge_listwise_with_openai(
     labeled_answers: List[tuple[str, str]],
     max_output_tokens: int,
 ) -> Dict:
-    system_prompt = (
-        "You are an impartial judge comparing multiple anonymous model answers. "
-        "Rank the answers from best to worst according to the clause."
-    )
-    answer_block = "\n\n".join([f"Answer {label}:\n{answer}" for label, answer in labeled_answers])
-    user_prompt = (
-        f"Clause: {clause}\n"
-        f"Question: {question}\n\n"
-        f"{answer_block}\n\n"
-        "Return JSON with a 'ranking' field listing the labels from best to worst."
-    )
+    system_prompt, user_prompt = build_listwise_judge_prompts(clause, question, labeled_answers)
     resp = client.responses.create(
         model=judge_model,
         input=[
@@ -209,14 +201,11 @@ def judge_listwise_with_hf(
     labeled_answers: List[tuple[str, str]],
     max_new_tokens: int,
 ) -> Dict:
-    answer_block = "\n\n".join([f"Answer {label}:\n{answer}" for label, answer in labeled_answers])
-    prompt = (
-        "You are an impartial judge comparing multiple anonymous model answers. "
-        "Rank the answers from best to worst according to the clause.\n"
-        f"Clause: {clause}\nQuestion: {question}\n\n{answer_block}\n\n"
-        "Respond with JSON: {\"ranking\": [\"A\", \"B\", ...]}"
-    )
-    messages = [{"role": "user", "content": prompt}]
+    system_prompt, user_prompt = build_listwise_judge_prompts(clause, question, labeled_answers)
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ]
     output = generate_answer(model, tokenizer, messages, max_new_tokens=max_new_tokens, stop_strings=[])
     try:
         start = output.index("{")
@@ -235,17 +224,7 @@ def judge_pairwise_with_openai(
     answer_b: str,
     max_output_tokens: int,
 ) -> Dict:
-    system_prompt = (
-        "You are an impartial judge comparing two anonymous model answers. "
-        "Pick the better answer according to the clause."
-    )
-    user_prompt = (
-        f"Clause: {clause}\n"
-        f"Question: {question}\n\n"
-        f"Answer A:\n{answer_a}\n\n"
-        f"Answer B:\n{answer_b}\n\n"
-        "Return JSON with a 'winner' field set to 'A' or 'B'."
-    )
+    system_prompt, user_prompt = build_pairwise_judge_prompts(clause, question, answer_a, answer_b)
     resp = client.responses.create(
         model=judge_model,
         input=[
@@ -271,15 +250,11 @@ def judge_pairwise_with_hf(
     answer_b: str,
     max_new_tokens: int,
 ) -> Dict:
-    prompt = (
-        "You are an impartial judge comparing two anonymous model answers. "
-        "Pick the better answer according to the clause.\n"
-        f"Clause: {clause}\nQuestion: {question}\n\n"
-        f"Answer A:\n{answer_a}\n\n"
-        f"Answer B:\n{answer_b}\n\n"
-        "Respond with JSON: {\"winner\": \"A\"} or {\"winner\": \"B\"}"
-    )
-    messages = [{"role": "user", "content": prompt}]
+    system_prompt, user_prompt = build_pairwise_judge_prompts(clause, question, answer_a, answer_b)
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ]
     output = generate_answer(model, tokenizer, messages, max_new_tokens=max_new_tokens, stop_strings=[])
     try:
         start = output.index("{")
@@ -305,18 +280,31 @@ def label_sequence(n: int) -> List[str]:
     return out[:n]
 
 
-def seed_for_question(question_id: str, base_seed: int) -> int:
-    digest = hashlib.sha256(f"{question_id}:{base_seed}".encode("utf-8")).digest()
-    return int.from_bytes(digest[:8], "big", signed=False)
+def _normalize_label(raw: object, labels: List[str]) -> str:
+    label_set = {label.upper() for label in labels}
+    text = str(raw).strip().upper()
+    text = re.sub(r"^(ANSWER|OPTION|CHOICE|MODEL)\s*[:\-]?\s*", "", text)
+    text = text.strip().strip("()[]{}")
+    text = text.rstrip(".):")
+    if text in label_set:
+        return text
+    tokens = re.split(r"[\s,;]+", text)
+    for token in [text] + tokens:
+        candidate = token.strip().strip("()[]{}").rstrip(".):")
+        if candidate in label_set:
+            return candidate
+    return text
 
 
 def parse_ranking(payload: Dict, labels: List[str]) -> List[str]:
     ranking = payload.get("ranking")
     if not isinstance(ranking, list):
         raise ValueError(f"Invalid ranking payload: {payload}")
-    normalized = [str(item).strip().upper() for item in ranking]
-    label_set = set(label.upper() for label in labels)
-    if set(normalized) != label_set or len(normalized) != len(labels):
+    normalized = [_normalize_label(item, labels) for item in ranking]
+    label_set = {label.upper() for label in labels}
+    if len(normalized) != len(labels):
+        raise ValueError(f"Ranking missing labels or contains duplicates: {normalized}")
+    if any(label not in label_set for label in normalized) or set(normalized) != label_set:
         raise ValueError(f"Ranking missing labels or contains duplicates: {normalized}")
     return normalized
 
@@ -339,13 +327,6 @@ def parse_winner(payload: Dict) -> str:
 
 def safe_model_id(model_id: str) -> str:
     return model_id.replace("/", "__").replace(":", "_")
-
-
-def append_jsonl(fp, records: List[dict]) -> None:
-    for rec in records:
-        fp.write(json.dumps(rec, ensure_ascii=False))
-        fp.write("\n")
-    fp.flush()
 
 
 def load_existing_state(
@@ -391,12 +372,69 @@ def load_existing_state(
     return existing_questions, existing_pref_pairs, pref_counts, out_counts
 
 
+def load_existing_listwise(output_path: Path) -> dict:
+    existing: dict[str, dict] = {}
+    if output_path.exists():
+        with output_path.open("r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                rec = json.loads(line)
+                qid = rec.get("question_id")
+                if not qid:
+                    continue
+                current = existing.get(qid)
+                current_len = len(current.get("rankings", [])) if current else -1
+                new_len = len(rec.get("rankings", []))
+                if new_len >= current_len:
+                    existing[qid] = rec
+    return existing
+
+
+def build_preferences_from_listwise(records: List[dict], model_pairs: List[tuple[str, str]]) -> List[dict]:
+    preferences: List[dict] = []
+    for rec in records:
+        rankings = rec.get("rankings", [])
+        if not rankings:
+            continue
+        question_id = rec["question_id"]
+        clause_id = rec.get("clause_id")
+        for model_i, model_j in model_pairs:
+            wins_i = 0
+            wins_j = 0
+            for ranking in rankings:
+                pos = {m: idx for idx, m in enumerate(ranking)}
+                if pos[model_i] < pos[model_j]:
+                    wins_i += 1
+                else:
+                    wins_j += 1
+            majority_winner = None
+            if wins_i > wins_j:
+                majority_winner = model_i
+            elif wins_j > wins_i:
+                majority_winner = model_j
+            preferences.append(
+                {
+                    "question_id": question_id,
+                    "clause_id": clause_id,
+                    "model_i": model_i,
+                    "model_j": model_j,
+                    "wins_i": wins_i,
+                    "wins_j": wins_j,
+                    "num_judges": len(rankings),
+                    "majority_winner": majority_winner,
+                }
+            )
+    return preferences
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run constitutional evaluation with listwise or pairwise judging."
     )
     parser.add_argument("--questions-dir", type=Path, default=Path("artifacts/questions"))
-    parser.add_argument("--mode", choices=["listwise", "pairwise"], default="pairwise")
+    parser.add_argument("--mode", choices=["listwise", "pairwise"], default="listwise")
     parser.add_argument("--models", nargs="+", required=True, help="Candidate models; all pairs are compared.")
     parser.add_argument("--hf-token", default=os.environ.get("HF_TOKEN"))
     parser.add_argument("--judge-model", default="gpt-5.2", help="Judge model (OpenAI id or HF id).")
@@ -405,14 +443,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--preferences-output", type=Path, default=Path("artifacts/evaluations/preferences.jsonl"))
     parser.add_argument("--responses-dir", type=Path, default=Path("artifacts/evaluations/responses"))
     parser.add_argument("--overwrite-responses", action="store_true")
+    parser.add_argument(
+        "--skip-judging",
+        action="store_true",
+        help="Only generate model responses and skip judging.",
+    )
     parser.add_argument("--max-questions", type=int, default=None)
     parser.add_argument("--questions-per-clause", type=int, default=None)
-    parser.add_argument("--num-judges", type=int, default=1)
+    parser.add_argument("--num-judges", type=int, default=5)
     parser.add_argument("--max-new-tokens", type=int, default=256)
     parser.add_argument("--judge-max-output-tokens", type=int, default=400)
     parser.add_argument("--judge-retries", type=int, default=3)
     parser.add_argument("--retry-backoff", type=float, default=2.0)
-    parser.add_argument("--system-prompt", default=None)
+    parser.add_argument(
+        "--judge-timeout",
+        type=float,
+        default=60.0,
+        help="Timeout in seconds for each judge API call (OpenAI only).",
+    )
+    parser.add_argument("--system-prompt", default=DEFAULT_SYSTEM_PROMPT)
     parser.add_argument("--batch-size", type=int, default=1, help="Batch size for local model generation.")
     parser.add_argument(
         "--judge-workers",
@@ -518,6 +567,10 @@ def main() -> None:
         del model
         torch.cuda.empty_cache()
 
+    if args.skip_judging:
+        print("Skipping judging (responses generated).")
+        return
+
     if args.use_hf_judge:
         judge_model, judge_tokenizer = load_hf_model(args.judge_model, args.hf_token)
         if args.mode == "listwise":
@@ -531,7 +584,7 @@ def main() -> None:
     else:
         if OpenAI is None:
             raise ImportError("openai package not installed; install or use --use-hf-judge.")
-        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), timeout=args.judge_timeout)
         if args.mode == "listwise":
             judge_fn = lambda clause, q, labeled, max_tokens: judge_listwise_with_openai(
                 client, args.judge_model, clause, q, labeled, max_tokens
@@ -548,15 +601,24 @@ def main() -> None:
         print("HF judge does not support parallel judging; using --judge-workers 1.")
         args.judge_workers = 1
 
-    existing_questions, existing_pref_pairs, pref_counts, out_counts = load_existing_state(
-        args.output, args.preferences_output, args.mode
-    )
+    existing_listwise: dict[str, dict] = {}
+    if args.mode == "listwise":
+        existing_listwise = load_existing_listwise(args.output)
+        existing_questions: set[str] = set()
+        existing_pref_pairs: set[tuple[str, str, str]] = set()
+        pref_counts: dict[str, int] = defaultdict(int)
+        out_counts: dict[str, int] = defaultdict(int)
+    else:
+        existing_questions, existing_pref_pairs, pref_counts, out_counts = load_existing_state(
+            args.output, args.preferences_output, args.mode
+        )
     expected_pairs = len(model_pairs)
     pending: List[tuple[int, dict]] = []
     for idx, item in enumerate(questions, 1):
         qid = item["question_id"]
         if args.mode == "listwise":
-            if qid in existing_questions:
+            existing = existing_listwise.get(qid)
+            if existing and len(existing.get("rankings", [])) >= args.num_judges:
                 continue
         else:
             if pref_counts.get(qid, 0) >= expected_pairs and out_counts.get(qid, 0) >= expected_pairs:
@@ -564,13 +626,29 @@ def main() -> None:
         pending.append((idx, item))
 
     if not pending:
-        print("No pending judgements to run; outputs already complete.")
+        if args.mode == "listwise":
+            existing_listwise = load_existing_listwise(args.output)
+            merged = list(existing_listwise.values())
+            merged.sort(key=lambda r: (r.get("clause_id", 0), r.get("question_id", "")))
+            with args.output.open("w", encoding="utf-8") as out_f:
+                append_jsonl(out_f, merged)
+            preferences = build_preferences_from_listwise(merged, model_pairs)
+            with args.preferences_output.open("w", encoding="utf-8") as pref_f:
+                append_jsonl(pref_f, preferences)
+            print(
+                f"No pending judgements; refreshed {len(merged)} listwise records and "
+                f"{len(preferences)} preferences."
+            )
+        else:
+            print("No pending judgements to run; outputs already complete.")
         return
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.preferences_output.parent.mkdir(parents=True, exist_ok=True)
 
     def filter_new_preferences(records: List[dict]) -> List[dict]:
+        if args.mode == "listwise":
+            return records
         new_records: List[dict] = []
         for rec in records:
             key = (rec["question_id"], rec["model_i"], rec["model_j"])
@@ -582,6 +660,8 @@ def main() -> None:
         return new_records
 
     def filter_new_outputs(records: List[dict]) -> List[dict]:
+        if args.mode == "listwise":
+            return records
         new_records: List[dict] = []
         for rec in records:
             if args.mode == "listwise":
@@ -616,14 +696,31 @@ def main() -> None:
         local_output_records: List[dict] = []
 
         if args.mode == "listwise":
-            rankings: List[List[str]] = []
-            raw_judgments: List[dict] = []
-            judge_orders: List[List[str]] = []
-            judge_label_maps: List[dict] = []
-            for judge_idx in range(args.num_judges):
+            existing_record = existing_listwise.get(question_id)
+            if existing_record is not None:
+                existing_models = existing_record.get("models")
+                if existing_models and list(existing_models) != list(model_ids):
+                    raise ValueError(
+                        f"Existing listwise record models do not match current --models for {question_id}."
+                    )
+            rankings: List[List[str]] = (
+                list(existing_record.get("rankings", [])) if existing_record else []
+            )
+            raw_judgments: List[dict] = (
+                list(existing_record.get("judge_raw", [])) if existing_record else []
+            )
+            judge_orders: List[List[str]] = (
+                list(existing_record.get("judge_orders", [])) if existing_record else []
+            )
+            judge_label_maps: List[dict] = (
+                list(existing_record.get("judge_label_to_model", [])) if existing_record else []
+            )
+            start_idx = len(rankings)
+            for judge_idx in range(start_idx, args.num_judges):
                 order = responses[:]
                 if args.shuffle_order:
-                    rng_local.shuffle(order)
+                    rng_judge = random.Random(seed_for_order(question_id, judge_idx, args.seed))
+                    rng_judge.shuffle(order)
                 labeled_answers = [(labels[i], order[i][1]) for i in range(len(order))]
                 label_to_model = {labels[i]: order[i][0] for i in range(len(order))}
                 attempt = 0
@@ -700,7 +797,11 @@ def main() -> None:
                 raw_judgments: List[dict] = []
                 for judge_idx in range(args.num_judges):
                     order = [(model_i, response_i), (model_j, response_j)]
-                    rng_local.shuffle(order)
+                    if args.shuffle_order:
+                        rng_judge = random.Random(
+                            seed_for_order(question_id, judge_idx, args.seed, f"{model_i}:{model_j}")
+                        )
+                        rng_judge.shuffle(order)
                     label_to_model = {"A": order[0][0], "B": order[1][0]}
                     answer_a = order[0][1]
                     answer_b = order[1][1]
@@ -784,21 +885,46 @@ def main() -> None:
                     concurrent.futures.as_completed(futures), total=len(futures), desc="Judging"
                 ):
                     pref, out = fut.result()
+                    if args.mode == "listwise":
+                        if out:
+                            rec = out[0]
+                            existing_listwise[rec["question_id"]] = rec
+                            append_jsonl(out_f, out)
+                    else:
+                        new_pref = filter_new_preferences(pref)
+                        new_out = filter_new_outputs(out)
+                        if new_pref:
+                            append_jsonl(pref_f, new_pref)
+                        if new_out:
+                            append_jsonl(out_f, new_out)
+        else:
+            for idx, item in tqdm(pending, desc="Judging"):
+                pref, out = process_question(item, idx)
+                if args.mode == "listwise":
+                    if out:
+                        rec = out[0]
+                        existing_listwise[rec["question_id"]] = rec
+                        append_jsonl(out_f, out)
+                else:
                     new_pref = filter_new_preferences(pref)
                     new_out = filter_new_outputs(out)
                     if new_pref:
                         append_jsonl(pref_f, new_pref)
                     if new_out:
                         append_jsonl(out_f, new_out)
-        else:
-            for idx, item in tqdm(pending, desc="Judging"):
-                pref, out = process_question(item, idx)
-                new_pref = filter_new_preferences(pref)
-                new_out = filter_new_outputs(out)
-                if new_pref:
-                    append_jsonl(pref_f, new_pref)
-                if new_out:
-                    append_jsonl(out_f, new_out)
+
+    if args.mode == "listwise":
+        merged = list(existing_listwise.values())
+        merged.sort(key=lambda r: (r.get("clause_id", 0), r.get("question_id", "")))
+        with args.output.open("w", encoding="utf-8") as out_f:
+            append_jsonl(out_f, merged)
+        preferences = build_preferences_from_listwise(merged, model_pairs)
+        with args.preferences_output.open("w", encoding="utf-8") as pref_f:
+            append_jsonl(pref_f, preferences)
+        print(
+            f"Wrote {len(merged)} listwise records and {len(preferences)} preferences to "
+            f"{args.output} and {args.preferences_output}."
+        )
 
 
 if __name__ == "__main__":

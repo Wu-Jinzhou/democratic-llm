@@ -13,8 +13,8 @@ env/
 *.log
 .venv/
 gurobi.lic
-run_train.sh
 runpodctl
+archive/
 paper/
 private_tools/*
 run_everything.sh

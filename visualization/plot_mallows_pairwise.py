@@ -3,7 +3,7 @@
 Plot Mallows pairwise win probabilities as a heatmap.
 
 Expects a JSON produced by scripts/score_rankings.py with mallows.pairwise_probabilities.
-Each cell (i, j) is P(i ≻ j) under the Mallows model.
+Each cell (i, j) is P(i beats j) under the Mallows model.
 """
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
-from style import apply_style, style_axes
+from style import apply_style, style_axes, display_model_names, truncated_cmap
 
 
 def parse_args() -> argparse.Namespace:
@@ -39,7 +39,7 @@ def parse_args() -> argparse.Namespace:
         default="consensus",
         help="Row/column order for models.",
     )
-    parser.add_argument("--cmap", default="RdBu_r")
+    parser.add_argument("--cmap", default="Blues")
     parser.add_argument("--annotate", action="store_true", help="Write values inside cells.")
     return parser.parse_args()
 
@@ -72,20 +72,25 @@ def main() -> None:
 
     fig, ax = plt.subplots(figsize=(10, max(4, 0.5 * n)))
     norm = mcolors.TwoSlopeNorm(vcenter=0.5, vmin=0.0, vmax=1.0)
-    im = ax.imshow(values, cmap=args.cmap, norm=norm)
+    cmap = truncated_cmap(args.cmap, minval=0.35, maxval=0.95)
+    im = ax.imshow(values, cmap=cmap, norm=norm)
     ax.set_xticks(range(n))
     ax.set_yticks(range(n))
-    ax.set_xticklabels(models, rotation=45, ha="right")
-    ax.set_yticklabels(models)
+    labels = display_model_names(models)
+    ax.set_xticklabels(labels, rotation=45, ha="right")
+    ax.set_yticklabels(labels)
     ax.set_xlabel("Opponent model")
     ax.set_ylabel("Row model")
-    title = "Mallows pairwise win probability P(row ≻ col)"
+    title = "Mallows pairwise win probability P(row beats col)"
+    details = []
     phi = mallows.get("phi")
     if isinstance(phi, (int, float)):
-        title += f" (phi={phi:.3f})"
+        details.append(f"phi={phi:.3f}")
+    if details:
+        title += f" ({', '.join(details)})"
     ax.set_title(title)
     cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-    cbar.set_label("P(row ≻ col)")
+    cbar.set_label("P(row beats col)")
     style_axes(ax, grid=False)
 
     if args.annotate:

@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import matplotlib.cm as cm
 
-from style import apply_style, style_axes
+from style import apply_style, style_axes, truncated_cmap
 
 
 def load_preferences(path: Path) -> List[dict]:
@@ -118,7 +118,7 @@ def plot_metric(
     vmin = min(values) if values else 0.0
     vmax = max(values) if values else 1.0
     norm = mcolors.PowerNorm(gamma=0.7, vmin=vmin, vmax=max(vmax, vmin + 1e-6))
-    cmap = cm.get_cmap("magma")
+    cmap = truncated_cmap("Blues", minval=0.35, maxval=0.95)
     colors = cmap(norm(values))
     ax.barh(clauses, values, color=colors, edgecolor="none")
     ax.invert_yaxis()
