@@ -213,6 +213,16 @@ def build_datasets(
     eval_ratio: float,
     seed: int,
 ):
+    if path.exists():
+        with path.open("rb") as f:
+            header = f.read(200)
+        if b"git-lfs" in header and b"version https://git-lfs.github.com/spec/v1" in header:
+            raise RuntimeError(
+                f"{path} looks like a Git LFS pointer file, not a real JSONL dataset. "
+                "This usually means the dataset artifacts were not generated on this machine. "
+                "Re-run `python scripts/prepare_data.py ...` to create the JSONL, or run `git lfs pull` "
+                "if you intentionally tracked artifacts with Git LFS."
+            )
     dataset = datasets.load_dataset("json", data_files=str(path))["train"]
     dataset = dataset.shuffle(seed=seed)
     if eval_ratio and eval_ratio > 0:

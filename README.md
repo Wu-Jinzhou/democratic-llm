@@ -1,6 +1,6 @@
-# democratic-llm
+# Democratic Preference Alignment via Sortition-Weighted RLHF
 
-Democratic alignment pipeline built on PRISM preference data and Sortition Foundation panel selection. It trains and evaluates models under hard/soft panel objectives and a constitutional evaluation.
+This is the repository for the paper *Democratic Preference Alignment via Sortition-Weighted RLHF*, with democratic alignment pipeline built on PRISM preference data and Sortition Foundation panel selection. It trains and evaluates models under hard/soft panel objectives and a constitutional evaluation.
 
 ## Repository layout
 

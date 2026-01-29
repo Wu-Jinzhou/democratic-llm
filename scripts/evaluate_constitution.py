@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 import random
 import re
 import string
@@ -28,6 +29,12 @@ import torch
 import inspect
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from tqdm import tqdm
+
+# Ensure repo-local imports work even when executed from another working directory.
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SCRIPT_DIR.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.append(str(REPO_ROOT))
 
 from dempo.utils import (
     DEFAULT_CHAT_TEMPLATE,
@@ -43,12 +50,6 @@ try:
     from openai import OpenAI
 except ImportError:
     OpenAI = None  # type: ignore
-
-DEFAULT_SYSTEM_PROMPT = (
-    "You are a helpful assistant. Answer the user's question directly in a single response. "
-    "Do not ask follow-up questions. Do not include role labels like 'User:' or 'Assistant:'."
-)
-
 
 def _decode_unicode_escapes(text: str) -> str:
     """Convert literal \\uXXXX sequences into unicode characters."""
@@ -461,7 +462,11 @@ def parse_args() -> argparse.Namespace:
         default=60.0,
         help="Timeout in seconds for each judge API call (OpenAI only).",
     )
-    parser.add_argument("--system-prompt", default=DEFAULT_SYSTEM_PROMPT)
+    parser.add_argument(
+        "--system-prompt",
+        default="",
+        help="Optional system prompt for candidate model generation. Default: empty (no system prompt).",
+    )
     parser.add_argument("--batch-size", type=int, default=1, help="Batch size for local model generation.")
     parser.add_argument(
         "--judge-workers",
@@ -878,13 +883,23 @@ def main() -> None:
     with args.output.open("a", encoding="utf-8") as out_f, args.preferences_output.open(
         "a", encoding="utf-8"
     ) as pref_f:
+        failures: List[dict] = []
         if args.judge_workers > 1:
             with concurrent.futures.ThreadPoolExecutor(max_workers=args.judge_workers) as ex:
-                futures = {ex.submit(process_question, item, idx): idx for idx, item in pending}
+                futures = {
+                    ex.submit(process_question, item, idx): (idx, item["question_id"])
+                    for idx, item in pending
+                }
                 for fut in tqdm(
                     concurrent.futures.as_completed(futures), total=len(futures), desc="Judging"
                 ):
-                    pref, out = fut.result()
+                    idx, qid = futures[fut]
+                    try:
+                        pref, out = fut.result()
+                    except Exception as exc:
+                        failures.append({"idx": idx, "question_id": qid, "error": str(exc)})
+                        print(f"Judging failed for {qid}: {exc}", file=sys.stderr)
+                        continue
                     if args.mode == "listwise":
                         if out:
                             rec = out[0]
@@ -899,7 +914,12 @@ def main() -> None:
                             append_jsonl(out_f, new_out)
         else:
             for idx, item in tqdm(pending, desc="Judging"):
-                pref, out = process_question(item, idx)
+                try:
+                    pref, out = process_question(item, idx)
+                except Exception as exc:
+                    failures.append({"idx": idx, "question_id": item["question_id"], "error": str(exc)})
+                    print(f"Judging failed for {item['question_id']}: {exc}", file=sys.stderr)
+                    continue
                 if args.mode == "listwise":
                     if out:
                         rec = out[0]
@@ -925,6 +945,13 @@ def main() -> None:
             f"Wrote {len(merged)} listwise records and {len(preferences)} preferences to "
             f"{args.output} and {args.preferences_output}."
         )
+        if failures:
+            failures_path = args.output.with_suffix(".failures.jsonl")
+            with failures_path.open("w", encoding="utf-8") as f:
+                append_jsonl(f, failures)
+            raise SystemExit(
+                f"Completed with {len(failures)} judging failures. See {failures_path}."
+            )
 
 
 if __name__ == "__main__":
