@@ -45,25 +45,24 @@ def load_jsonl(path: Path, nrows: int | None = None) -> pd.DataFrame:
                 f"{path} looks like a Git LFS pointer file. "
                 "Run `git lfs pull` in the dataset repo (prism-alignment) to fetch the real JSONL."
             )
-    try:
-        return pd.read_json(path, lines=True, nrows=nrows)
-    except ValueError:
-        records: List[dict] = []
-        bad_lines = 0
-        with path.open("r", encoding="utf-8") as f:
-            for line in f:
-                if nrows is not None and len(records) >= nrows:
-                    break
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    records.append(json.loads(line))
-                except json.JSONDecodeError:
-                    bad_lines += 1
-        if bad_lines:
-            print(f"Warning: skipped {bad_lines} malformed lines in {path}")
-        return pd.DataFrame.from_records(records)
+    # Preserve JSON types exactly instead of relying on pandas' JSON inference, which can
+    # collapse large numeric-looking identifiers into lossy numeric dtypes.
+    records: List[dict] = []
+    bad_lines = 0
+    with path.open("r", encoding="utf-8") as f:
+        for line in f:
+            if nrows is not None and len(records) >= nrows:
+                break
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                records.append(json.loads(line))
+            except json.JSONDecodeError:
+                bad_lines += 1
+    if bad_lines:
+        print(f"Warning: skipped {bad_lines} malformed lines in {path}")
+    return pd.DataFrame.from_records(records)
 
 
 def _normalize_column(df: pd.DataFrame, target: str, candidates: List[str]) -> pd.DataFrame:
@@ -298,7 +297,11 @@ def build_pairs_from_conversations(
     skipped_candidates = 0
     skipped_turns = 0
 
-    for conv in conversations.itertuples(index=False):
+    for conv in tqdm(
+        conversations.itertuples(index=False),
+        total=len(conversations),
+        desc="Building pairs from conversations",
+    ):
         conv_id = str(getattr(conv, "conversation_id"))
         user_id = getattr(conv, "user_id", None)
         history = getattr(conv, "conversation_history", None) or []
@@ -707,6 +710,20 @@ def main() -> None:
     conversations_df = None
     if args.use_conversations:
         conversations_df = normalize_conversations(load_jsonl(args.conversations))
+    print(
+        "Loaded inputs: "
+        f"survey_rows={len(survey_df)}, "
+        f"utterance_rows={len(utterances_df)}, "
+        f"conversation_rows={len(conversations_df) if conversations_df is not None else 0}"
+    )
+    print(
+        "Preparation config: "
+        f"mode={args.mode}, "
+        f"use_conversations={args.use_conversations}, "
+        f"dataset_format={args.dataset_format}, "
+        f"delta={args.delta}, "
+        f"rater_normalization={args.rater_normalization}"
+    )
 
     rater_ids = set(utterances_df["user_id"].dropna().astype(str).tolist())
     if rater_ids:
@@ -732,6 +749,13 @@ def main() -> None:
 
     if args.mode in {"hard", "soft"}:
         panel_config = load_panel_config(args.panel_config)
+        print(
+            "Panel config: "
+            f"path={args.panel_config}, "
+            f"algorithm={args.panel_algorithm}, "
+            f"num_workers={args.num_workers}, "
+            f"num_panel_samples={args.num_panel_samples if args.mode == 'soft' else 'n/a'}"
+        )
     else:
         panel_config = None  # type: ignore
 
@@ -739,6 +763,7 @@ def main() -> None:
     normalize_all = args.rater_normalization == "all"
 
     if args.mode == "hard":
+        print("Starting hard-panel preparation.")
         records = prepare_hard_panel(
             survey_df=survey_df,
             utterances_df=utterances_df,
@@ -753,6 +778,7 @@ def main() -> None:
             delta=args.delta,
         )
     elif args.mode == "soft":
+        print("Starting soft-panel preparation.")
         records = prepare_soft_panel(
             survey_df=survey_df,
             utterances_df=utterances_df,
@@ -769,6 +795,7 @@ def main() -> None:
             delta=args.delta,
         )
     else:
+        print("Starting US-representative/full preparation.")
         records = prepare_us_rep(
             survey_df=survey_df,
             utterances_df=utterances_df,
@@ -779,6 +806,7 @@ def main() -> None:
             delta=args.delta,
         )
     if args.mode == "full":
+        print("Switching to full-dataset preparation.")
         records = prepare_full(
             survey_df=survey_df,
             utterances_df=utterances_df,

@@ -38,6 +38,7 @@ class TrainConfig:
     dataset_path: Path
     hf_token: Optional[str]
     device_map: Optional[str] = "auto"
+    attn_implementation: Optional[str] = "flash_attention_2"
     per_device_batch_size: int = 1
     gradient_accumulation_steps: int = 8
     learning_rate: float = 5e-6
@@ -199,13 +200,16 @@ def load_model(
     model_id: str,
     token: Optional[str],
     device_map: Optional[str] = "auto",
+    attn_implementation: Optional[str] = "flash_attention_2",
 ):
-    return AutoModelForCausalLM.from_pretrained(
-        model_id,
+    kwargs = dict(
         token=token,
         dtype=torch.bfloat16,
         device_map=device_map,
     )
+    if attn_implementation and attn_implementation.lower() not in {"none", "null"}:
+        kwargs["attn_implementation"] = attn_implementation
+    return AutoModelForCausalLM.from_pretrained(model_id, **kwargs)
 
 
 def build_datasets(
@@ -241,6 +245,11 @@ def parse_args() -> argparse.Namespace:
         default="auto",
         help="Device map for model loading ('auto', 'balanced', or 'none'). "
         "When running distributed, 'auto' is treated as 'none' so FSDP/DDP can shard.",
+    )
+    parser.add_argument(
+        "--attn-implementation",
+        default="flash_attention_2",
+        help="Attention implementation passed to from_pretrained (e.g. flash_attention_2, sdpa, eager, none).",
     )
     parser.add_argument("--hf-token", default=os.environ.get("HF_TOKEN"))
     parser.add_argument(
@@ -348,6 +357,7 @@ def main() -> None:
         dataset_path=args.dataset,
         hf_token=args.hf_token,
         device_map=device_map,
+        attn_implementation=args.attn_implementation,
         per_device_batch_size=args.per_device_batch_size,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         learning_rate=args.learning_rate,
@@ -387,9 +397,19 @@ def main() -> None:
         if cfg.wandb_group:
             os.environ["WANDB_RUN_GROUP"] = cfg.wandb_group
 
+    print(
+        "Training config: "
+        f"model_id={cfg.model_id}, "
+        f"device_map={cfg.device_map}, "
+        f"attn_implementation={cfg.attn_implementation}, "
+        f"per_device_batch_size={cfg.per_device_batch_size}, "
+        f"gradient_accumulation_steps={cfg.gradient_accumulation_steps}, "
+        f"report_to={cfg.report_to}"
+    )
+
     tokenizer = load_tokenizer(cfg.model_id, cfg.hf_token)
-    model = load_model(cfg.model_id, cfg.hf_token, cfg.device_map)
-    ref_model = load_model(cfg.model_id, cfg.hf_token, cfg.device_map)
+    model = load_model(cfg.model_id, cfg.hf_token, cfg.device_map, cfg.attn_implementation)
+    ref_model = load_model(cfg.model_id, cfg.hf_token, cfg.device_map, cfg.attn_implementation)
 
     model_max = getattr(model.config, "max_position_embeddings", None)
     if cfg.max_length is None and isinstance(model_max, int) and model_max > 0:

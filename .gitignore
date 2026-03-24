@@ -8,6 +8,8 @@ outputs/
 logs/
 wandb/
 prism-alignment/
+community-alignment-dataset/
+overtonbench/
 env/
 .env
 *.log
@@ -17,4 +19,3 @@ runpodctl
 archive/
 paper/
 private_tools/*
-runs/
