@@ -1,3 +1,5 @@
 artifacts/data/*.jsonl filter=lfs diff=lfs merge=lfs -text
+artifacts/community_alignment/normalized/*.jsonl filter=lfs diff=lfs merge=lfs -text
+artifacts/data/community_alignment/*.jsonl filter=lfs diff=lfs merge=lfs -text
 artifacts/community_alignment/normalized_en/conversations.jsonl filter=lfs diff=lfs merge=lfs -text
 artifacts/community_alignment/normalized_en/utterances.jsonl filter=lfs diff=lfs merge=lfs -text

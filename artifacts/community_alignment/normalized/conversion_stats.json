@@ -1,0 +1,44 @@
+{
+  "rows_total": 90256,
+  "rows_total_us": 14491,
+  "rows_with_kept_turns": 89616,
+  "rows_with_kept_turns_us": 14469,
+  "rows_dropped_entirely": 640,
+  "rows_dropped_entirely_us": 22,
+  "rows_truncated_after_gap": 696,
+  "rows_truncated_after_gap_us": 29,
+  "turns_kept": 231572,
+  "turns_kept_us": 37410,
+  "turns_dropped_after_gap": 1028,
+  "turns_dropped_after_gap_us": 39,
+  "turns_salvaged_by_dedup": 655,
+  "turns_salvaged_by_dedup_us": 27,
+  "duplicate_candidates_removed": 823,
+  "duplicate_candidates_removed_us": 28,
+  "invalid_reasons_overall": {
+    "missing_prompt": 126018,
+    "missing_preferred_response": 1688,
+    "missing_candidate_response": 649,
+    "all_candidates_identical_after_dedup": 69
+  },
+  "invalid_reasons_us": {
+    "missing_prompt": 20422,
+    "missing_preferred_response": 72,
+    "missing_candidate_response": 21,
+    "all_candidates_identical_after_dedup": 0
+  },
+  "prefix_lengths_overall": {
+    "0": 640,
+    "1": 7045,
+    "2": 42355,
+    "3": 21047,
+    "4": 19169
+  },
+  "prefix_lengths_us": {
+    "0": 22,
+    "1": 1208,
+    "2": 6755,
+    "3": 3332,
+    "4": 3174
+  }
+}

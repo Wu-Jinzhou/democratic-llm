@@ -13,6 +13,7 @@ PYTHON="${PYTHON:-python}"
 
 BASE_MODEL="${BASE_MODEL:-meta-llama/Llama-3.1-8B}"
 INCLUDE_BASE="${INCLUDE_BASE:-0}"
+MODEL_SET="${MODEL_SET:-all}"
 
 PRISM_FULL_MODEL="${PRISM_FULL_MODEL:-checkpoints/llama3.1-8b-full-prism}"
 PRISM_SOFT_MODEL="${PRISM_SOFT_MODEL:-checkpoints/llama3.1-8b-soft-panel}"
@@ -44,16 +45,40 @@ PREDICTIONS_DIR="${PREDICTIONS_DIR:-$EVAL_DIR/predictions_gemini25pro_fsfr}"
 SUMMARY_JSON="${SUMMARY_JSON:-$EVAL_DIR/summary_gemini25pro_fsfr.json}"
 SUMMARY_CSV="${SUMMARY_CSV:-$EVAL_DIR/summary_gemini25pro_fsfr.csv}"
 
-MODEL_LIST=(
-  "$PRISM_FULL_MODEL"
-  "$PRISM_SOFT_MODEL"
-  "$PRISM_HARD_MODEL"
-  "$PRISM_US_REP_MODEL"
-  "$COMMUNITY_FULL_GLOBAL_MODEL"
-  "$COMMUNITY_FULL_US_MODEL"
-  "$COMMUNITY_SOFT_US_MODEL"
-  "$COMMUNITY_HARD_US_MODEL"
-)
+case "$MODEL_SET" in
+  prism)
+    MODEL_LIST=(
+      "$PRISM_FULL_MODEL"
+      "$PRISM_SOFT_MODEL"
+      "$PRISM_HARD_MODEL"
+      "$PRISM_US_REP_MODEL"
+    )
+    ;;
+  community)
+    MODEL_LIST=(
+      "$COMMUNITY_FULL_GLOBAL_MODEL"
+      "$COMMUNITY_FULL_US_MODEL"
+      "$COMMUNITY_SOFT_US_MODEL"
+      "$COMMUNITY_HARD_US_MODEL"
+    )
+    ;;
+  all)
+    MODEL_LIST=(
+      "$PRISM_FULL_MODEL"
+      "$PRISM_SOFT_MODEL"
+      "$PRISM_HARD_MODEL"
+      "$PRISM_US_REP_MODEL"
+      "$COMMUNITY_FULL_GLOBAL_MODEL"
+      "$COMMUNITY_FULL_US_MODEL"
+      "$COMMUNITY_SOFT_US_MODEL"
+      "$COMMUNITY_HARD_US_MODEL"
+    )
+    ;;
+  *)
+    echo "Invalid MODEL_SET=$MODEL_SET. Expected one of: all, prism, community." >&2
+    exit 1
+    ;;
+esac
 
 if [[ "$INCLUDE_BASE" == "1" ]]; then
   MODEL_LIST=("$BASE_MODEL" "${MODEL_LIST[@]}")
