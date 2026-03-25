@@ -35,6 +35,7 @@ DEVICE_MAP="${DEVICE_MAP:-auto}"
 
 DATALOADER_NUM_WORKERS="${DATALOADER_NUM_WORKERS:-4}"
 DATALOADER_PREFETCH_FACTOR="${DATALOADER_PREFETCH_FACTOR:-2}"
+DATASET_NUM_PROC="${DATASET_NUM_PROC:-12}"
 
 SEED="${SEED:-42}"
 REPORT_TO="${REPORT_TO:-wandb}"
@@ -66,6 +67,7 @@ build_common_train_cmd() {
     --report-to "$REPORT_TO"
     --wandb-project "$WANDB_PROJECT"
     --wandb-group "$WANDB_GROUP"
+    --dataset-num-proc "$DATASET_NUM_PROC"
     --dataloader-num-workers "$DATALOADER_NUM_WORKERS"
     --dataloader-prefetch-factor "$DATALOADER_PREFETCH_FACTOR"
     --attn-implementation "$ATTN_IMPLEMENTATION"

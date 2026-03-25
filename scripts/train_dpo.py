@@ -40,6 +40,7 @@ class TrainConfig:
     hf_token: Optional[str]
     device_map: Optional[str] = "auto"
     attn_implementation: Optional[str] = "flash_attention_2"
+    dataset_num_proc: int = 12
     per_device_batch_size: int = 1
     gradient_accumulation_steps: int = 8
     learning_rate: float = 5e-6
@@ -149,9 +150,12 @@ class WeightedDPOTrainer(DPOTrainer):
         - a dataset column named `args.length_column_name`, or
         - examples with an `input_ids` field (to infer lengths).
 
-        TRL's DPO preprocessing produces `prompt_input_ids`, `chosen_input_ids`,
-        and `rejected_input_ids` instead of `input_ids`, so we attach a `length`
-        column *after* TRL tokenization to make `group_by_length=True` work.
+        Different TRL versions tokenize DPO rows into either:
+        - `prompt_input_ids` / `chosen_input_ids` / `rejected_input_ids`, or
+        - `prompt_ids` / `chosen_ids` / `rejected_ids`.
+
+        We attach a `length` column after TRL tokenization so grouped sampling
+        works across both layouts.
         """
 
         train_sampling_strategy = getattr(self.args, "train_sampling_strategy", None)
@@ -172,10 +176,17 @@ class WeightedDPOTrainer(DPOTrainer):
                 return ds
 
             cols = set(ds.column_names)
-            if {"prompt_input_ids", "chosen_input_ids", "rejected_input_ids"}.issubset(cols):
-                prompts = ds["prompt_input_ids"]
-                chosen = ds["chosen_input_ids"]
-                rejected = ds["rejected_input_ids"]
+            token_triplets = [
+                ("prompt_input_ids", "chosen_input_ids", "rejected_input_ids"),
+                ("prompt_ids", "chosen_ids", "rejected_ids"),
+            ]
+
+            matched_triplet = next((triplet for triplet in token_triplets if set(triplet).issubset(cols)), None)
+            if matched_triplet is not None:
+                prompt_col, chosen_col, rejected_col = matched_triplet
+                prompts = ds[prompt_col]
+                chosen = ds[chosen_col]
+                rejected = ds[rejected_col]
                 lengths = [
                     int(len(p) + max(len(c), len(r)))
                     for p, c, r in zip(prompts, chosen, rejected)
@@ -308,6 +319,12 @@ def parse_args() -> argparse.Namespace:
         default="flash_attention_2",
         help="Attention implementation passed to from_pretrained (e.g. flash_attention_2, sdpa, eager, none).",
     )
+    parser.add_argument(
+        "--dataset-num-proc",
+        type=int,
+        default=12,
+        help="Number of worker processes for HF/TRL dataset.map preprocessing (chat templating + tokenization).",
+    )
     parser.add_argument("--hf-token", default=os.environ.get("HF_TOKEN"))
     parser.add_argument(
         "--per-device-batch-size",
@@ -415,6 +432,7 @@ def main() -> None:
         hf_token=args.hf_token,
         device_map=device_map,
         attn_implementation=args.attn_implementation,
+        dataset_num_proc=args.dataset_num_proc,
         per_device_batch_size=args.per_device_batch_size,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         learning_rate=args.learning_rate,
@@ -459,6 +477,7 @@ def main() -> None:
         f"model_id={cfg.model_id}, "
         f"device_map={cfg.device_map}, "
         f"attn_implementation={cfg.attn_implementation}, "
+        f"dataset_num_proc={cfg.dataset_num_proc}, "
         f"per_device_batch_size={cfg.per_device_batch_size}, "
         f"gradient_accumulation_steps={cfg.gradient_accumulation_steps}, "
         f"report_to={cfg.report_to}"
@@ -503,6 +522,7 @@ def main() -> None:
         run_name=cfg.run_name,
         beta=cfg.beta,
         dataloader_num_workers=dataloader_num_workers,
+        dataset_num_proc=cfg.dataset_num_proc,
         train_sampling_strategy="group_by_length",
         length_column_name="length",
         remove_unused_columns=False,
