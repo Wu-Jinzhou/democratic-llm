@@ -86,6 +86,18 @@ class WeightedDPOTrainer(DPOTrainer):
         self._batch_weights = None
         self._ensure_length_column()
 
+    def get_train_dataloader(self):
+        # Some TRL/transformers combinations finalize tokenized datasets lazily and/or mutate
+        # them (e.g. precomputing ref log-probs) before sampler construction. Re-attach the
+        # precomputed length column immediately before building the dataloader so grouped
+        # sampling works reliably across versions.
+        self._ensure_length_column()
+        return super().get_train_dataloader()
+
+    def get_eval_dataloader(self, eval_dataset=None):
+        self._ensure_length_column()
+        return super().get_eval_dataloader(eval_dataset=eval_dataset)
+
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
         weights = inputs.pop("weight", None)
         self._batch_weights = weights
