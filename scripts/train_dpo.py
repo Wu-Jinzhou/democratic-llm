@@ -9,6 +9,7 @@ Requires:
 from __future__ import annotations
 
 import argparse
+import inspect
 import os
 import sys
 import time
@@ -233,6 +234,37 @@ def build_datasets(
         split = dataset.train_test_split(test_size=eval_ratio, seed=seed)
         return split["train"], split["test"]
     return dataset, None
+
+
+def build_compatible_dpo_config_kwargs(dpo_kwargs: dict) -> tuple[dict, dict, list[str]]:
+    """
+    Filter/rename kwargs based on the installed TRL DPOConfig signature.
+
+    TRL/transformers versions differ on which TrainingArguments fields DPOConfig
+    accepts in __init__. In particular, some versions expose `group_by_length`
+    and `length_column_name` as constructor arguments, while others do not even
+    though the resulting config object can still carry those attributes.
+    """
+
+    supported = set(inspect.signature(DPOConfig.__init__).parameters.keys())
+    kwargs = dict(dpo_kwargs)
+    post_init_attrs: dict = {}
+
+    # Known alias across transformers/trl versions.
+    if "eval_strategy" not in supported and "evaluation_strategy" in supported and "eval_strategy" in kwargs:
+        kwargs["evaluation_strategy"] = kwargs.pop("eval_strategy")
+    elif "evaluation_strategy" not in supported and "eval_strategy" in supported and "evaluation_strategy" in kwargs:
+        kwargs["eval_strategy"] = kwargs.pop("evaluation_strategy")
+
+    unsupported: list[str] = []
+    filtered: dict = {}
+    for key, value in kwargs.items():
+        if key in supported:
+            filtered[key] = value
+        else:
+            unsupported.append(key)
+            post_init_attrs[key] = value
+    return filtered, post_init_attrs, sorted(unsupported)
 
 
 def parse_args() -> argparse.Namespace:
@@ -463,7 +495,18 @@ def main() -> None:
         dpo_kwargs["save_total_limit"] = cfg.save_total_limit
     if dataloader_prefetch_factor is not None:
         dpo_kwargs["dataloader_prefetch_factor"] = dataloader_prefetch_factor
-    training_args = DPOConfig(**dpo_kwargs)
+    filtered_dpo_kwargs, post_init_attrs, unsupported = build_compatible_dpo_config_kwargs(dpo_kwargs)
+    if unsupported:
+        print(
+            "Installed TRL DPOConfig does not accept these constructor args; "
+            f"applying them after init when possible: {', '.join(unsupported)}"
+        )
+    training_args = DPOConfig(**filtered_dpo_kwargs)
+    for key, value in post_init_attrs.items():
+        try:
+            setattr(training_args, key, value)
+        except Exception as exc:
+            print(f"Warning: failed to set post-init DPOConfig attribute {key}={value!r}: {exc}")
 
     data_collator = WeightedDataCollatorForPreference(pad_token_id=tokenizer.pad_token_id)
     trainer = WeightedDPOTrainer(

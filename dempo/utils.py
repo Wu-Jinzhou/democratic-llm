@@ -14,7 +14,7 @@ DEFAULT_CHAT_TEMPLATE = (
     "{% elif message['role'] == 'tool' %}Tool: {{ message['content'] }}\n"
     "{% endif %}"
     "{% endfor %}"
-    "{% if add_generation_prompt %}Assistant: {% endif %}"
+    "{% if add_generation_prompt %}Assistant:{% endif %}"
 )
 
 
