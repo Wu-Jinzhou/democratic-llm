@@ -142,7 +142,11 @@ class WeightedDPOTrainer(DPOTrainer):
         column *after* TRL tokenization to make `group_by_length=True` work.
         """
 
-        if not getattr(self.args, "group_by_length", False):
+        train_sampling_strategy = getattr(self.args, "train_sampling_strategy", None)
+        if not (
+            getattr(self.args, "group_by_length", False)
+            or train_sampling_strategy == "group_by_length"
+        ):
             return
 
         length_col = getattr(self.args, "length_column_name", "length")
@@ -241,9 +245,10 @@ def build_compatible_dpo_config_kwargs(dpo_kwargs: dict) -> tuple[dict, dict, li
     Filter/rename kwargs based on the installed TRL DPOConfig signature.
 
     TRL/transformers versions differ on which TrainingArguments fields DPOConfig
-    accepts in __init__. In particular, some versions expose `group_by_length`
-    and `length_column_name` as constructor arguments, while others do not even
-    though the resulting config object can still carry those attributes.
+    accepts in __init__. Recent Transformers docs use
+    `train_sampling_strategy="group_by_length"`, while older versions expose
+    `group_by_length=True`. Normalize between the two and apply unsupported
+    fields post-init when possible.
     """
 
     supported = set(inspect.signature(DPOConfig.__init__).parameters.keys())
@@ -255,6 +260,14 @@ def build_compatible_dpo_config_kwargs(dpo_kwargs: dict) -> tuple[dict, dict, li
         kwargs["evaluation_strategy"] = kwargs.pop("eval_strategy")
     elif "evaluation_strategy" not in supported and "eval_strategy" in supported and "evaluation_strategy" in kwargs:
         kwargs["eval_strategy"] = kwargs.pop("evaluation_strategy")
+
+    if "train_sampling_strategy" in supported:
+        if kwargs.pop("group_by_length", False):
+            kwargs["train_sampling_strategy"] = "group_by_length"
+    elif "group_by_length" in supported:
+        if kwargs.get("train_sampling_strategy") == "group_by_length":
+            kwargs["group_by_length"] = True
+        kwargs.pop("train_sampling_strategy", None)
 
     unsupported: list[str] = []
     filtered: dict = {}
@@ -478,7 +491,7 @@ def main() -> None:
         run_name=cfg.run_name,
         beta=cfg.beta,
         dataloader_num_workers=dataloader_num_workers,
-        group_by_length=True,
+        train_sampling_strategy="group_by_length",
         length_column_name="length",
         remove_unused_columns=False,
         save_strategy=cfg.save_strategy,
