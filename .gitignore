@@ -19,3 +19,5 @@ runpodctl
 archive/
 paper/
 private_tools/*
+
+artifacts/data/community_alignment/full_global.jsonl
