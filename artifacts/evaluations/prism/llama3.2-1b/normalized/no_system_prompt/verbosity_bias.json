@@ -1,0 +1,7 @@
+{
+  "num_rankings": 75000,
+  "pearson_corr_chars_vs_rank": 0.13606242700758614,
+  "pearson_corr_words_vs_rank": 0.15520470477591897,
+  "pairwise_longer_win_rate": 0.47243906715763634,
+  "pairwise_total": 142575
+}

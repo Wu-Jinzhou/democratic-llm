@@ -1,0 +1,10 @@
+{
+  "model_i": "checkpoints/llama3.2-1b-soft-panel",
+  "model_j": "checkpoints/llama3.2-1b-full-prism",
+  "vote_rate_i": 0.49666666666666665,
+  "vote_rate_j": 0.5033333333333333,
+  "majority_rate_i": 0.495,
+  "majority_rate_j": 0.505,
+  "num_questions": 3000,
+  "num_judges_per_question": 5
+}

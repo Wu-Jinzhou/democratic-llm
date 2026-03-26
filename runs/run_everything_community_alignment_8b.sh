@@ -59,14 +59,14 @@ fi
 if [[ -z "${COMMUNITY_ALIGNMENT_NUM_TRAIN_STEPS:-}" ]]; then
   COMMUNITY_ALIGNMENT_NUM_TRAIN_STEPS="$(compute_matched_steps "artifacts/data/community_alignment/full_us.jsonl")"
   export COMMUNITY_ALIGNMENT_NUM_TRAIN_STEPS
-  log "Computed matched COMMUNITY_ALIGNMENT_NUM_TRAIN_STEPS=$COMMUNITY_ALIGNMENT_NUM_TRAIN_STEPS from full_us dataset size."
+  log "Computed matched COMMUNITY_ALIGNMENT_NUM_TRAIN_STEPS=$COMMUNITY_ALIGNMENT_NUM_TRAIN_STEPS from English-subset full_us dataset size."
 else
   log "Using provided COMMUNITY_ALIGNMENT_NUM_TRAIN_STEPS=$COMMUNITY_ALIGNMENT_NUM_TRAIN_STEPS."
 fi
 
-"$SCRIPT_DIR/train_community_alignment_8b_full_global.sh"
-"$SCRIPT_DIR/train_community_alignment_8b_soft_us.sh"
-"$SCRIPT_DIR/train_community_alignment_8b_hard_us.sh"
+"$SCRIPT_DIR/train_community_alignment_8b_full_en_global.sh"
+"$SCRIPT_DIR/train_community_alignment_8b_soft_en.sh"
+"$SCRIPT_DIR/train_community_alignment_8b_hard_en.sh"
 
 if [[ "$RUN_GENERATION" == "1" ]]; then
   "$SCRIPT_DIR/generate_community_alignment_8b_responses.sh"

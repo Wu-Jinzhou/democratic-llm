@@ -11,6 +11,7 @@ log "  RESPONSES_DIR=$RESPONSES_DIR"
 log "  LISTWISE_PATH=$LISTWISE_PATH"
 log "  GEN_BATCH_SIZE=$GEN_BATCH_SIZE"
 log "  MAX_NEW_TOKENS=$MAX_NEW_TOKENS"
+log "  OVERWRITE_RESPONSES=$OVERWRITE_RESPONSES"
 log "  SYSTEM_PROMPT=${SYSTEM_PROMPT:-<empty>}"
 log "  MODELS=${MODEL_LIST[*]}"
 
@@ -27,6 +28,9 @@ CMD=(
   --system-prompt "$SYSTEM_PROMPT"
   --skip-judging
 )
+if [[ "$OVERWRITE_RESPONSES" == "1" ]]; then
+  CMD+=(--overwrite-responses)
+fi
 CMD+=("${QUESTION_ARGS[@]}")
 if [[ ${#HF_ARGS[@]} -gt 0 ]]; then
   CMD+=("${HF_ARGS[@]}")

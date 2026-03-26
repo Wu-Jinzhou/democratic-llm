@@ -1,0 +1,239 @@
+{
+  "method": "pairwise-effects",
+  "preferences_path": "artifacts/evaluations/llama3.2-3b/no_system_prompt/preferences.jsonl",
+  "bootstrap_samples": 1000,
+  "seed": 42,
+  "pairs": [
+    {
+      "model_a": "checkpoints/llama3.2-3b-adversary-hard",
+      "model_b": "checkpoints/llama3.2-3b-full-prism",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.6599333333333334,
+      "win_rate_a_majority": 0.6696666666666666,
+      "mean_margin_a": 0.31986666666666663,
+      "ci_lower": 0.6457333333333334,
+      "ci_upper": 0.6746683333333333
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-adversary-hard",
+      "model_b": "meta-llama/Llama-3.2-3B",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.6565333333333333,
+      "win_rate_a_majority": 0.6613333333333333,
+      "mean_margin_a": 0.31306666666666666,
+      "ci_lower": 0.6413333333333333,
+      "ci_upper": 0.6706666666666666
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-adversary-hard",
+      "model_b": "checkpoints/llama3.2-3b-adversary-soft",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.6498,
+      "win_rate_a_majority": 0.6556666666666666,
+      "mean_margin_a": 0.2996,
+      "ci_lower": 0.6362616666666666,
+      "ci_upper": 0.6648016666666666
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-adversary-hard",
+      "model_b": "checkpoints/llama3.2-3b-soft-panel",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.6439333333333334,
+      "win_rate_a_majority": 0.651,
+      "mean_margin_a": 0.28786666666666666,
+      "ci_lower": 0.6287316666666667,
+      "ci_upper": 0.658405
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-hard-panel",
+      "model_b": "meta-llama/Llama-3.2-3B",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.6264,
+      "win_rate_a_majority": 0.6333333333333333,
+      "mean_margin_a": 0.25279999999999997,
+      "ci_lower": 0.6107316666666667,
+      "ci_upper": 0.6404066666666667
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-hard-panel",
+      "model_b": "checkpoints/llama3.2-3b-soft-panel",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.6032,
+      "win_rate_a_majority": 0.6113333333333333,
+      "mean_margin_a": 0.20639999999999997,
+      "ci_lower": 0.586465,
+      "ci_upper": 0.6182733333333333
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-adversary-hard",
+      "model_b": "checkpoints/llama3.2-3b-us-rep",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.6018,
+      "win_rate_a_majority": 0.6043333333333333,
+      "mean_margin_a": 0.20359999999999998,
+      "ci_lower": 0.5865783333333333,
+      "ci_upper": 0.6166083333333333
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-us-rep",
+      "model_b": "meta-llama/Llama-3.2-3B",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.5730666666666666,
+      "win_rate_a_majority": 0.5746666666666667,
+      "mean_margin_a": 0.14613333333333334,
+      "ci_lower": 0.5571333333333334,
+      "ci_upper": 0.588535
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-adversary-hard",
+      "model_b": "checkpoints/llama3.2-3b-hard-panel",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.5521333333333334,
+      "win_rate_a_majority": 0.552,
+      "mean_margin_a": 0.10426666666666665,
+      "ci_lower": 0.5360633333333333,
+      "ci_upper": 0.56754
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-hard-panel",
+      "model_b": "checkpoints/llama3.2-3b-us-rep",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.5504666666666667,
+      "win_rate_a_majority": 0.558,
+      "mean_margin_a": 0.10093333333333336,
+      "ci_lower": 0.5355966666666666,
+      "ci_upper": 0.566135
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-soft-panel",
+      "model_b": "meta-llama/Llama-3.2-3B",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.5378666666666667,
+      "win_rate_a_majority": 0.5426666666666666,
+      "mean_margin_a": 0.07573333333333333,
+      "ci_lower": 0.522465,
+      "ci_upper": 0.5523366666666667
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-adversary-soft",
+      "model_b": "meta-llama/Llama-3.2-3B",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.5333333333333333,
+      "win_rate_a_majority": 0.5373333333333333,
+      "mean_margin_a": 0.06666666666666665,
+      "ci_lower": 0.5181316666666667,
+      "ci_upper": 0.5494
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-full-prism",
+      "model_b": "meta-llama/Llama-3.2-3B",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.5274666666666666,
+      "win_rate_a_majority": 0.53,
+      "mean_margin_a": 0.05493333333333333,
+      "ci_lower": 0.5118666666666667,
+      "ci_upper": 0.54327
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-adversary-soft",
+      "model_b": "checkpoints/llama3.2-3b-full-prism",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.511,
+      "win_rate_a_majority": 0.51,
+      "mean_margin_a": 0.022,
+      "ci_lower": 0.4976,
+      "ci_upper": 0.5236083333333332
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-adversary-soft",
+      "model_b": "checkpoints/llama3.2-3b-soft-panel",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.4972,
+      "win_rate_a_majority": 0.49166666666666664,
+      "mean_margin_a": -0.005599999999999999,
+      "ci_lower": 0.48433166666666666,
+      "ci_upper": 0.5102683333333333
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-full-prism",
+      "model_b": "checkpoints/llama3.2-3b-soft-panel",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.4829333333333333,
+      "win_rate_a_majority": 0.48,
+      "mean_margin_a": -0.034133333333333335,
+      "ci_lower": 0.46932999999999997,
+      "ci_upper": 0.49600333333333335
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-soft-panel",
+      "model_b": "checkpoints/llama3.2-3b-us-rep",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.4452,
+      "win_rate_a_majority": 0.44433333333333336,
+      "mean_margin_a": -0.1096,
+      "ci_lower": 0.42966166666666666,
+      "ci_upper": 0.4610666666666667
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-adversary-soft",
+      "model_b": "checkpoints/llama3.2-3b-us-rep",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.4446,
+      "win_rate_a_majority": 0.449,
+      "mean_margin_a": -0.1108,
+      "ci_lower": 0.42919833333333335,
+      "ci_upper": 0.45940333333333333
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-full-prism",
+      "model_b": "checkpoints/llama3.2-3b-us-rep",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.4324,
+      "win_rate_a_majority": 0.43733333333333335,
+      "mean_margin_a": -0.1352,
+      "ci_lower": 0.41719833333333334,
+      "ci_upper": 0.4474033333333334
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-adversary-soft",
+      "model_b": "checkpoints/llama3.2-3b-hard-panel",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.3966,
+      "win_rate_a_majority": 0.393,
+      "mean_margin_a": -0.20680000000000004,
+      "ci_lower": 0.38079666666666667,
+      "ci_upper": 0.41246666666666665
+    },
+    {
+      "model_a": "checkpoints/llama3.2-3b-full-prism",
+      "model_b": "checkpoints/llama3.2-3b-hard-panel",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.3874666666666667,
+      "win_rate_a_majority": 0.385,
+      "mean_margin_a": -0.22506666666666664,
+      "ci_lower": 0.37133,
+      "ci_upper": 0.4029333333333333
+    }
+  ]
+}

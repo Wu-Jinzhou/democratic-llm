@@ -1,0 +1,86 @@
+{
+  "base": "meta-llama/Llama-3.1-8B",
+  "base_resolved_path": "/workspace/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B/snapshots/d04e592bb4f6aa9cfee91e2e20afa771667e1d4b",
+  "models": [
+    "checkpoints/llama3.1-8b-full-prism",
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-us-rep",
+    "checkpoints/llama3.1-8b-hard-panel-normalized",
+    "checkpoints/llama3.1-8b-us-rep-normalized"
+  ],
+  "results": [
+    {
+      "model": "checkpoints/llama3.1-8b-full-prism",
+      "resolved_path": "checkpoints/llama3.1-8b-full-prism",
+      "global_step": null,
+      "n_elements": 8030261248,
+      "delta": {
+        "l2": 2.9961999469480656,
+        "rms": 3.3435356240668374e-05,
+        "mean_abs": 6.543620413935521e-06,
+        "rel_l2": 0.0024004848875516646
+      }
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-soft-panel",
+      "resolved_path": "checkpoints/llama3.1-8b-soft-panel",
+      "global_step": null,
+      "n_elements": 8030261248,
+      "delta": {
+        "l2": 2.938220645573194,
+        "rms": 3.278835048992449e-05,
+        "mean_abs": 6.498715848300667e-06,
+        "rel_l2": 0.002354033235724172
+      }
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-hard-panel",
+      "resolved_path": "checkpoints/llama3.1-8b-hard-panel",
+      "global_step": null,
+      "n_elements": 8030261248,
+      "delta": {
+        "l2": 3.435421484228104,
+        "rms": 3.833674093713724e-05,
+        "mean_abs": 7.069958781187465e-06,
+        "rel_l2": 0.002752378846965788
+      }
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-us-rep",
+      "resolved_path": "checkpoints/llama3.1-8b-us-rep",
+      "global_step": null,
+      "n_elements": 8030261248,
+      "delta": {
+        "l2": 3.626481395239962,
+        "rms": 4.0468827013201315e-05,
+        "mean_abs": 7.482593779283886e-06,
+        "rel_l2": 0.0029054515514320236
+      }
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-hard-panel-normalized",
+      "resolved_path": "checkpoints/llama3.1-8b-hard-panel-normalized",
+      "global_step": null,
+      "n_elements": 8030261248,
+      "delta": {
+        "l2": 3.021065077754439,
+        "rms": 3.37128325510624e-05,
+        "mean_abs": 6.103880089534188e-06,
+        "rel_l2": 0.002420406245199539
+      }
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-us-rep-normalized",
+      "resolved_path": "checkpoints/llama3.1-8b-us-rep-normalized",
+      "global_step": null,
+      "n_elements": 8030261248,
+      "delta": {
+        "l2": 2.9397681728975837,
+        "rms": 3.2805619740408204e-05,
+        "mean_abs": 5.970680115829095e-06,
+        "rel_l2": 0.0023552730781983217
+      }
+    }
+  ]
+}

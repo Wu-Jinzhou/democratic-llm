@@ -9,17 +9,23 @@ Requires:
 from __future__ import annotations
 
 import argparse
+import csv
 import inspect
+import json
+import math
 import os
+import random
 import sys
 import time
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
 import datasets
+import numpy as np
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, TrainerCallback
 from trl import DPOTrainer, DPOConfig
 from trl.trainer.dpo_trainer import DataCollatorForPreference
 
@@ -41,6 +47,7 @@ class TrainConfig:
     device_map: Optional[str] = "auto"
     attn_implementation: Optional[str] = "flash_attention_2"
     dataset_num_proc: int = 12
+    train_sampling_strategy: str = "group_by_length"
     per_device_batch_size: int = 1
     gradient_accumulation_steps: int = 8
     learning_rate: float = 5e-6
@@ -67,6 +74,23 @@ class TrainConfig:
     wandb_project: Optional[str] = "DemPO"
     wandb_entity: Optional[str] = None
     wandb_group: Optional[str] = None
+
+
+@dataclass
+class GradientDiagnosticsConfig:
+    output_dir: Path
+    dataset_path: Path
+    model_id: str
+    train_sampling_strategy: str
+    max_steps: int = 300
+    window_start: int = 51
+    window_size: int = 50
+    sketch_size: int = 4096
+    seed: int = 42
+
+    @property
+    def window_end(self) -> int:
+        return self.window_start + self.window_size - 1
 
 
 class WeightedDataCollatorForPreference(DataCollatorForPreference):
@@ -239,6 +263,251 @@ class WeightedDPOTrainer(DPOTrainer):
             self.eval_dataset = _add_length(eval_ds, "eval_dataset")
 
 
+class GradientDiagnosticsRecorder:
+    """Collect bounded gradient diagnostics during a short rerun."""
+
+    WHOLE_MODEL_LAYER = "__whole_model__"
+
+    def __init__(self, cfg: GradientDiagnosticsConfig):
+        self.cfg = cfg
+        self.summary_rows: list[dict[str, float | int | str]] = []
+        self.sampled_steps: list[int] = []
+        self.sampled_vectors: list[np.ndarray] = []
+        self._initialized = False
+        self._layer_order: list[str] = []
+        self._param_entries: list[dict[str, object]] = []
+        self._sketch_coords: list[int] = []
+        self._total_numel = 0
+
+    @staticmethod
+    def _clean_name(name: str) -> str:
+        return name[7:] if name.startswith("module.") else name
+
+    @staticmethod
+    def _layer_name(name: str) -> str:
+        clean = GradientDiagnosticsRecorder._clean_name(name)
+        if clean.startswith("model.embed_tokens"):
+            return "model.embed_tokens"
+        parts = clean.split(".")
+        if len(parts) >= 3 and parts[0] == "model" and parts[1] == "layers" and parts[2].isdigit():
+            return ".".join(parts[:3])
+        if clean.startswith("model.norm"):
+            return "model.norm"
+        if clean.startswith("lm_head"):
+            return "lm_head"
+        if len(parts) >= 2:
+            return ".".join(parts[:2])
+        return clean
+
+    def _should_record_step(self, step: int) -> bool:
+        return 1 <= step <= self.cfg.max_steps
+
+    def _should_record_sketch(self, step: int) -> bool:
+        return self.cfg.window_start <= step <= self.cfg.window_end
+
+    def _initialize(self, model) -> None:
+        params: list[dict[str, object]] = []
+        layer_names: list[str] = []
+        total_numel = 0
+        for name, param in model.named_parameters():
+            if not param.requires_grad:
+                continue
+            clean = self._clean_name(name)
+            layer = self._layer_name(clean)
+            params.append(
+                {
+                    "name": clean,
+                    "layer": layer,
+                    "numel": int(param.numel()),
+                    "sample_positions": [],
+                    "local_indices": [],
+                }
+            )
+            layer_names.append(layer)
+            total_numel += int(param.numel())
+
+        sketch_size = min(self.cfg.sketch_size, total_numel)
+        coord_rng = random.Random(self.cfg.seed)
+        sketch_coords = sorted(coord_rng.sample(range(total_numel), sketch_size)) if sketch_size > 0 else []
+
+        coord_idx = 0
+        offset = 0
+        for entry in params:
+            numel = int(entry["numel"])
+            end = offset + numel
+            positions: list[int] = []
+            local_indices: list[int] = []
+            while coord_idx < len(sketch_coords) and sketch_coords[coord_idx] < end:
+                positions.append(coord_idx)
+                local_indices.append(sketch_coords[coord_idx] - offset)
+                coord_idx += 1
+            entry["sample_positions"] = positions
+            entry["local_indices"] = local_indices
+            offset = end
+
+        self._initialized = True
+        self._param_entries = params
+        self._layer_order = list(dict.fromkeys(layer_names))
+        self._sketch_coords = sketch_coords
+        self._total_numel = total_numel
+
+    def record(self, model, step: int) -> None:
+        if not self._should_record_step(step):
+            return
+        if not self._initialized:
+            self._initialize(model)
+
+        layer_stats: dict[str, dict[str, float | int]] = defaultdict(
+            lambda: {"l1": 0.0, "l2_sq": 0.0, "numel": 0}
+        )
+        whole_l1 = 0.0
+        whole_l2_sq = 0.0
+        whole_numel = 0
+        sampled_vector = np.zeros(len(self._sketch_coords), dtype=np.float32) if self._should_record_sketch(step) else None
+
+        entry_idx = 0
+        for _, param in model.named_parameters():
+            if not param.requires_grad:
+                continue
+            entry = self._param_entries[entry_idx]
+            entry_idx += 1
+            grad = param.grad
+            if grad is None:
+                continue
+
+            grad_data = grad.detach()
+            l1 = float(grad_data.abs().sum().item())
+            l2_sq = float(grad_data.float().pow(2).sum().item())
+            numel = int(grad_data.numel())
+            layer = entry["layer"]  # type: ignore[index]
+
+            stats = layer_stats[layer]  # type: ignore[index]
+            stats["l1"] = float(stats["l1"]) + l1
+            stats["l2_sq"] = float(stats["l2_sq"]) + l2_sq
+            stats["numel"] = int(stats["numel"]) + numel
+            whole_l1 += l1
+            whole_l2_sq += l2_sq
+            whole_numel += numel
+
+            sample_positions = entry["sample_positions"]  # type: ignore[index]
+            if sampled_vector is not None and sample_positions:
+                flat = grad_data.reshape(-1)
+                local_indices = torch.tensor(
+                    entry["local_indices"],  # type: ignore[index]
+                    device=flat.device,
+                    dtype=torch.long,
+                )
+                sampled_vals = flat.index_select(0, local_indices).float().cpu().numpy()
+                sampled_vector[np.asarray(sample_positions, dtype=np.int64)] = sampled_vals
+
+        for layer in self._layer_order:
+            stats = layer_stats.get(layer)
+            if not stats or int(stats["numel"]) == 0:
+                continue
+            l2 = math.sqrt(float(stats["l2_sq"]))
+            numel = int(stats["numel"])
+            l1 = float(stats["l1"])
+            self.summary_rows.append(
+                {
+                    "step": step,
+                    "layer": layer,
+                    "numel": numel,
+                    "l1": l1,
+                    "l2": l2,
+                    "l1_over_l2": (l1 / l2) if l2 > 0 else 0.0,
+                    "l1_over_sqrt_d_l2": (l1 / (math.sqrt(numel) * l2)) if l2 > 0 and numel > 0 else 0.0,
+                }
+            )
+
+        whole_l2 = math.sqrt(whole_l2_sq)
+        self.summary_rows.append(
+            {
+                "step": step,
+                "layer": self.WHOLE_MODEL_LAYER,
+                "numel": whole_numel,
+                "l1": whole_l1,
+                "l2": whole_l2,
+                "l1_over_l2": (whole_l1 / whole_l2) if whole_l2 > 0 else 0.0,
+                "l1_over_sqrt_d_l2": (whole_l1 / (math.sqrt(whole_numel) * whole_l2))
+                if whole_l2 > 0 and whole_numel > 0
+                else 0.0,
+            }
+        )
+
+        if sampled_vector is not None:
+            self.sampled_steps.append(step)
+            self.sampled_vectors.append(sampled_vector)
+
+    def finalize(self) -> None:
+        self.cfg.output_dir.mkdir(parents=True, exist_ok=True)
+
+        summary_path = self.cfg.output_dir / "gradient_summaries.csv"
+        with summary_path.open("w", encoding="utf-8", newline="") as f:
+            writer = csv.DictWriter(
+                f,
+                fieldnames=[
+                    "step",
+                    "layer",
+                    "numel",
+                    "l1",
+                    "l2",
+                    "l1_over_l2",
+                    "l1_over_sqrt_d_l2",
+                ],
+            )
+            writer.writeheader()
+            writer.writerows(self.summary_rows)
+
+        vectors = (
+            np.stack(self.sampled_vectors, axis=0)
+            if self.sampled_vectors
+            else np.zeros((0, len(self._sketch_coords)), dtype=np.float32)
+        )
+        np.savez_compressed(
+            self.cfg.output_dir / "gradient_sketches.npz",
+            steps=np.asarray(self.sampled_steps, dtype=np.int32),
+            coords=np.asarray(self._sketch_coords, dtype=np.int64),
+            vectors=vectors,
+        )
+
+        metadata = {
+            "dataset_path": str(self.cfg.dataset_path),
+            "model_id": self.cfg.model_id,
+            "train_sampling_strategy": self.cfg.train_sampling_strategy,
+            "max_steps": self.cfg.max_steps,
+            "window_start": self.cfg.window_start,
+            "window_size": self.cfg.window_size,
+            "sketch_size": len(self._sketch_coords),
+            "seed": self.cfg.seed,
+            "total_numel": self._total_numel,
+            "layers": self._layer_order,
+            "sampled_steps": self.sampled_steps,
+            "summary_rows": len(self.summary_rows),
+        }
+        with (self.cfg.output_dir / "metadata.json").open("w", encoding="utf-8") as f:
+            json.dump(metadata, f, indent=2)
+            f.write("\n")
+
+
+class GradientDiagnosticsCallback(TrainerCallback):
+    """Collects bounded gradient diagnostics on optimizer steps."""
+
+    def __init__(self, cfg: GradientDiagnosticsConfig):
+        self.recorder = GradientDiagnosticsRecorder(cfg)
+
+    def on_pre_optimizer_step(self, args, state, control, model=None, **kwargs):
+        if not state.is_world_process_zero or model is None:
+            return control
+        step = int(state.global_step) + 1
+        self.recorder.record(model, step)
+        return control
+
+    def on_train_end(self, args, state, control, **kwargs):
+        if state.is_world_process_zero:
+            self.recorder.finalize()
+        return control
+
+
 def load_tokenizer(model_id: str, token: Optional[str]):
     tok = AutoTokenizer.from_pretrained(model_id, token=token)
     if tok.pad_token is None:
@@ -336,7 +605,7 @@ def build_compatible_dpo_config_kwargs(dpo_kwargs: dict) -> tuple[dict, dict, li
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Train Llama-3.1-8B (base) with DPO on PRISM-prepared data.")
+    parser = argparse.ArgumentParser(description="Train a causal LM with DPO on prepared preference data.")
     parser.add_argument("--dataset", type=Path, required=True, help="JSONL with prompt/chosen/rejected (+ optional weight).")
     parser.add_argument("--output-dir", type=Path, default=Path("checkpoints/llama3.1-8b-dpo"))
     parser.add_argument("--model-id", default="meta-llama/Llama-3.1-8B")
@@ -356,6 +625,12 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=12,
         help="Number of worker processes for HF/TRL dataset.map preprocessing (chat templating + tokenization).",
+    )
+    parser.add_argument(
+        "--train-sampling-strategy",
+        choices=["group_by_length", "random"],
+        default="group_by_length",
+        help="Training sampler strategy. Use random for gradient-diagnostics reruns to avoid sampler-induced coherence artifacts.",
     )
     parser.add_argument("--hf-token", default=os.environ.get("HF_TOKEN"))
     parser.add_argument(
@@ -444,6 +719,42 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--wandb-group", default=None)
     parser.add_argument("--dataloader-num-workers", type=int, default=0)
     parser.add_argument("--dataloader-prefetch-factor", type=int, default=None)
+    parser.add_argument(
+        "--gradient-diagnostics-dir",
+        type=Path,
+        default=None,
+        help="Optional directory for bounded gradient diagnostics artifacts.",
+    )
+    parser.add_argument(
+        "--gradient-diagnostics-max-steps",
+        type=int,
+        default=300,
+        help="Maximum optimizer steps for which to log gradient summaries.",
+    )
+    parser.add_argument(
+        "--gradient-diagnostics-window-start",
+        type=int,
+        default=51,
+        help="First optimizer step whose whole-model sketch should be saved.",
+    )
+    parser.add_argument(
+        "--gradient-diagnostics-window-size",
+        type=int,
+        default=50,
+        help="Number of consecutive optimizer steps for which to save whole-model sketches.",
+    )
+    parser.add_argument(
+        "--gradient-diagnostics-sketch-size",
+        type=int,
+        default=4096,
+        help="Number of sampled whole-model coordinates to save per sampled step.",
+    )
+    parser.add_argument(
+        "--gradient-diagnostics-seed",
+        type=int,
+        default=42,
+        help="Seed for the fixed whole-model coordinate sketch.",
+    )
     return parser.parse_args()
 
 
@@ -482,6 +793,7 @@ def main() -> None:
         device_map=device_map,
         attn_implementation=args.attn_implementation,
         dataset_num_proc=args.dataset_num_proc,
+        train_sampling_strategy=args.train_sampling_strategy,
         per_device_batch_size=args.per_device_batch_size,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         learning_rate=args.learning_rate,
@@ -530,6 +842,7 @@ def main() -> None:
         f"device_map={cfg.device_map}, "
         f"attn_implementation={cfg.attn_implementation}, "
         f"dataset_num_proc={cfg.dataset_num_proc}, "
+        f"train_sampling_strategy={cfg.train_sampling_strategy}, "
         f"per_device_batch_size={cfg.per_device_batch_size}, "
         f"gradient_accumulation_steps={cfg.gradient_accumulation_steps}, "
         f"precompute_ref_log_probs={cfg.precompute_ref_log_probs}, "
@@ -570,12 +883,15 @@ def main() -> None:
         beta=cfg.beta,
         dataloader_num_workers=dataloader_num_workers,
         dataset_num_proc=cfg.dataset_num_proc,
-        train_sampling_strategy="group_by_length",
-        length_column_name="length",
         remove_unused_columns=False,
         precompute_ref_log_probs=cfg.precompute_ref_log_probs,
         save_strategy=cfg.save_strategy,
     )
+    if cfg.train_sampling_strategy == "group_by_length":
+        dpo_kwargs["train_sampling_strategy"] = "group_by_length"
+        dpo_kwargs["length_column_name"] = "length"
+    else:
+        dpo_kwargs["train_sampling_strategy"] = "random"
     if cfg.num_train_steps and cfg.num_train_steps > 0:
         dpo_kwargs["max_steps"] = cfg.num_train_steps
     if cfg.max_length is not None:
@@ -606,6 +922,20 @@ def main() -> None:
             print(f"Warning: failed to set post-init DPOConfig attribute {key}={value!r}: {exc}")
 
     data_collator = WeightedDataCollatorForPreference(pad_token_id=tokenizer.pad_token_id)
+    callbacks = None
+    if args.gradient_diagnostics_dir is not None:
+        diagnostics_cfg = GradientDiagnosticsConfig(
+            output_dir=args.gradient_diagnostics_dir,
+            dataset_path=cfg.dataset_path,
+            model_id=cfg.model_id,
+            train_sampling_strategy=cfg.train_sampling_strategy,
+            max_steps=args.gradient_diagnostics_max_steps,
+            window_start=args.gradient_diagnostics_window_start,
+            window_size=args.gradient_diagnostics_window_size,
+            sketch_size=args.gradient_diagnostics_sketch_size,
+            seed=args.gradient_diagnostics_seed,
+        )
+        callbacks = [GradientDiagnosticsCallback(diagnostics_cfg)]
     trainer = WeightedDPOTrainer(
         model=model,
         ref_model=ref_model,
@@ -614,6 +944,7 @@ def main() -> None:
         eval_dataset=eval_ds,
         processing_class=tokenizer,
         data_collator=data_collator,
+        callbacks=callbacks,
     )
 
     trainer.train()

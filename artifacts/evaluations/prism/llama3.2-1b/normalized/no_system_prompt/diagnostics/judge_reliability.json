@@ -1,0 +1,12 @@
+{
+  "method": "judge-reliability",
+  "listwise_path": "artifacts/evaluations/llama3.2-1b/normalized/no_system_prompt/listwise.jsonl",
+  "n_questions": 3000,
+  "n_models": 5,
+  "n_judges": 5,
+  "kendall_tau_mean": 0.6763066666666667,
+  "kendall_tau_median": 0.72,
+  "top1_agreement_mean": 0.8376666666666667,
+  "top1_margin_mean": 0.7066666666666667,
+  "fleiss_kappa_top1": 0.6667418979185931
+}

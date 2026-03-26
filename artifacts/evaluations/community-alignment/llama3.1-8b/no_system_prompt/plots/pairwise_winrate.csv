@@ -1,0 +1,6 @@
+,checkpoints/community-alignment/llama3.1-8b-full-global,checkpoints/community-alignment/llama3.1-8b-full-us,checkpoints/community-alignment/llama3.1-8b-hard-us,checkpoints/community-alignment/llama3.1-8b-soft-us,meta-llama/Llama-3.1-8B
+checkpoints/community-alignment/llama3.1-8b-full-global,0.5,0.49433333333333335,0.5298,0.49366666666666664,0.5793333333333334
+checkpoints/community-alignment/llama3.1-8b-full-us,0.5056666666666667,0.5,0.5284666666666666,0.5044666666666666,0.5806666666666667
+checkpoints/community-alignment/llama3.1-8b-hard-us,0.4702,0.47153333333333336,0.5,0.4706,0.5462
+checkpoints/community-alignment/llama3.1-8b-soft-us,0.5063333333333333,0.4955333333333333,0.5294,0.5,0.5791333333333334
+meta-llama/Llama-3.1-8B,0.4206666666666667,0.41933333333333334,0.4538,0.42086666666666667,0.5

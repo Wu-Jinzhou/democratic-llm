@@ -20,10 +20,10 @@ PRISM_SOFT_MODEL="${PRISM_SOFT_MODEL:-checkpoints/llama3.1-8b-soft-panel}"
 PRISM_HARD_MODEL="${PRISM_HARD_MODEL:-checkpoints/llama3.1-8b-hard-panel}"
 PRISM_US_REP_MODEL="${PRISM_US_REP_MODEL:-checkpoints/llama3.1-8b-us-rep}"
 
-COMMUNITY_FULL_GLOBAL_MODEL="${COMMUNITY_FULL_GLOBAL_MODEL:-checkpoints/community-alignment/llama3.1-8b-full-global}"
+COMMUNITY_FULL_EN_GLOBAL_MODEL="${COMMUNITY_FULL_EN_GLOBAL_MODEL:-${COMMUNITY_FULL_GLOBAL_MODEL:-checkpoints/community-alignment/llama3.1-8b-full-en-global}}"
 COMMUNITY_FULL_US_MODEL="${COMMUNITY_FULL_US_MODEL:-checkpoints/community-alignment/llama3.1-8b-full-us}"
-COMMUNITY_SOFT_US_MODEL="${COMMUNITY_SOFT_US_MODEL:-checkpoints/community-alignment/llama3.1-8b-soft-us}"
-COMMUNITY_HARD_US_MODEL="${COMMUNITY_HARD_US_MODEL:-checkpoints/community-alignment/llama3.1-8b-hard-us}"
+COMMUNITY_SOFT_MODEL="${COMMUNITY_SOFT_MODEL:-${COMMUNITY_SOFT_EN_MODEL:-${COMMUNITY_SOFT_US_MODEL:-checkpoints/community-alignment/llama3.1-8b-soft-en}}}"
+COMMUNITY_HARD_MODEL="${COMMUNITY_HARD_MODEL:-${COMMUNITY_HARD_EN_MODEL:-${COMMUNITY_HARD_US_MODEL:-checkpoints/community-alignment/llama3.1-8b-hard-en}}}"
 
 OVERTON_QUESTIONS_CSV="${OVERTON_QUESTIONS_CSV:-/overtonbench/meta/questions.csv}"
 OVERTON_BENCHMARK_CSV="${OVERTON_BENCHMARK_CSV:-/overtonbench/data/prolific_with_clusters_kmeans_merged_public.csv}"
@@ -56,10 +56,10 @@ case "$MODEL_SET" in
     ;;
   community)
     MODEL_LIST=(
-      "$COMMUNITY_FULL_GLOBAL_MODEL"
+      "$COMMUNITY_FULL_EN_GLOBAL_MODEL"
       "$COMMUNITY_FULL_US_MODEL"
-      "$COMMUNITY_SOFT_US_MODEL"
-      "$COMMUNITY_HARD_US_MODEL"
+      "$COMMUNITY_SOFT_MODEL"
+      "$COMMUNITY_HARD_MODEL"
     )
     ;;
   all)
@@ -68,10 +68,10 @@ case "$MODEL_SET" in
       "$PRISM_SOFT_MODEL"
       "$PRISM_HARD_MODEL"
       "$PRISM_US_REP_MODEL"
-      "$COMMUNITY_FULL_GLOBAL_MODEL"
+      "$COMMUNITY_FULL_EN_GLOBAL_MODEL"
       "$COMMUNITY_FULL_US_MODEL"
-      "$COMMUNITY_SOFT_US_MODEL"
-      "$COMMUNITY_HARD_US_MODEL"
+      "$COMMUNITY_SOFT_MODEL"
+      "$COMMUNITY_HARD_MODEL"
     )
     ;;
   *)

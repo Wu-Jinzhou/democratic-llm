@@ -1,0 +1,109 @@
+{
+  "method": "bradley-terry",
+  "models": [
+    "checkpoints/llama3.2-3b-adversary-hard",
+    "checkpoints/llama3.2-3b-adversary-soft",
+    "checkpoints/llama3.2-3b-full-prism",
+    "checkpoints/llama3.2-3b-hard-panel",
+    "checkpoints/llama3.2-3b-soft-panel",
+    "checkpoints/llama3.2-3b-us-rep",
+    "meta-llama/Llama-3.2-3B"
+  ],
+  "num_comparisons": 63000,
+  "bt_mode": "majority",
+  "max_iter": 1000,
+  "tol": 1e-06,
+  "bootstrap_samples": 1000,
+  "bootstrap": {
+    "samples": 1000,
+    "seed": 42,
+    "alpha": 0.05,
+    "workers": 96
+  },
+  "results": [
+    {
+      "model": "checkpoints/llama3.2-3b-adversary-hard",
+      "score": 0.468372708561066,
+      "ability": 1.59739265367,
+      "wins": 11382.0,
+      "score_mean": 0.46916218984044084,
+      "score_std": 0.022835454688661536,
+      "score_ci_lower": 0.42530032884280816,
+      "score_ci_upper": 0.5121774259785605,
+      "ability_ci_lower": 1.5300498687735429,
+      "ability_ci_upper": 1.6689211938483781
+    },
+    {
+      "model": "checkpoints/llama3.2-3b-hard-panel",
+      "score": 0.2752522980596721,
+      "ability": 1.31686287490734,
+      "wins": 10418.0,
+      "score_mean": 0.2747945273837586,
+      "score_std": 0.02220786127925308,
+      "score_ci_lower": 0.23129232720496343,
+      "score_ci_upper": 0.3202968935364586,
+      "ability_ci_lower": 1.260227584415351,
+      "ability_ci_upper": 1.3775366853680682
+    },
+    {
+      "model": "checkpoints/llama3.2-3b-us-rep",
+      "score": 0.04643303234204779,
+      "ability": 1.0475279262277153,
+      "wins": 9245.0,
+      "score_mean": 0.046509124917904314,
+      "score_std": 0.021322933310243753,
+      "score_ci_lower": 0.004423094714327973,
+      "score_ci_upper": 0.08683082096166357,
+      "ability_ci_lower": 1.0044328910357812,
+      "ability_ci_upper": 1.0907121384777736
+    },
+    {
+      "model": "checkpoints/llama3.2-3b-soft-panel",
+      "score": -0.14470329920670882,
+      "ability": 0.8652789839896324,
+      "wins": 8259.0,
+      "score_mean": -0.1452614949594401,
+      "score_std": 0.018098180034920173,
+      "score_ci_lower": -0.17940322257228003,
+      "score_ci_upper": -0.10965144259227662,
+      "ability_ci_lower": 0.8357688305870253,
+      "ability_ci_upper": 0.8961464393452603
+    },
+    {
+      "model": "checkpoints/llama3.2-3b-adversary-soft",
+      "score": -0.16085810750199872,
+      "ability": 0.8514128716357909,
+      "wins": 8176.0,
+      "score_mean": -0.16079138164865225,
+      "score_std": 0.017935120693545,
+      "score_ci_lower": -0.19566459055757604,
+      "score_ci_upper": -0.12556544920126256,
+      "ability_ci_lower": 0.8222879915866359,
+      "ability_ci_upper": 0.881998036470927
+    },
+    {
+      "model": "checkpoints/llama3.2-3b-full-prism",
+      "score": -0.2033874227232881,
+      "ability": 0.8159620579386446,
+      "wins": 7958.0,
+      "score_mean": -0.20267117694149367,
+      "score_std": 0.017936225201179264,
+      "score_ci_lower": -0.23691872360036073,
+      "score_ci_upper": -0.1678731168892639,
+      "ability_ci_lower": 0.7890554169948975,
+      "ability_ci_upper": 0.8454611026139766
+    },
+    {
+      "model": "meta-llama/Llama-3.2-3B",
+      "score": -0.28110920953079044,
+      "ability": 0.7549458836922992,
+      "wins": 7562.0,
+      "score_mean": -0.2817417885925184,
+      "score_std": 0.024850494767092533,
+      "score_ci_lower": -0.3292512050898757,
+      "score_ci_upper": -0.23410246910652366,
+      "ability_ci_lower": 0.7194622614626492,
+      "ability_ci_upper": 0.7912807299118472
+    }
+  ]
+}

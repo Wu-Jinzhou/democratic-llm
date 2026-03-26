@@ -8,7 +8,7 @@ source "$SCRIPT_DIR/_community_alignment_common.sh"
 DATASET="${DATASET:-artifacts/data/community_alignment/full_us.jsonl}"
 OUTPUT_DIR="${OUTPUT_DIR:-checkpoints/community-alignment/llama3.1-8b-full-us}"
 
-log "Training Community Alignment US-full model."
+log "Training Community Alignment English-subset US-full model."
 log "  MODEL_ID=$MODEL_ID"
 log "  DATASET=$DATASET"
 log "  OUTPUT_DIR=$OUTPUT_DIR"

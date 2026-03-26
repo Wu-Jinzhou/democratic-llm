@@ -1,0 +1,79 @@
+{
+  "method": "plackett-luce",
+  "models": [
+    "checkpoints/llama3.1-8b-full-prism",
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-us-rep",
+    "meta-llama/Llama-3.1-8B"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "bootstrap_samples": 1000,
+  "bootstrap_seed": 42,
+  "bootstrap_workers": 96,
+  "bootstrap_alpha": 0.05,
+  "plackett_luce": {
+    "results": [
+      {
+        "model": "checkpoints/llama3.1-8b-hard-panel",
+        "score": 0.37429761722257787,
+        "ability": 1.4539698125271334,
+        "score_mean": 0.3745869411612604,
+        "score_std": 0.009297988013655287,
+        "score_ci_lower": 0.3565533801348579,
+        "score_ci_upper": 0.3928904933520309,
+        "ability_ci_lower": 1.428397776549579,
+        "ability_ci_upper": 1.4812561730492517
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-us-rep",
+        "score": 0.11285301797634278,
+        "ability": 1.1194673792748422,
+        "score_mean": 0.11275269217090302,
+        "score_std": 0.00856426261690285,
+        "score_ci_lower": 0.09674333933189484,
+        "score_ci_upper": 0.1291789944947644,
+        "ability_ci_lower": 1.1015776056906137,
+        "ability_ci_upper": 1.137893782661036
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel",
+        "score": 0.07076100986760585,
+        "ability": 1.0733246812060937,
+        "score_mean": 0.07066400764710636,
+        "score_std": 0.008217221752161021,
+        "score_ci_lower": 0.05473643528554354,
+        "score_ci_upper": 0.08712150382670905,
+        "ability_ci_lower": 1.0562621845438664,
+        "ability_ci_upper": 1.0910292358922857
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-full-prism",
+        "score": 0.0259927941515357,
+        "ability": 1.0263335528427406,
+        "score_mean": 0.025628114748699693,
+        "score_std": 0.008129599644506906,
+        "score_ci_lower": 0.009098664127962843,
+        "score_ci_upper": 0.04129072439871013,
+        "ability_ci_lower": 1.0091401827983644,
+        "ability_ci_upper": 1.0421550414056984
+      },
+      {
+        "model": "meta-llama/Llama-3.1-8B",
+        "score": -0.5839044392180625,
+        "ability": 0.5577165396020006,
+        "score_mean": -0.5836317557279693,
+        "score_std": 0.011312159359155041,
+        "score_ci_lower": -0.6039698257814801,
+        "score_ci_upper": -0.5605767819600925,
+        "ability_ci_lower": 0.5466372682981328,
+        "ability_ci_upper": 0.5708796957612622
+      }
+    ],
+    "max_iter": 1000,
+    "tol": 1e-06,
+    "bootstrap_samples": 1000
+  }
+}

@@ -1,0 +1,222 @@
+{
+  "method": "mallows",
+  "models": [
+    "checkpoints/llama3.2-1b-adversary-hard",
+    "checkpoints/llama3.2-1b-adversary-soft",
+    "checkpoints/llama3.2-1b-full-prism",
+    "checkpoints/llama3.2-1b-hard-panel",
+    "checkpoints/llama3.2-1b-soft-panel",
+    "checkpoints/llama3.2-1b-us-rep",
+    "meta-llama/Llama-3.2-1B"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "mallows": {
+    "consensus": [
+      "checkpoints/llama3.2-1b-hard-panel",
+      "checkpoints/llama3.2-1b-adversary-hard",
+      "checkpoints/llama3.2-1b-us-rep",
+      "checkpoints/llama3.2-1b-adversary-soft",
+      "checkpoints/llama3.2-1b-soft-panel",
+      "checkpoints/llama3.2-1b-full-prism",
+      "meta-llama/Llama-3.2-1B"
+    ],
+    "consensus_method": "bruteforce",
+    "phi": 0.10665388870304199,
+    "log_likelihood_train": -101553.1246154431,
+    "log_likelihood_test": -25408.598719658705,
+    "params": {
+      "test_fraction": 0.2,
+      "seed": 42,
+      "phi_max": 10.0,
+      "phi_grid": 200,
+      "phi_tol": 0.0001,
+      "kemeny_method": "bruteforce",
+      "kemeny_bruteforce_max": 8,
+      "kemeny_ilp_max": 12,
+      "kemeny_ilp_max_seconds": 60,
+      "bootstrap_samples": 1000,
+      "bootstrap_workers": 96
+    },
+    "mean_kendall_train": 9.325833333333334,
+    "mean_kendall_test": 9.389333333333333,
+    "n_train": 12000,
+    "n_test": 3000,
+    "bootstrap": {
+      "samples": 1000,
+      "seed": 42,
+      "workers": 96,
+      "exact_match_rate": 0.451,
+      "rank_probabilities": {
+        "checkpoints/llama3.2-1b-adversary-hard": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "checkpoints/llama3.2-1b-adversary-soft": [
+          0.0,
+          0.0,
+          0.0,
+          0.768,
+          0.23,
+          0.002,
+          0.0
+        ],
+        "checkpoints/llama3.2-1b-full-prism": [
+          0.0,
+          0.0,
+          0.0,
+          0.003,
+          0.318,
+          0.679,
+          0.0
+        ],
+        "checkpoints/llama3.2-1b-hard-panel": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "checkpoints/llama3.2-1b-soft-panel": [
+          0.0,
+          0.0,
+          0.0,
+          0.229,
+          0.452,
+          0.319,
+          0.0
+        ],
+        "checkpoints/llama3.2-1b-us-rep": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "meta-llama/Llama-3.2-1B": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    "pairwise_probabilities": {
+      "method": "exact",
+      "matrix": {
+        "checkpoints/llama3.2-1b-hard-panel": {
+          "checkpoints/llama3.2-1b-adversary-hard": 0.5266382260278365,
+          "checkpoints/llama3.2-1b-us-rep": 0.5443298985364681,
+          "checkpoints/llama3.2-1b-adversary-soft": 0.5619214239097707,
+          "checkpoints/llama3.2-1b-soft-panel": 0.5793738742813613,
+          "checkpoints/llama3.2-1b-full-prism": 0.5966494313809966,
+          "meta-llama/Llama-3.2-1B": 0.6137116736147021
+        },
+        "checkpoints/llama3.2-1b-adversary-hard": {
+          "checkpoints/llama3.2-1b-hard-panel": 0.4733617739721548,
+          "checkpoints/llama3.2-1b-us-rep": 0.5266382260278364,
+          "checkpoints/llama3.2-1b-adversary-soft": 0.544329898536468,
+          "checkpoints/llama3.2-1b-soft-panel": 0.5619214239097708,
+          "checkpoints/llama3.2-1b-full-prism": 0.5793738742813614,
+          "meta-llama/Llama-3.2-1B": 0.5966494313809954
+        },
+        "checkpoints/llama3.2-1b-us-rep": {
+          "checkpoints/llama3.2-1b-hard-panel": 0.4556701014635232,
+          "checkpoints/llama3.2-1b-adversary-hard": 0.4733617739721544,
+          "checkpoints/llama3.2-1b-adversary-soft": 0.5266382260278358,
+          "checkpoints/llama3.2-1b-soft-panel": 0.5443298985364674,
+          "checkpoints/llama3.2-1b-full-prism": 0.5619214239097697,
+          "meta-llama/Llama-3.2-1B": 0.5793738742813601
+        },
+        "checkpoints/llama3.2-1b-adversary-soft": {
+          "checkpoints/llama3.2-1b-hard-panel": 0.43807857609022094,
+          "checkpoints/llama3.2-1b-adversary-hard": 0.45567010146352355,
+          "checkpoints/llama3.2-1b-us-rep": 0.47336177397215445,
+          "checkpoints/llama3.2-1b-soft-panel": 0.5266382260278363,
+          "checkpoints/llama3.2-1b-full-prism": 0.5443298985364677,
+          "meta-llama/Llama-3.2-1B": 0.56192142390977
+        },
+        "checkpoints/llama3.2-1b-soft-panel": {
+          "checkpoints/llama3.2-1b-hard-panel": 0.42062612571863056,
+          "checkpoints/llama3.2-1b-adversary-hard": 0.4380785760902211,
+          "checkpoints/llama3.2-1b-us-rep": 0.45567010146352327,
+          "checkpoints/llama3.2-1b-adversary-soft": 0.47336177397215434,
+          "checkpoints/llama3.2-1b-full-prism": 0.5266382260278365,
+          "meta-llama/Llama-3.2-1B": 0.5443298985364678
+        },
+        "checkpoints/llama3.2-1b-full-prism": {
+          "checkpoints/llama3.2-1b-hard-panel": 0.40335056861899865,
+          "checkpoints/llama3.2-1b-adversary-hard": 0.42062612571863145,
+          "checkpoints/llama3.2-1b-us-rep": 0.4380785760902221,
+          "checkpoints/llama3.2-1b-adversary-soft": 0.45567010146352405,
+          "checkpoints/llama3.2-1b-soft-panel": 0.47336177397215445,
+          "meta-llama/Llama-3.2-1B": 0.5266382260278364
+        },
+        "meta-llama/Llama-3.2-1B": {
+          "checkpoints/llama3.2-1b-hard-panel": 0.3862883263852928,
+          "checkpoints/llama3.2-1b-adversary-hard": 0.4033505686189997,
+          "checkpoints/llama3.2-1b-us-rep": 0.4206261257186321,
+          "checkpoints/llama3.2-1b-adversary-soft": 0.438078576090222,
+          "checkpoints/llama3.2-1b-soft-panel": 0.4556701014635235,
+          "checkpoints/llama3.2-1b-full-prism": 0.4733617739721545
+        }
+      }
+    }
+  },
+  "plackett_luce_compare": {
+    "log_likelihood_train": -101570.84244301688,
+    "log_likelihood_test": -25433.31566948961,
+    "results": [
+      {
+        "model": "checkpoints/llama3.2-1b-hard-panel",
+        "score": 0.2048984744842633,
+        "ability": 1.227400446173978
+      },
+      {
+        "model": "checkpoints/llama3.2-1b-adversary-hard",
+        "score": 0.11477666313370459,
+        "ability": 1.1216229098510904
+      },
+      {
+        "model": "checkpoints/llama3.2-1b-us-rep",
+        "score": 0.09848562732884014,
+        "ability": 1.1034985440587148
+      },
+      {
+        "model": "checkpoints/llama3.2-1b-adversary-soft",
+        "score": -0.018297726591980763,
+        "ability": 0.9818686604269694
+      },
+      {
+        "model": "checkpoints/llama3.2-1b-soft-panel",
+        "score": -0.024796014119087665,
+        "ability": 0.9755088817727197
+      },
+      {
+        "model": "checkpoints/llama3.2-1b-full-prism",
+        "score": -0.038936684018659816,
+        "ability": 0.9618116052641493
+      },
+      {
+        "model": "meta-llama/Llama-3.2-1B",
+        "score": -0.33613034021708005,
+        "ability": 0.7145299677552642
+      }
+    ],
+    "max_iter": 1000,
+    "tol": 1e-06
+  }
+}

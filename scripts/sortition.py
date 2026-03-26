@@ -42,6 +42,7 @@ class AttributeConfig:
     population_proportions: Dict[str, float]
     tolerance: float = 0.05
     slack_categories: List[str] = field(default_factory=list)
+    value_map: Dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
@@ -61,6 +62,7 @@ def load_panel_config(path: Path) -> PanelConfig:
             population_proportions=entry["population_proportions"],
             tolerance=float(entry.get("tolerance", data.get("tolerance", 0.05))),
             slack_categories=list(entry.get("slack_categories", [])),
+            value_map=dict(entry.get("value_map", {})),
         )
         for entry in data["attributes"]
     ]
@@ -74,7 +76,9 @@ def load_panel_config(path: Path) -> PanelConfig:
 def _extract_value(row: pd.Series, attr: AttributeConfig):
     val = row.get(attr.column)
     if isinstance(val, dict) and attr.nested_key:
-        return val.get(attr.nested_key)
+        val = val.get(attr.nested_key)
+    if attr.value_map and val is not None:
+        val = attr.value_map.get(val, val)
     return val
 
 

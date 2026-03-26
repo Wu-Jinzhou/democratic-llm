@@ -1,0 +1,83 @@
+{
+  "method": "bradley-terry",
+  "models": [
+    "checkpoints/llama3.1-8b-full-prism",
+    "checkpoints/llama3.1-8b-hard-panel-normalized",
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-us-rep-normalized",
+    "meta-llama/Llama-3.1-8B"
+  ],
+  "num_comparisons": 30000,
+  "bt_mode": "majority",
+  "max_iter": 1000,
+  "tol": 1e-06,
+  "bootstrap_samples": 1000,
+  "bootstrap": {
+    "samples": 1000,
+    "seed": 42,
+    "alpha": 0.05,
+    "workers": 96
+  },
+  "results": [
+    {
+      "model": "checkpoints/llama3.1-8b-hard-panel-normalized",
+      "score": 0.3637726253995977,
+      "ability": 1.4387470424303328,
+      "wins": 7327.0,
+      "score_mean": 0.3629631906822099,
+      "score_std": 0.021060492173133452,
+      "score_ci_lower": 0.3246186801481339,
+      "score_ci_upper": 0.40383479336287126,
+      "ability_ci_lower": 1.3835029882294294,
+      "ability_ci_upper": 1.4975565202438141
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-us-rep-normalized",
+      "score": 0.1132835844525255,
+      "ability": 1.1199494881820566,
+      "wins": 6416.0,
+      "score_mean": 0.11408421312505007,
+      "score_std": 0.0189503024955165,
+      "score_ci_lower": 0.07576134158378019,
+      "score_ci_upper": 0.15040604613429767,
+      "ability_ci_lower": 1.0787051013834192,
+      "ability_ci_upper": 1.16230609682202
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-soft-panel",
+      "score": 0.0007106074141786122,
+      "ability": 1.0007108599554428,
+      "wins": 6001.0,
+      "score_mean": 0.0002944871125045886,
+      "score_std": 0.019577919336063548,
+      "score_ci_lower": -0.037685862766348235,
+      "score_ci_upper": 0.03780644643008116,
+      "ability_ci_lower": 0.9630154123775424,
+      "ability_ci_upper": 1.0385302021959186
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-full-prism",
+      "score": -0.054044654188632184,
+      "ability": 0.9473898006343725,
+      "wins": 5799.0,
+      "score_mean": -0.05432358215349705,
+      "score_std": 0.01948771381609299,
+      "score_ci_lower": -0.09378821235879381,
+      "score_ci_upper": -0.016368541982725544,
+      "ability_ci_lower": 0.9104755692961676,
+      "ability_ci_upper": 0.9837646946469455
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "score": -0.42372216307766974,
+      "ability": 0.6546057302870346,
+      "wins": 4457.0,
+      "score_mean": -0.42301830876626795,
+      "score_std": 0.02618181245914465,
+      "score_ci_lower": -0.4770257898368232,
+      "score_ci_upper": -0.3742981787586557,
+      "ability_ci_lower": 0.6206265232302791,
+      "ability_ci_upper": 0.6877718023085972
+    }
+  ]
+}

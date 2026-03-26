@@ -1,0 +1,154 @@
+{
+  "method": "mallows",
+  "models": [
+    "checkpoints/llama3.1-8b-full-prism",
+    "checkpoints/llama3.1-8b-hard-panel-normalized",
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-us-rep-normalized",
+    "meta-llama/Llama-3.1-8B"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "mallows": {
+    "consensus": [
+      "checkpoints/llama3.1-8b-hard-panel-normalized",
+      "checkpoints/llama3.1-8b-us-rep-normalized",
+      "checkpoints/llama3.1-8b-soft-panel",
+      "checkpoints/llama3.1-8b-full-prism",
+      "meta-llama/Llama-3.1-8B"
+    ],
+    "consensus_method": "bruteforce",
+    "phi": 0.21410753102257352,
+    "log_likelihood_train": -56328.93108129618,
+    "log_likelihood_test": -14156.367502940611,
+    "params": {
+      "test_fraction": 0.2,
+      "seed": 42,
+      "phi_max": 10.0,
+      "phi_grid": 200,
+      "phi_tol": 0.0001,
+      "kemeny_method": "bruteforce",
+      "kemeny_bruteforce_max": 8,
+      "kemeny_ilp_max": 12,
+      "kemeny_ilp_max_seconds": 60,
+      "bootstrap_samples": 1000,
+      "bootstrap_workers": 96
+    },
+    "mean_kendall_train": 4.120916666666667,
+    "mean_kendall_test": 4.2363333333333335,
+    "n_train": 12000,
+    "n_test": 3000,
+    "bootstrap": {
+      "samples": 1000,
+      "seed": 42,
+      "workers": 96,
+      "exact_match_rate": 1.0,
+      "rank_probabilities": {
+        "checkpoints/llama3.1-8b-full-prism": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "checkpoints/llama3.1-8b-hard-panel-normalized": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "checkpoints/llama3.1-8b-soft-panel": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "checkpoints/llama3.1-8b-us-rep-normalized": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "meta-llama/Llama-3.1-8B": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    "pairwise_probabilities": {
+      "method": "exact",
+      "matrix": {
+        "checkpoints/llama3.1-8b-hard-panel-normalized": {
+          "checkpoints/llama3.1-8b-us-rep-normalized": 0.5533233340447729,
+          "checkpoints/llama3.1-8b-soft-panel": 0.5883351718444979,
+          "checkpoints/llama3.1-8b-full-prism": 0.6225595507159153,
+          "meta-llama/Llama-3.1-8B": 0.6557165619202322
+        },
+        "checkpoints/llama3.1-8b-us-rep-normalized": {
+          "checkpoints/llama3.1-8b-hard-panel-normalized": 0.44667666595522704,
+          "checkpoints/llama3.1-8b-soft-panel": 0.5533233340447729,
+          "checkpoints/llama3.1-8b-full-prism": 0.5883351718444979,
+          "meta-llama/Llama-3.1-8B": 0.6225595507159152
+        },
+        "checkpoints/llama3.1-8b-soft-panel": {
+          "checkpoints/llama3.1-8b-hard-panel-normalized": 0.4116648281555017,
+          "checkpoints/llama3.1-8b-us-rep-normalized": 0.44667666595522704,
+          "checkpoints/llama3.1-8b-full-prism": 0.5533233340447729,
+          "meta-llama/Llama-3.1-8B": 0.5883351718444978
+        },
+        "checkpoints/llama3.1-8b-full-prism": {
+          "checkpoints/llama3.1-8b-hard-panel-normalized": 0.37744044928408427,
+          "checkpoints/llama3.1-8b-us-rep-normalized": 0.4116648281555017,
+          "checkpoints/llama3.1-8b-soft-panel": 0.4466766659552271,
+          "meta-llama/Llama-3.1-8B": 0.5533233340447729
+        },
+        "meta-llama/Llama-3.1-8B": {
+          "checkpoints/llama3.1-8b-hard-panel-normalized": 0.3442834380797673,
+          "checkpoints/llama3.1-8b-us-rep-normalized": 0.3774404492840841,
+          "checkpoints/llama3.1-8b-soft-panel": 0.41166482815550176,
+          "checkpoints/llama3.1-8b-full-prism": 0.44667666595522704
+        }
+      }
+    }
+  },
+  "plackett_luce_compare": {
+    "log_likelihood_train": -55616.07192841352,
+    "log_likelihood_test": -13961.731588652829,
+    "results": [
+      {
+        "model": "checkpoints/llama3.1-8b-hard-panel-normalized",
+        "score": 0.3759941281672989,
+        "ability": 1.4564385817822865
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-us-rep-normalized",
+        "score": 0.12938999519732441,
+        "ability": 1.138133904380651
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel",
+        "score": 0.05736667717396802,
+        "ability": 1.059044066494235
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-full-prism",
+        "score": 0.01970917740489965,
+        "ability": 1.0199046855645255
+      },
+      {
+        "model": "meta-llama/Llama-3.1-8B",
+        "score": -0.5824599779434908,
+        "ability": 0.5585227216548488
+      }
+    ],
+    "max_iter": 1000,
+    "tol": 1e-06
+  }
+}

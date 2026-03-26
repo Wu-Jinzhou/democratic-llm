@@ -1,0 +1,71 @@
+{
+  "method": "kemeny",
+  "models": [
+    "checkpoints/llama3.2-3b-full-prism",
+    "checkpoints/llama3.2-3b-hard-panel",
+    "checkpoints/llama3.2-3b-soft-panel",
+    "checkpoints/llama3.2-3b-us-rep",
+    "meta-llama/Llama-3.2-3B"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "bootstrap_samples": 1000,
+  "bootstrap_seed": 42,
+  "bootstrap_workers": 96,
+  "bootstrap_alpha": 0.05,
+  "kemeny": {
+    "method": "bruteforce",
+    "ranking": [
+      "checkpoints/llama3.2-3b-hard-panel",
+      "checkpoints/llama3.2-3b-us-rep",
+      "checkpoints/llama3.2-3b-soft-panel",
+      "checkpoints/llama3.2-3b-full-prism",
+      "meta-llama/Llama-3.2-3B"
+    ],
+    "score": 84988.0,
+    "bootstrap": {
+      "samples": 1000,
+      "seed": 42,
+      "workers": 96,
+      "exact_match_rate": 1.0,
+      "rank_probabilities": {
+        "checkpoints/llama3.2-3b-full-prism": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "checkpoints/llama3.2-3b-hard-panel": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "checkpoints/llama3.2-3b-soft-panel": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "checkpoints/llama3.2-3b-us-rep": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "meta-llama/Llama-3.2-3B": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    }
+  }
+}

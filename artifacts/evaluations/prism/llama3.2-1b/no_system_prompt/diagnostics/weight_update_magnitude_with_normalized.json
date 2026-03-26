@@ -1,0 +1,112 @@
+{
+  "base": "meta-llama/Llama-3.2-1B",
+  "base_resolved_path": "/workspace/.cache/huggingface/hub/models--meta-llama--Llama-3.2-1B/snapshots/4e20de362430cd3b72f300e6b0f18e50e7166e08",
+  "models": [
+    "checkpoints/llama3.2-1b-full-prism",
+    "checkpoints/llama3.2-1b-soft-panel",
+    "checkpoints/llama3.2-1b-hard-panel",
+    "checkpoints/llama3.2-1b-us-rep",
+    "checkpoints/llama3.2-1b-adversary-soft",
+    "checkpoints/llama3.2-1b-adversary-hard",
+    "checkpoints/llama3.2-1b-hard-panel-normalized",
+    "checkpoints/llama3.2-1b-us-rep-normalized"
+  ],
+  "results": [
+    {
+      "model": "checkpoints/llama3.2-1b-full-prism",
+      "resolved_path": "checkpoints/llama3.2-1b-full-prism",
+      "global_step": null,
+      "n_elements": 1235814400,
+      "delta": {
+        "l2": 1.0982095472500153,
+        "rms": 3.1239824772661385e-05,
+        "mean_abs": 5.055864721624451e-06,
+        "rel_l2": 0.0015136827919512827
+      }
+    },
+    {
+      "model": "checkpoints/llama3.2-1b-soft-panel",
+      "resolved_path": "checkpoints/llama3.2-1b-soft-panel",
+      "global_step": null,
+      "n_elements": 1235814400,
+      "delta": {
+        "l2": 1.055128018223754,
+        "rms": 3.0014321478605303e-05,
+        "mean_abs": 4.94483442754019e-06,
+        "rel_l2": 0.0014543027134395854
+      }
+    },
+    {
+      "model": "checkpoints/llama3.2-1b-hard-panel",
+      "resolved_path": "checkpoints/llama3.2-1b-hard-panel",
+      "global_step": null,
+      "n_elements": 1235814400,
+      "delta": {
+        "l2": 2.0043905279559153,
+        "rms": 5.7017177665338455e-05,
+        "mean_abs": 8.482712722368966e-06,
+        "rel_l2": 0.0027626890133257065
+      }
+    },
+    {
+      "model": "checkpoints/llama3.2-1b-us-rep",
+      "resolved_path": "checkpoints/llama3.2-1b-us-rep",
+      "global_step": null,
+      "n_elements": 1235814400,
+      "delta": {
+        "l2": 1.8135664947954813,
+        "rms": 5.158897011308036e-05,
+        "mean_abs": 7.74197730627968e-06,
+        "rel_l2": 0.0024996726736763375
+      }
+    },
+    {
+      "model": "checkpoints/llama3.2-1b-adversary-soft",
+      "resolved_path": "checkpoints/llama3.2-1b-adversary-soft",
+      "global_step": null,
+      "n_elements": 1235814400,
+      "delta": {
+        "l2": 1.0697868097740568,
+        "rms": 3.0431307545205374e-05,
+        "mean_abs": 4.9724723914924494e-06,
+        "rel_l2": 0.0014745072004394082
+      }
+    },
+    {
+      "model": "checkpoints/llama3.2-1b-adversary-hard",
+      "resolved_path": "checkpoints/llama3.2-1b-adversary-hard",
+      "global_step": null,
+      "n_elements": 1235814400,
+      "delta": {
+        "l2": 1.9779771154246546,
+        "rms": 5.626581798066732e-05,
+        "mean_abs": 8.345427258373862e-06,
+        "rel_l2": 0.0027262829120261903
+      }
+    },
+    {
+      "model": "checkpoints/llama3.2-1b-hard-panel-normalized",
+      "resolved_path": "checkpoints/llama3.2-1b-hard-panel-normalized",
+      "global_step": null,
+      "n_elements": 1235814400,
+      "delta": {
+        "l2": 1.0718764123577056,
+        "rms": 3.0490748677110624e-05,
+        "mean_abs": 4.4416363177761264e-06,
+        "rel_l2": 0.0014773873388253898
+      }
+    },
+    {
+      "model": "checkpoints/llama3.2-1b-us-rep-normalized",
+      "resolved_path": "checkpoints/llama3.2-1b-us-rep-normalized",
+      "global_step": null,
+      "n_elements": 1235814400,
+      "delta": {
+        "l2": 1.0704153399631648,
+        "rms": 3.0449186804242264e-05,
+        "mean_abs": 4.523193580570512e-06,
+        "rel_l2": 0.0014753735153734363
+      }
+    }
+  ]
+}

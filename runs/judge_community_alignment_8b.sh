@@ -12,6 +12,7 @@ log "  LISTWISE_PATH=$LISTWISE_PATH"
 log "  PREFERENCES_PATH=$PREFERENCES_PATH"
 log "  GEN_BATCH_SIZE=$GEN_BATCH_SIZE"
 log "  MAX_NEW_TOKENS=$MAX_NEW_TOKENS"
+log "  OVERWRITE_RESPONSES=$OVERWRITE_RESPONSES"
 log "  JUDGE_WORKERS=$JUDGE_WORKERS"
 log "  NUM_JUDGES=$NUM_JUDGES"
 log "  SYSTEM_PROMPT=${SYSTEM_PROMPT:-<empty>}"
@@ -34,6 +35,9 @@ CMD=(
   --max-new-tokens "$MAX_NEW_TOKENS"
   --system-prompt "$SYSTEM_PROMPT"
 )
+if [[ "$OVERWRITE_RESPONSES" == "1" ]]; then
+  CMD+=(--overwrite-responses)
+fi
 CMD+=("${QUESTION_ARGS[@]}")
 if [[ ${#HF_ARGS[@]} -gt 0 ]]; then
   CMD+=("${HF_ARGS[@]}")

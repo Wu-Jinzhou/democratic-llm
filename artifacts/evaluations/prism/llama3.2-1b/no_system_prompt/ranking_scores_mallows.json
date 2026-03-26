@@ -1,0 +1,154 @@
+{
+  "method": "mallows",
+  "models": [
+    "checkpoints/llama3.2-1b-full-prism",
+    "checkpoints/llama3.2-1b-hard-panel",
+    "checkpoints/llama3.2-1b-soft-panel",
+    "checkpoints/llama3.2-1b-us-rep",
+    "meta-llama/Llama-3.2-1B"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "mallows": {
+    "consensus": [
+      "checkpoints/llama3.2-1b-hard-panel",
+      "checkpoints/llama3.2-1b-us-rep",
+      "checkpoints/llama3.2-1b-soft-panel",
+      "checkpoints/llama3.2-1b-full-prism",
+      "meta-llama/Llama-3.2-1B"
+    ],
+    "consensus_method": "bruteforce",
+    "phi": 0.14448317247387843,
+    "log_likelihood_train": -56933.21803026476,
+    "log_likelihood_test": -14253.532151712534,
+    "params": {
+      "test_fraction": 0.2,
+      "seed": 42,
+      "phi_max": 10.0,
+      "phi_grid": 200,
+      "phi_tol": 0.0001,
+      "kemeny_method": "bruteforce",
+      "kemeny_bruteforce_max": 8,
+      "kemeny_ilp_max": 12,
+      "kemeny_ilp_max_seconds": 60,
+      "bootstrap_samples": 1000,
+      "bootstrap_workers": 96
+    },
+    "mean_kendall_train": 4.402,
+    "mean_kendall_test": 4.448666666666667,
+    "n_train": 12000,
+    "n_test": 3000,
+    "bootstrap": {
+      "samples": 1000,
+      "seed": 42,
+      "workers": 96,
+      "exact_match_rate": 0.94,
+      "rank_probabilities": {
+        "checkpoints/llama3.2-1b-full-prism": [
+          0.0,
+          0.0,
+          0.06,
+          0.94,
+          0.0
+        ],
+        "checkpoints/llama3.2-1b-hard-panel": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "checkpoints/llama3.2-1b-soft-panel": [
+          0.0,
+          0.0,
+          0.94,
+          0.06,
+          0.0
+        ],
+        "checkpoints/llama3.2-1b-us-rep": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "meta-llama/Llama-3.2-1B": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    "pairwise_probabilities": {
+      "method": "exact",
+      "matrix": {
+        "checkpoints/llama3.2-1b-hard-panel": {
+          "checkpoints/llama3.2-1b-us-rep": 0.5360580877201869,
+          "checkpoints/llama3.2-1b-soft-panel": 0.5599304090404497,
+          "checkpoints/llama3.2-1b-full-prism": 0.5835557074587326,
+          "meta-llama/Llama-3.2-1B": 0.6068402628703243
+        },
+        "checkpoints/llama3.2-1b-us-rep": {
+          "checkpoints/llama3.2-1b-hard-panel": 0.46394191227981346,
+          "checkpoints/llama3.2-1b-soft-panel": 0.5360580877201869,
+          "checkpoints/llama3.2-1b-full-prism": 0.5599304090404496,
+          "meta-llama/Llama-3.2-1B": 0.5835557074587328
+        },
+        "checkpoints/llama3.2-1b-soft-panel": {
+          "checkpoints/llama3.2-1b-hard-panel": 0.4400695909595506,
+          "checkpoints/llama3.2-1b-us-rep": 0.4639419122798134,
+          "checkpoints/llama3.2-1b-full-prism": 0.5360580877201869,
+          "meta-llama/Llama-3.2-1B": 0.5599304090404496
+        },
+        "checkpoints/llama3.2-1b-full-prism": {
+          "checkpoints/llama3.2-1b-hard-panel": 0.41644429254126736,
+          "checkpoints/llama3.2-1b-us-rep": 0.44006959095955067,
+          "checkpoints/llama3.2-1b-soft-panel": 0.4639419122798134,
+          "meta-llama/Llama-3.2-1B": 0.5360580877201869
+        },
+        "meta-llama/Llama-3.2-1B": {
+          "checkpoints/llama3.2-1b-hard-panel": 0.393159737129676,
+          "checkpoints/llama3.2-1b-us-rep": 0.41644429254126747,
+          "checkpoints/llama3.2-1b-soft-panel": 0.44006959095955067,
+          "checkpoints/llama3.2-1b-full-prism": 0.4639419122798134
+        }
+      }
+    }
+  },
+  "plackett_luce_compare": {
+    "log_likelihood_train": -56884.65643425081,
+    "log_likelihood_test": -14245.26721192211,
+    "results": [
+      {
+        "model": "checkpoints/llama3.2-1b-hard-panel",
+        "score": 0.22119064056647122,
+        "ability": 1.2475612436771335
+      },
+      {
+        "model": "checkpoints/llama3.2-1b-us-rep",
+        "score": 0.12797664860013994,
+        "ability": 1.136526462903304
+      },
+      {
+        "model": "checkpoints/llama3.2-1b-soft-panel",
+        "score": -0.01650377928777535,
+        "ability": 0.9836316619565323
+      },
+      {
+        "model": "checkpoints/llama3.2-1b-full-prism",
+        "score": -0.043606035559419734,
+        "ability": 0.9573310375767625
+      },
+      {
+        "model": "meta-llama/Llama-3.2-1B",
+        "score": -0.2890574743194165,
+        "ability": 0.7489691576730105
+      }
+    ],
+    "max_iter": 1000,
+    "tol": 1e-06
+  }
+}

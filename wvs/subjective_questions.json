@@ -1,0 +1,1162 @@
+[
+  {
+    "question_id": 1,
+    "question_code": "Q1",
+    "section": "social_values",
+    "question_text": "How important is family in your life?",
+    "options": {
+      "A": "Very important",
+      "B": "Rather important",
+      "C": "Not very important",
+      "D": "Not at all important"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 2,
+    "question_code": "Q2",
+    "section": "social_values",
+    "question_text": "How important is friends in your life?",
+    "options": {
+      "A": "Very important",
+      "B": "Rather important",
+      "C": "Not very important",
+      "D": "Not at all important"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 3,
+    "question_code": "Q3",
+    "section": "social_values",
+    "question_text": "How important is leisure time in your life?",
+    "options": {
+      "A": "Very important",
+      "B": "Rather important",
+      "C": "Not very important",
+      "D": "Not at all important"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 4,
+    "question_code": "Q4",
+    "section": "social_values",
+    "question_text": "How important is politics in your life?",
+    "options": {
+      "A": "Very important",
+      "B": "Rather important",
+      "C": "Not very important",
+      "D": "Not at all important"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 5,
+    "question_code": "Q5",
+    "section": "social_values",
+    "question_text": "How important is work in your life?",
+    "options": {
+      "A": "Very important",
+      "B": "Rather important",
+      "C": "Not very important",
+      "D": "Not at all important"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 6,
+    "question_code": "Q6",
+    "section": "social_values",
+    "question_text": "How important is religion in your life?",
+    "options": {
+      "A": "Very important",
+      "B": "Rather important",
+      "C": "Not very important",
+      "D": "Not at all important"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 27,
+    "question_code": "Q27",
+    "section": "values_and_norms",
+    "question_text": "Please indicate how strongly you agree or disagree with the following statement: \"One of my main goals in life has been to make my parents proud.\"",
+    "options": {
+      "A": "Strongly agree",
+      "B": "Agree",
+      "C": "Disagree",
+      "D": "Strongly disagree"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 28,
+    "question_code": "Q28",
+    "section": "values_and_norms",
+    "question_text": "Please indicate how strongly you agree or disagree with the following statement: \"When a mother works for pay, the children suffer.\"",
+    "options": {
+      "A": "Strongly agree",
+      "B": "Agree",
+      "C": "Disagree",
+      "D": "Strongly disagree"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 29,
+    "question_code": "Q29",
+    "section": "values_and_norms",
+    "question_text": "Please indicate how strongly you agree or disagree with the following statement: \"On the whole, men make better political leaders than women do.\"",
+    "options": {
+      "A": "Strongly agree",
+      "B": "Agree",
+      "C": "Disagree",
+      "D": "Strongly disagree"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 30,
+    "question_code": "Q30",
+    "section": "values_and_norms",
+    "question_text": "Please indicate how strongly you agree or disagree with the following statement: \"A university education is more important for a boy than for a girl.\"",
+    "options": {
+      "A": "Strongly agree",
+      "B": "Agree",
+      "C": "Disagree",
+      "D": "Strongly disagree"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 31,
+    "question_code": "Q31",
+    "section": "values_and_norms",
+    "question_text": "Please indicate how strongly you agree or disagree with the following statement: \"On the whole, men make better business executives than women do.\"",
+    "options": {
+      "A": "Strongly agree",
+      "B": "Agree",
+      "C": "Disagree",
+      "D": "Strongly disagree"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 32,
+    "question_code": "Q32",
+    "section": "values_and_norms",
+    "question_text": "Please indicate how strongly you agree or disagree with the following statement: \"Being a housewife is just as fulfilling as working for pay.\"",
+    "options": {
+      "A": "Strongly agree",
+      "B": "Agree",
+      "C": "Disagree",
+      "D": "Strongly disagree"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 58,
+    "question_code": "Q58",
+    "section": "social_trust",
+    "question_text": "How much do you trust your family?",
+    "options": {
+      "A": "Trust completely",
+      "B": "Trust somewhat",
+      "C": "Do not trust very much",
+      "D": "Do not trust at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 59,
+    "question_code": "Q59",
+    "section": "social_trust",
+    "question_text": "How much do you trust your neighborhood?",
+    "options": {
+      "A": "Trust completely",
+      "B": "Trust somewhat",
+      "C": "Do not trust very much",
+      "D": "Do not trust at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 60,
+    "question_code": "Q60",
+    "section": "social_trust",
+    "question_text": "How much do you trust people you know personally?",
+    "options": {
+      "A": "Trust completely",
+      "B": "Trust somewhat",
+      "C": "Do not trust very much",
+      "D": "Do not trust at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 61,
+    "question_code": "Q61",
+    "section": "social_trust",
+    "question_text": "How much do you trust people you meet for the first time?",
+    "options": {
+      "A": "Trust completely",
+      "B": "Trust somewhat",
+      "C": "Do not trust very much",
+      "D": "Do not trust at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 62,
+    "question_code": "Q62",
+    "section": "social_trust",
+    "question_text": "How much do you trust people of another religion?",
+    "options": {
+      "A": "Trust completely",
+      "B": "Trust somewhat",
+      "C": "Do not trust very much",
+      "D": "Do not trust at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 63,
+    "question_code": "Q63",
+    "section": "social_trust",
+    "question_text": "How much do you trust people of another nationality?",
+    "options": {
+      "A": "Trust completely",
+      "B": "Trust somewhat",
+      "C": "Do not trust very much",
+      "D": "Do not trust at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 64,
+    "question_code": "Q64",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in religious institutions?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 65,
+    "question_code": "Q65",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in the armed forces?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 66,
+    "question_code": "Q66",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in the press?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 67,
+    "question_code": "Q67",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in television?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 68,
+    "question_code": "Q68",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in labor unions?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 69,
+    "question_code": "Q69",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in the police?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 70,
+    "question_code": "Q70",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in the courts?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 71,
+    "question_code": "Q71",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in the government?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 72,
+    "question_code": "Q72",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in political parties?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 73,
+    "question_code": "Q73",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in parliament?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 74,
+    "question_code": "Q74",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in the civil service?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 75,
+    "question_code": "Q75",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in universities?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 76,
+    "question_code": "Q76",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in elections?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 77,
+    "question_code": "Q77",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in major companies?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 78,
+    "question_code": "Q78",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in banks?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 79,
+    "question_code": "Q79",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in environmental organizations?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 80,
+    "question_code": "Q80",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in women's organizations?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 81,
+    "question_code": "Q81",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in charitable or humanitarian organizations?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 83,
+    "question_code": "Q83",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in the United Nations?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 84,
+    "question_code": "Q84",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in the International Monetary Fund (IMF)?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 85,
+    "question_code": "Q85",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in the International Criminal Court (ICC)?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 86,
+    "question_code": "Q86",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in the North Atlantic Treaty Organization (NATO)?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 87,
+    "question_code": "Q87",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in the World Bank?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 88,
+    "question_code": "Q88",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in the World Health Organization (WHO)?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 89,
+    "question_code": "Q89",
+    "section": "institutional_confidence",
+    "question_text": "How much confidence do you have in the World Trade Organization (WTO)?",
+    "options": {
+      "A": "A great deal of confidence",
+      "B": "Quite a lot of confidence",
+      "C": "Not very much confidence",
+      "D": "None at all"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 130,
+    "question_code": "Q130",
+    "section": "migration",
+    "question_text": "What should the government do about people from other countries who want to come here to work?",
+    "options": {
+      "A": "Let anyone come who wants to.",
+      "B": "Let people come as long as there are jobs available.",
+      "C": "Place strict limits on the number of foreigners who can come here.",
+      "D": "Prohibit people coming here from other countries."
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 152,
+    "question_code": "Q152",
+    "section": "postmaterialist_index",
+    "question_text": "Looking ahead over the next ten years, which of the following goals should be the most important for this country?",
+    "options": {
+      "A": "A high level of economic growth",
+      "B": "Making sure this country has strong defense forces",
+      "C": "Seeing that people have more say about how things are done at their jobs and in their communities",
+      "D": "Trying to make our cities and countryside more beautiful"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 154,
+    "question_code": "Q154",
+    "section": "postmaterialist_index",
+    "question_text": "If you had to choose, which of the following should be most important for this country?",
+    "options": {
+      "A": "Maintaining order in the nation",
+      "B": "Giving people more say in important government decisions",
+      "C": "Fighting rising prices",
+      "D": "Protecting freedom of speech"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 156,
+    "question_code": "Q156",
+    "section": "postmaterialist_index",
+    "question_text": "If you had to choose, which of the following should be most important for this country?",
+    "options": {
+      "A": "A stable economy",
+      "B": "Progress toward a less impersonal and more humane society",
+      "C": "Progress toward a society in which ideas count more than money",
+      "D": "The fight against crime"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 169,
+    "question_code": "Q169",
+    "section": "values_and_norms",
+    "question_text": "Please indicate how strongly you agree or disagree with the following statement: \"Whenever science and religion conflict, religion is always right.\"",
+    "options": {
+      "A": "Strongly agree",
+      "B": "Agree",
+      "C": "Disagree",
+      "D": "Strongly disagree"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 170,
+    "question_code": "Q170",
+    "section": "values_and_norms",
+    "question_text": "Please indicate how strongly you agree or disagree with the following statement: \"The only acceptable religion is my religion.\"",
+    "options": {
+      "A": "Strongly agree",
+      "B": "Agree",
+      "C": "Disagree",
+      "D": "Strongly disagree"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 196,
+    "question_code": "Q196",
+    "section": "civil_liberties",
+    "question_text": "Do you think your country's government should have the right to keep people under video surveillance in public areas?",
+    "options": {
+      "A": "Definitely should have the right",
+      "B": "Probably should have the right",
+      "C": "Probably should not have the right",
+      "D": "Definitely should not have the right"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 197,
+    "question_code": "Q197",
+    "section": "civil_liberties",
+    "question_text": "Do you think your country's government should have the right to monitor all emails and other information exchanged on the internet?",
+    "options": {
+      "A": "Definitely should have the right",
+      "B": "Probably should have the right",
+      "C": "Probably should not have the right",
+      "D": "Definitely should not have the right"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 198,
+    "question_code": "Q198",
+    "section": "civil_liberties",
+    "question_text": "Do you think your country's government should have the right to collect information about anyone living in this country without their knowledge?",
+    "options": {
+      "A": "Definitely should have the right",
+      "B": "Probably should have the right",
+      "C": "Probably should not have the right",
+      "D": "Definitely should not have the right"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 234,
+    "question_code": "Q234",
+    "section": "political_culture",
+    "question_text": "How important is having honest elections for you?",
+    "options": {
+      "A": "Very important",
+      "B": "Rather important",
+      "C": "Not very important",
+      "D": "Not at all important"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 235,
+    "question_code": "Q235",
+    "section": "political_culture",
+    "question_text": "How good or bad is the following as a way of governing this country: having a strong leader who does not have to bother with parliament and elections?",
+    "options": {
+      "A": "Very good",
+      "B": "Fairly good",
+      "C": "Fairly bad",
+      "D": "Very bad"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 236,
+    "question_code": "Q236",
+    "section": "political_culture",
+    "question_text": "How good or bad is the following as a way of governing this country: having experts, rather than government, make decisions according to what they think is best for the country?",
+    "options": {
+      "A": "Very good",
+      "B": "Fairly good",
+      "C": "Fairly bad",
+      "D": "Very bad"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 237,
+    "question_code": "Q237",
+    "section": "political_culture",
+    "question_text": "How good or bad is the following as a way of governing this country: having the army rule?",
+    "options": {
+      "A": "Very good",
+      "B": "Fairly good",
+      "C": "Fairly bad",
+      "D": "Very bad"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 238,
+    "question_code": "Q238",
+    "section": "political_culture",
+    "question_text": "How good or bad is the following as a way of governing this country: having a democratic political system?",
+    "options": {
+      "A": "Very good",
+      "B": "Fairly good",
+      "C": "Fairly bad",
+      "D": "Very bad"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  },
+  {
+    "question_id": 239,
+    "question_code": "Q239",
+    "section": "political_culture",
+    "question_text": "How good or bad is the following as a way of governing this country: having a system governed by religious law in which there are no political parties or elections?",
+    "options": {
+      "A": "Very good",
+      "B": "Fairly good",
+      "C": "Fairly bad",
+      "D": "Very bad"
+    },
+    "value_codes": {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 4
+    },
+    "subjective": true,
+    "country_specific": false
+  }
+]

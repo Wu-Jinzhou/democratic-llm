@@ -13,9 +13,11 @@ PYTHON="${PYTHON:-python}"
 
 INPUT_CSV="${INPUT_CSV:-community-alignment-dataset/community_alignment.csv}"
 NORMALIZED_DIR="${NORMALIZED_DIR:-artifacts/community_alignment/normalized}"
+EN_NORMALIZED_DIR="${EN_NORMALIZED_DIR:-artifacts/community_alignment/normalized_en}"
 DATA_DIR="${DATA_DIR:-artifacts/data/community_alignment}"
+ASSIGNED_LANG="${ASSIGNED_LANG:-en}"
 
-PANEL_CONFIG="${PANEL_CONFIG:-configs/panel_config_community_alignment_us.yaml}"
+PANEL_CONFIG="${PANEL_CONFIG:-configs/panel_config_community_alignment_en.yaml}"
 PANEL_ALGORITHM="${PANEL_ALGORITHM:-leximin}"
 PANEL_SEED="${PANEL_SEED:-42}"
 NUM_PANEL_SAMPLES="${NUM_PANEL_SAMPLES:-2000}"
@@ -27,7 +29,7 @@ DELTA="${DELTA:-0.0}"
 RATER_NORMALIZATION="${RATER_NORMALIZATION:-panel}"
 SYSTEM_PROMPT="${SYSTEM_PROMPT:-}"
 
-mkdir -p "$NORMALIZED_DIR" "$DATA_DIR"
+mkdir -p "$NORMALIZED_DIR" "$EN_NORMALIZED_DIR" "$DATA_DIR"
 
 log() {
   printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"
@@ -55,7 +57,9 @@ fi
 log "Community Alignment prep configuration:"
 log "  INPUT_CSV=$INPUT_CSV"
 log "  NORMALIZED_DIR=$NORMALIZED_DIR"
+log "  EN_NORMALIZED_DIR=$EN_NORMALIZED_DIR"
 log "  DATA_DIR=$DATA_DIR"
+log "  ASSIGNED_LANG=$ASSIGNED_LANG"
 log "  PANEL_CONFIG=$PANEL_CONFIG"
 log "  PANEL_ALGORITHM=$PANEL_ALGORITHM"
 log "  PANEL_SEED=$PANEL_SEED"
@@ -84,28 +88,36 @@ run_step "Converting raw Community Alignment CSV into normalized JSONL files." \
   --input "$INPUT_CSV" \
   --output-dir "$NORMALIZED_DIR"
 
+run_step "Filtering normalized Community Alignment files to assigned_lang=$ASSIGNED_LANG." \
+  "$PYTHON" -u scripts/filter_community_alignment_by_lang.py \
+  --survey "$NORMALIZED_DIR/survey.jsonl" \
+  --utterances "$NORMALIZED_DIR/utterances.jsonl" \
+  --conversations "$NORMALIZED_DIR/conversations.jsonl" \
+  --assigned-lang "$ASSIGNED_LANG" \
+  --output-dir "$EN_NORMALIZED_DIR"
+
 GLOBAL_CMD=(
   "$PYTHON" -u scripts/prepare_data.py
-  --survey "$NORMALIZED_DIR/survey.jsonl"
-  --utterances "$NORMALIZED_DIR/utterances.jsonl"
-  --conversations "$NORMALIZED_DIR/conversations.jsonl"
+  --survey "$EN_NORMALIZED_DIR/survey.jsonl"
+  --utterances "$EN_NORMALIZED_DIR/utterances.jsonl"
+  --conversations "$EN_NORMALIZED_DIR/conversations.jsonl"
   --mode full
   --dataset-format "$DATASET_FORMAT"
   "${CONV_ARGS[@]}"
   --delta "$DELTA"
   --rater-normalization "$RATER_NORMALIZATION"
-  --output "$DATA_DIR/full_global.jsonl"
+  --output "$DATA_DIR/full_en_global.jsonl"
 )
 if [[ ${#SYSTEM_PROMPT_ARGS[@]} -gt 0 ]]; then
   GLOBAL_CMD+=("${SYSTEM_PROMPT_ARGS[@]}")
 fi
-run_step "Preparing global full dataset." "${GLOBAL_CMD[@]}"
+run_step "Preparing English global full dataset." "${GLOBAL_CMD[@]}"
 
 US_FULL_CMD=(
   "$PYTHON" -u scripts/prepare_data.py
-  --survey "$NORMALIZED_DIR/survey.jsonl"
-  --utterances "$NORMALIZED_DIR/utterances.jsonl"
-  --conversations "$NORMALIZED_DIR/conversations.jsonl"
+  --survey "$EN_NORMALIZED_DIR/survey.jsonl"
+  --utterances "$EN_NORMALIZED_DIR/utterances.jsonl"
+  --conversations "$EN_NORMALIZED_DIR/conversations.jsonl"
   --mode us_rep
   --dataset-format "$DATASET_FORMAT"
   "${CONV_ARGS[@]}"
@@ -116,13 +128,13 @@ US_FULL_CMD=(
 if [[ ${#SYSTEM_PROMPT_ARGS[@]} -gt 0 ]]; then
   US_FULL_CMD+=("${SYSTEM_PROMPT_ARGS[@]}")
 fi
-run_step "Preparing US full dataset." "${US_FULL_CMD[@]}"
+run_step "Preparing English-subset US full dataset." "${US_FULL_CMD[@]}"
 
 SOFT_CMD=(
   "$PYTHON" -u scripts/prepare_data.py
-  --survey "$NORMALIZED_DIR/survey.jsonl"
-  --utterances "$NORMALIZED_DIR/utterances.jsonl"
-  --conversations "$NORMALIZED_DIR/conversations.jsonl"
+  --survey "$EN_NORMALIZED_DIR/survey.jsonl"
+  --utterances "$EN_NORMALIZED_DIR/utterances.jsonl"
+  --conversations "$EN_NORMALIZED_DIR/conversations.jsonl"
   --mode soft
   --panel-config "$PANEL_CONFIG"
   --panel-algorithm "$PANEL_ALGORITHM"
@@ -133,18 +145,18 @@ SOFT_CMD=(
   "${CONV_ARGS[@]}"
   --delta "$DELTA"
   --rater-normalization "$RATER_NORMALIZATION"
-  --output "$DATA_DIR/soft_panel_us.jsonl"
+  --output "$DATA_DIR/soft_panel_en.jsonl"
 )
 if [[ ${#SYSTEM_PROMPT_ARGS[@]} -gt 0 ]]; then
   SOFT_CMD+=("${SYSTEM_PROMPT_ARGS[@]}")
 fi
-run_step "Preparing US soft-panel dataset." "${SOFT_CMD[@]}"
+run_step "Preparing English-pool soft-panel dataset." "${SOFT_CMD[@]}"
 
 HARD_CMD=(
   "$PYTHON" -u scripts/prepare_data.py
-  --survey "$NORMALIZED_DIR/survey.jsonl"
-  --utterances "$NORMALIZED_DIR/utterances.jsonl"
-  --conversations "$NORMALIZED_DIR/conversations.jsonl"
+  --survey "$EN_NORMALIZED_DIR/survey.jsonl"
+  --utterances "$EN_NORMALIZED_DIR/utterances.jsonl"
+  --conversations "$EN_NORMALIZED_DIR/conversations.jsonl"
   --mode hard
   --panel-config "$PANEL_CONFIG"
   --panel-algorithm "$PANEL_ALGORITHM"
@@ -154,11 +166,11 @@ HARD_CMD=(
   "${CONV_ARGS[@]}"
   --delta "$DELTA"
   --rater-normalization "$RATER_NORMALIZATION"
-  --output "$DATA_DIR/hard_panel_us.jsonl"
+  --output "$DATA_DIR/hard_panel_en.jsonl"
 )
 if [[ ${#SYSTEM_PROMPT_ARGS[@]} -gt 0 ]]; then
   HARD_CMD+=("${SYSTEM_PROMPT_ARGS[@]}")
 fi
-run_step "Preparing US hard-panel dataset." "${HARD_CMD[@]}"
+run_step "Preparing English-pool hard-panel dataset." "${HARD_CMD[@]}"
 
 log "Prepared Community Alignment datasets in $DATA_DIR"

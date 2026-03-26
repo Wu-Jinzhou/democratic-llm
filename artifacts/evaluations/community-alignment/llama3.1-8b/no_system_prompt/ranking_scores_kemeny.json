@@ -1,0 +1,24 @@
+{
+  "method": "kemeny",
+  "models": [
+    "checkpoints/community-alignment/llama3.1-8b-full-global",
+    "checkpoints/community-alignment/llama3.1-8b-full-us",
+    "checkpoints/community-alignment/llama3.1-8b-hard-us",
+    "checkpoints/community-alignment/llama3.1-8b-soft-us",
+    "meta-llama/Llama-3.1-8B"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "kemeny": {
+    "method": "bruteforce",
+    "ranking": [
+      "checkpoints/community-alignment/llama3.1-8b-full-us",
+      "checkpoints/community-alignment/llama3.1-8b-soft-us",
+      "checkpoints/community-alignment/llama3.1-8b-full-global",
+      "checkpoints/community-alignment/llama3.1-8b-hard-us",
+      "meta-llama/Llama-3.1-8B"
+    ],
+    "score": 80842.0
+  }
+}

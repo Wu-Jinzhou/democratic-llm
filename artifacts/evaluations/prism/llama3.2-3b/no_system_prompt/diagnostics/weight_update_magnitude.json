@@ -1,0 +1,60 @@
+{
+  "base": "meta-llama/Llama-3.2-3B",
+  "base_resolved_path": "/workspace/.cache/huggingface/hub/models--meta-llama--Llama-3.2-3B/snapshots/13afe5124825b4f3751f836b40dafda64c1ed062",
+  "models": [
+    "checkpoints/llama3.2-3b-full-prism",
+    "checkpoints/llama3.2-3b-soft-panel",
+    "checkpoints/llama3.2-3b-hard-panel",
+    "checkpoints/llama3.2-3b-us-rep"
+  ],
+  "results": [
+    {
+      "model": "checkpoints/llama3.2-3b-full-prism",
+      "resolved_path": "checkpoints/llama3.2-3b-full-prism",
+      "global_step": null,
+      "n_elements": 3212749824,
+      "delta": {
+        "l2": 1.7527081021878907,
+        "rms": 3.092225377402345e-05,
+        "mean_abs": 4.937267218136358e-06,
+        "rel_l2": 0.0015437221612770431
+      }
+    },
+    {
+      "model": "checkpoints/llama3.2-3b-soft-panel",
+      "resolved_path": "checkpoints/llama3.2-3b-soft-panel",
+      "global_step": null,
+      "n_elements": 3212749824,
+      "delta": {
+        "l2": 1.7092688540118204,
+        "rms": 3.0155874332873793e-05,
+        "mean_abs": 4.866686998915563e-06,
+        "rel_l2": 0.001505462436229327
+      }
+    },
+    {
+      "model": "checkpoints/llama3.2-3b-hard-panel",
+      "resolved_path": "checkpoints/llama3.2-3b-hard-panel",
+      "global_step": null,
+      "n_elements": 3212749824,
+      "delta": {
+        "l2": 3.024610622095275,
+        "rms": 5.3361867333920064e-05,
+        "mean_abs": 7.959907128831452e-06,
+        "rel_l2": 0.0026639680850073944
+      }
+    },
+    {
+      "model": "checkpoints/llama3.2-3b-us-rep",
+      "resolved_path": "checkpoints/llama3.2-3b-us-rep",
+      "global_step": null,
+      "n_elements": 3212749824,
+      "delta": {
+        "l2": 2.7883090150485637,
+        "rms": 4.919290260374809e-05,
+        "mean_abs": 7.403564032057295e-06,
+        "rel_l2": 0.0024558421414529424
+      }
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "method": "pairwise-effects",
+  "preferences_path": "artifacts/evaluations/community-alignment/llama3.1-8b/no_system_prompt/preferences.jsonl",
+  "bootstrap_samples": 1000,
+  "seed": 42,
+  "pairs": [
+    {
+      "model_a": "checkpoints/community-alignment/llama3.1-8b-full-us",
+      "model_b": "meta-llama/Llama-3.1-8B",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.5806666666666667,
+      "win_rate_a_majority": 0.583,
+      "mean_margin_a": 0.16133333333333333,
+      "ci_lower": 0.5633983333333333,
+      "ci_upper": 0.5978
+    },
+    {
+      "model_a": "checkpoints/community-alignment/llama3.1-8b-full-global",
+      "model_b": "meta-llama/Llama-3.1-8B",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.5793333333333334,
+      "win_rate_a_majority": 0.5823333333333334,
+      "mean_margin_a": 0.15866666666666668,
+      "ci_lower": 0.5645266666666666,
+      "ci_upper": 0.5940683333333333
+    },
+    {
+      "model_a": "checkpoints/community-alignment/llama3.1-8b-soft-us",
+      "model_b": "meta-llama/Llama-3.1-8B",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.5791333333333334,
+      "win_rate_a_majority": 0.5793333333333334,
+      "mean_margin_a": 0.15826666666666664,
+      "ci_lower": 0.5640633333333334,
+      "ci_upper": 0.5946716666666667
+    },
+    {
+      "model_a": "checkpoints/community-alignment/llama3.1-8b-hard-us",
+      "model_b": "meta-llama/Llama-3.1-8B",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.5462,
+      "win_rate_a_majority": 0.5476666666666666,
+      "mean_margin_a": 0.0924,
+      "ci_lower": 0.5305966666666666,
+      "ci_upper": 0.5628666666666666
+    },
+    {
+      "model_a": "checkpoints/community-alignment/llama3.1-8b-full-global",
+      "model_b": "checkpoints/community-alignment/llama3.1-8b-hard-us",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.5298,
+      "win_rate_a_majority": 0.53,
+      "mean_margin_a": 0.05959999999999999,
+      "ci_lower": 0.5138633333333333,
+      "ci_upper": 0.5454016666666667
+    },
+    {
+      "model_a": "checkpoints/community-alignment/llama3.1-8b-full-us",
+      "model_b": "checkpoints/community-alignment/llama3.1-8b-hard-us",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.5284666666666666,
+      "win_rate_a_majority": 0.5256666666666666,
+      "mean_margin_a": 0.05693333333333333,
+      "ci_lower": 0.5129316666666667,
+      "ci_upper": 0.5442016666666667
+    },
+    {
+      "model_a": "checkpoints/community-alignment/llama3.1-8b-full-us",
+      "model_b": "checkpoints/community-alignment/llama3.1-8b-soft-us",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.5044666666666666,
+      "win_rate_a_majority": 0.5026666666666667,
+      "mean_margin_a": 0.008933333333333335,
+      "ci_lower": 0.48919833333333335,
+      "ci_upper": 0.52047
+    },
+    {
+      "model_a": "checkpoints/community-alignment/llama3.1-8b-full-global",
+      "model_b": "checkpoints/community-alignment/llama3.1-8b-full-us",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.49433333333333335,
+      "win_rate_a_majority": 0.49866666666666665,
+      "mean_margin_a": -0.011333333333333329,
+      "ci_lower": 0.4792,
+      "ci_upper": 0.5094683333333333
+    },
+    {
+      "model_a": "checkpoints/community-alignment/llama3.1-8b-full-global",
+      "model_b": "checkpoints/community-alignment/llama3.1-8b-soft-us",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.49366666666666664,
+      "win_rate_a_majority": 0.49533333333333335,
+      "mean_margin_a": -0.01266666666666667,
+      "ci_lower": 0.4786616666666667,
+      "ci_upper": 0.5102
+    },
+    {
+      "model_a": "checkpoints/community-alignment/llama3.1-8b-hard-us",
+      "model_b": "checkpoints/community-alignment/llama3.1-8b-soft-us",
+      "n_questions": 3000,
+      "n_judges": 5,
+      "win_rate_a_votes": 0.4706,
+      "win_rate_a_majority": 0.4703333333333333,
+      "mean_margin_a": -0.058800000000000005,
+      "ci_lower": 0.45573166666666665,
+      "ci_upper": 0.487335
+    }
+  ]
+}

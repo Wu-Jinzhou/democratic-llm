@@ -1,0 +1,16 @@
+{
+  "assigned_lang": "en",
+  "total_conversations": 89616,
+  "kept_conversations": 30781,
+  "kept_utterances": 317274,
+  "kept_survey_rows": 1331,
+  "kept_users": 1331,
+  "multilingual_kept_users": 13,
+  "language_counts": {
+    "en": 30781,
+    "fr": 14315,
+    "hi": 13989,
+    "it": 14596,
+    "pt": 15935
+  }
+}
