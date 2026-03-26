@@ -24,6 +24,7 @@ from typing import Optional
 
 import datasets
 import numpy as np
+import pyarrow.compute as pc
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainerCallback
 from trl import DPOTrainer, DPOConfig
@@ -224,6 +225,27 @@ class WeightedDPOTrainer(DPOTrainer):
             if length_col in ds.column_names:
                 return ds
 
+            def _get_arrow_column(dataset, column_name: str):
+                table = getattr(dataset, "data", None)
+                if table is None:
+                    table = getattr(dataset, "_data", None)
+                if table is None:
+                    return None
+                if hasattr(table, "table"):
+                    table = table.table
+                if hasattr(table, "column"):
+                    return table.column(column_name)
+                return None
+
+            def _chunked_list_lengths(chunked_array):
+                parts = [
+                    pc.list_value_length(chunk).to_numpy(zero_copy_only=False)
+                    for chunk in chunked_array.chunks
+                ]
+                if not parts:
+                    return np.zeros(0, dtype=np.int32)
+                return np.concatenate(parts).astype(np.int32, copy=False)
+
             cols = set(ds.column_names)
             token_triplets = [
                 ("prompt_input_ids", "chosen_input_ids", "rejected_input_ids"),
@@ -233,15 +255,50 @@ class WeightedDPOTrainer(DPOTrainer):
             matched_triplet = next((triplet for triplet in token_triplets if set(triplet).issubset(cols)), None)
             if matched_triplet is not None:
                 prompt_col, chosen_col, rejected_col = matched_triplet
-                prompts = ds[prompt_col]
-                chosen = ds[chosen_col]
-                rejected = ds[rejected_col]
-                lengths = [
-                    int(len(p) + max(len(c), len(r)))
-                    for p, c, r in zip(prompts, chosen, rejected)
-                ]
+                prompt_arrow = _get_arrow_column(ds, prompt_col)
+                chosen_arrow = _get_arrow_column(ds, chosen_col)
+                rejected_arrow = _get_arrow_column(ds, rejected_col)
+                if prompt_arrow is not None and chosen_arrow is not None and rejected_arrow is not None:
+                    print(
+                        f"Computing grouped-sampling '{length_col}' column for {name} "
+                        f"from Arrow token columns {matched_triplet}..."
+                    )
+                    started_at = time.time()
+                    prompt_lengths = _chunked_list_lengths(prompt_arrow)
+                    chosen_lengths = _chunked_list_lengths(chosen_arrow)
+                    rejected_lengths = _chunked_list_lengths(rejected_arrow)
+                    lengths = prompt_lengths + np.maximum(chosen_lengths, rejected_lengths)
+                    print(
+                        f"Finished computing '{length_col}' for {name} in "
+                        f"{time.time() - started_at:.1f}s."
+                    )
+                else:
+                    print(
+                        f"Falling back to Python length computation for {name}; "
+                        "Arrow token columns were not available."
+                    )
+                    prompts = ds[prompt_col]
+                    chosen = ds[chosen_col]
+                    rejected = ds[rejected_col]
+                    lengths = [
+                        int(len(p) + max(len(c), len(r)))
+                        for p, c, r in zip(prompts, chosen, rejected)
+                    ]
             elif "input_ids" in cols:
-                lengths = [int(len(ids)) for ids in ds["input_ids"]]
+                input_arrow = _get_arrow_column(ds, "input_ids")
+                if input_arrow is not None:
+                    print(
+                        f"Computing grouped-sampling '{length_col}' column for {name} "
+                        "from Arrow input_ids..."
+                    )
+                    started_at = time.time()
+                    lengths = _chunked_list_lengths(input_arrow)
+                    print(
+                        f"Finished computing '{length_col}' for {name} in "
+                        f"{time.time() - started_at:.1f}s."
+                    )
+                else:
+                    lengths = [int(len(ids)) for ids in ds["input_ids"]]
             else:
                 print(
                     f"Warning: group_by_length=True but couldn't infer lengths for {name}; "

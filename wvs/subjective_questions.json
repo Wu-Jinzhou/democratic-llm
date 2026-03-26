@@ -1,65 +1,5 @@
 [
   {
-    "question_id": 1,
-    "question_code": "Q1",
-    "section": "social_values",
-    "question_text": "How important is family in your life?",
-    "options": {
-      "A": "Very important",
-      "B": "Rather important",
-      "C": "Not very important",
-      "D": "Not at all important"
-    },
-    "value_codes": {
-      "A": 1,
-      "B": 2,
-      "C": 3,
-      "D": 4
-    },
-    "subjective": true,
-    "country_specific": false
-  },
-  {
-    "question_id": 2,
-    "question_code": "Q2",
-    "section": "social_values",
-    "question_text": "How important is friends in your life?",
-    "options": {
-      "A": "Very important",
-      "B": "Rather important",
-      "C": "Not very important",
-      "D": "Not at all important"
-    },
-    "value_codes": {
-      "A": 1,
-      "B": 2,
-      "C": 3,
-      "D": 4
-    },
-    "subjective": true,
-    "country_specific": false
-  },
-  {
-    "question_id": 3,
-    "question_code": "Q3",
-    "section": "social_values",
-    "question_text": "How important is leisure time in your life?",
-    "options": {
-      "A": "Very important",
-      "B": "Rather important",
-      "C": "Not very important",
-      "D": "Not at all important"
-    },
-    "value_codes": {
-      "A": 1,
-      "B": 2,
-      "C": 3,
-      "D": 4
-    },
-    "subjective": true,
-    "country_specific": false
-  },
-  {
     "question_id": 4,
     "question_code": "Q4",
     "section": "social_values",
@@ -69,66 +9,6 @@
       "B": "Rather important",
       "C": "Not very important",
       "D": "Not at all important"
-    },
-    "value_codes": {
-      "A": 1,
-      "B": 2,
-      "C": 3,
-      "D": 4
-    },
-    "subjective": true,
-    "country_specific": false
-  },
-  {
-    "question_id": 5,
-    "question_code": "Q5",
-    "section": "social_values",
-    "question_text": "How important is work in your life?",
-    "options": {
-      "A": "Very important",
-      "B": "Rather important",
-      "C": "Not very important",
-      "D": "Not at all important"
-    },
-    "value_codes": {
-      "A": 1,
-      "B": 2,
-      "C": 3,
-      "D": 4
-    },
-    "subjective": true,
-    "country_specific": false
-  },
-  {
-    "question_id": 6,
-    "question_code": "Q6",
-    "section": "social_values",
-    "question_text": "How important is religion in your life?",
-    "options": {
-      "A": "Very important",
-      "B": "Rather important",
-      "C": "Not very important",
-      "D": "Not at all important"
-    },
-    "value_codes": {
-      "A": 1,
-      "B": 2,
-      "C": 3,
-      "D": 4
-    },
-    "subjective": true,
-    "country_specific": false
-  },
-  {
-    "question_id": 27,
-    "question_code": "Q27",
-    "section": "values_and_norms",
-    "question_text": "Please indicate how strongly you agree or disagree with the following statement: \"One of my main goals in life has been to make my parents proud.\"",
-    "options": {
-      "A": "Strongly agree",
-      "B": "Agree",
-      "C": "Disagree",
-      "D": "Strongly disagree"
     },
     "value_codes": {
       "A": 1,
@@ -229,66 +109,6 @@
       "B": "Agree",
       "C": "Disagree",
       "D": "Strongly disagree"
-    },
-    "value_codes": {
-      "A": 1,
-      "B": 2,
-      "C": 3,
-      "D": 4
-    },
-    "subjective": true,
-    "country_specific": false
-  },
-  {
-    "question_id": 58,
-    "question_code": "Q58",
-    "section": "social_trust",
-    "question_text": "How much do you trust your family?",
-    "options": {
-      "A": "Trust completely",
-      "B": "Trust somewhat",
-      "C": "Do not trust very much",
-      "D": "Do not trust at all"
-    },
-    "value_codes": {
-      "A": 1,
-      "B": 2,
-      "C": 3,
-      "D": 4
-    },
-    "subjective": true,
-    "country_specific": false
-  },
-  {
-    "question_id": 59,
-    "question_code": "Q59",
-    "section": "social_trust",
-    "question_text": "How much do you trust your neighborhood?",
-    "options": {
-      "A": "Trust completely",
-      "B": "Trust somewhat",
-      "C": "Do not trust very much",
-      "D": "Do not trust at all"
-    },
-    "value_codes": {
-      "A": 1,
-      "B": 2,
-      "C": 3,
-      "D": 4
-    },
-    "subjective": true,
-    "country_specific": false
-  },
-  {
-    "question_id": 60,
-    "question_code": "Q60",
-    "section": "social_trust",
-    "question_text": "How much do you trust people you know personally?",
-    "options": {
-      "A": "Trust completely",
-      "B": "Trust somewhat",
-      "C": "Do not trust very much",
-      "D": "Do not trust at all"
     },
     "value_codes": {
       "A": 1,

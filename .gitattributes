@@ -3,3 +3,4 @@ artifacts/community_alignment/normalized/*.jsonl filter=lfs diff=lfs merge=lfs -
 artifacts/data/community_alignment/*.jsonl filter=lfs diff=lfs merge=lfs -text
 artifacts/community_alignment/normalized_en/conversations.jsonl filter=lfs diff=lfs merge=lfs -text
 artifacts/community_alignment/normalized_en/utterances.jsonl filter=lfs diff=lfs merge=lfs -text
+wvs/WVS_Cross-National_Wave_7_csv_v6_0.csv filter=lfs diff=lfs merge=lfs -text

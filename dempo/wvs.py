@@ -107,26 +107,18 @@ def build_subjective_questions() -> List[dict]:
         "Not very important",
         "Not at all important",
     ]
-    for qid, item in [
-        (1, "family"),
-        (2, "friends"),
-        (3, "leisure time"),
-        (4, "politics"),
-        (5, "work"),
-        (6, "religion"),
-    ]:
-        questions.append(
-            _question(
-                qid,
-                "social_values",
-                f"How important is {item} in your life?",
-                importance_options,
-            )
+    # Keep only public / political value questions, not personal-life salience items.
+    questions.append(
+        _question(
+            4,
+            "social_values",
+            "How important is politics in your life?",
+            importance_options,
         )
+    )
 
     agree4 = ["Strongly agree", "Agree", "Disagree", "Strongly disagree"]
     for qid, statement in [
-        (27, "One of my main goals in life has been to make my parents proud."),
         (28, "When a mother works for pay, the children suffer."),
         (29, "On the whole, men make better political leaders than women do."),
         (30, "A university education is more important for a boy than for a girl."),
@@ -151,9 +143,6 @@ def build_subjective_questions() -> List[dict]:
         "Do not trust at all",
     ]
     for qid, group in [
-        (58, "your family"),
-        (59, "your neighborhood"),
-        (60, "people you know personally"),
         (61, "people you meet for the first time"),
         (62, "people of another religion"),
         (63, "people of another nationality"),
