@@ -55,8 +55,11 @@ class TrainConfig:
     save_strategy: str = "no"
     save_steps: int = 500
     save_total_limit: Optional[int] = None
+    precompute_ref_log_probs: bool = False
+    precompute_ref_batch_size: Optional[int] = None
     max_length: Optional[int] = None
     max_prompt_length: Optional[int] = None
+    truncation_mode: str = "keep_end"
     seed: int = 42
     report_to: str = "wandb"
     logging_dir: Path = Path("logs")
@@ -86,6 +89,28 @@ class WeightedDPOTrainer(DPOTrainer):
         super().__init__(*args, **kwargs)
         self._batch_weights = None
         self._ensure_length_column()
+
+    @staticmethod
+    def tokenize_row(
+        features: dict[str, str],
+        processing_class,
+        max_prompt_length: int | None = None,
+        max_completion_length: int | None = None,
+        add_special_tokens: bool = True,
+    ) -> dict[str, list[int]]:
+        tokenized = DPOTrainer.tokenize_row(
+            features=features,
+            processing_class=processing_class,
+            max_prompt_length=max_prompt_length,
+            max_completion_length=max_completion_length,
+            add_special_tokens=add_special_tokens,
+        )
+        prompt_ids = tokenized.get("prompt_input_ids", tokenized.get("prompt_ids"))
+        chosen_ids = tokenized.get("chosen_input_ids", tokenized.get("chosen_ids"))
+        rejected_ids = tokenized.get("rejected_input_ids", tokenized.get("rejected_ids"))
+        if prompt_ids is not None and chosen_ids is not None and rejected_ids is not None:
+            tokenized["length"] = int(len(prompt_ids) + max(len(chosen_ids), len(rejected_ids)))
+        return tokenized
 
     def get_train_dataloader(self):
         # Some TRL/transformers combinations finalize tokenized datasets lazily and/or mutate
@@ -154,8 +179,8 @@ class WeightedDPOTrainer(DPOTrainer):
         - `prompt_input_ids` / `chosen_input_ids` / `rejected_input_ids`, or
         - `prompt_ids` / `chosen_ids` / `rejected_ids`.
 
-        We attach a `length` column after TRL tokenization so grouped sampling
-        works across both layouts.
+        Our subclass now adds `length` during tokenization. This fallback method
+        exists for older caches / mutated datasets that may still lack it.
         """
 
         train_sampling_strategy = getattr(self.args, "train_sampling_strategy", None)
@@ -292,6 +317,13 @@ def build_compatible_dpo_config_kwargs(dpo_kwargs: dict) -> tuple[dict, dict, li
             kwargs["group_by_length"] = True
         kwargs.pop("train_sampling_strategy", None)
 
+    # Newer TRL versions removed prompt-specific truncation and only expose max_length.
+    # Preserve the user's intent by mapping max_prompt_length to max_length when possible.
+    if "max_prompt_length" not in supported and "max_length" in supported and "max_prompt_length" in kwargs:
+        max_prompt_length = kwargs.pop("max_prompt_length")
+        if max_prompt_length is not None and (kwargs.get("max_length") is None):
+            kwargs["max_length"] = max_prompt_length
+
     unsupported: list[str] = []
     filtered: dict = {}
     for key, value in kwargs.items():
@@ -375,16 +407,33 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--save-steps", type=int, default=500, help="Save checkpoint every N steps.")
     parser.add_argument("--save-total-limit", type=int, default=None, help="Max number of checkpoints to keep.")
     parser.add_argument(
+        "--precompute-ref-log-probs",
+        action="store_true",
+        help="Precompute reference-model log probabilities before training.",
+    )
+    parser.add_argument(
+        "--precompute-ref-batch-size",
+        type=int,
+        default=None,
+        help="Batch size to use when precomputing reference log probabilities.",
+    )
+    parser.add_argument(
         "--max-length",
         type=int,
         default=None,
-        help="Optional max sequence length. If omitted, uses model max_position_embeddings.",
+        help="Optional max sequence length. If omitted, defer to the installed TRL default.",
     )
     parser.add_argument(
         "--max-prompt-length",
         type=int,
         default=None,
-        help="Optional max prompt length. If omitted, uses max_length.",
+        help="Optional max prompt length. On newer TRL versions this is mapped to --max-length.",
+    )
+    parser.add_argument(
+        "--truncation-mode",
+        choices=["keep_start", "keep_end"],
+        default="keep_end",
+        help="How to truncate overlength sequences when the installed TRL supports max_length.",
     )
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--report-to", default="wandb", help="Logging backend (wandb, tensorboard, or none).")
@@ -447,8 +496,11 @@ def main() -> None:
         save_strategy=args.save_strategy,
         save_steps=args.save_steps,
         save_total_limit=args.save_total_limit,
+        precompute_ref_log_probs=args.precompute_ref_log_probs,
+        precompute_ref_batch_size=args.precompute_ref_batch_size,
         max_length=args.max_length,
         max_prompt_length=args.max_prompt_length,
+        truncation_mode=args.truncation_mode,
         seed=args.seed,
         report_to=args.report_to,
         logging_dir=args.logging_dir,
@@ -480,18 +532,13 @@ def main() -> None:
         f"dataset_num_proc={cfg.dataset_num_proc}, "
         f"per_device_batch_size={cfg.per_device_batch_size}, "
         f"gradient_accumulation_steps={cfg.gradient_accumulation_steps}, "
+        f"precompute_ref_log_probs={cfg.precompute_ref_log_probs}, "
         f"report_to={cfg.report_to}"
     )
 
     tokenizer = load_tokenizer(cfg.model_id, cfg.hf_token)
     model = load_model(cfg.model_id, cfg.hf_token, cfg.device_map, cfg.attn_implementation)
     ref_model = load_model(cfg.model_id, cfg.hf_token, cfg.device_map, cfg.attn_implementation)
-
-    model_max = getattr(model.config, "max_position_embeddings", None)
-    if cfg.max_length is None and isinstance(model_max, int) and model_max > 0:
-        cfg.max_length = model_max
-    if cfg.max_prompt_length is None and cfg.max_length is not None:
-        cfg.max_prompt_length = cfg.max_length
 
     train_ds, eval_ds = build_datasets(cfg.dataset_path, cfg.eval_ratio, cfg.seed)
     print(f"Loaded dataset: {len(train_ds)} train rows" + (f", {len(eval_ds)} eval rows" if eval_ds else ""))
@@ -526,6 +573,7 @@ def main() -> None:
         train_sampling_strategy="group_by_length",
         length_column_name="length",
         remove_unused_columns=False,
+        precompute_ref_log_probs=cfg.precompute_ref_log_probs,
         save_strategy=cfg.save_strategy,
     )
     if cfg.num_train_steps and cfg.num_train_steps > 0:
@@ -534,12 +582,16 @@ def main() -> None:
         dpo_kwargs["max_length"] = cfg.max_length
     if cfg.max_prompt_length is not None:
         dpo_kwargs["max_prompt_length"] = cfg.max_prompt_length
+    if cfg.truncation_mode:
+        dpo_kwargs["truncation_mode"] = cfg.truncation_mode
     if cfg.save_strategy == "steps":
         dpo_kwargs["save_steps"] = cfg.save_steps
     if cfg.save_total_limit is not None:
         dpo_kwargs["save_total_limit"] = cfg.save_total_limit
     if dataloader_prefetch_factor is not None:
         dpo_kwargs["dataloader_prefetch_factor"] = dataloader_prefetch_factor
+    if cfg.precompute_ref_batch_size is not None:
+        dpo_kwargs["precompute_ref_batch_size"] = cfg.precompute_ref_batch_size
     filtered_dpo_kwargs, post_init_attrs, unsupported = build_compatible_dpo_config_kwargs(dpo_kwargs)
     if unsupported:
         print(
