@@ -349,6 +349,24 @@ def map_wvs_education3(value: object) -> str:
     return "Bachelor or higher"
 
 
+def map_wvs_religion(value: object) -> str:
+    try:
+        value = int(value)
+    except Exception:
+        return "Prefer not to say"
+    if value < 0:
+        return "Prefer not to say"
+    if value == 0:
+        return "No Affiliation"
+    if value in {1, 2, 3}:
+        return "Christian"
+    if value == 4:
+        return "Jewish"
+    if value == 5:
+        return "Muslim"
+    return "Other"
+
+
 def map_prism_education3(value: object) -> str:
     if value in {
         "Some Primary",
@@ -373,12 +391,13 @@ def map_wvs_region(country_alpha: object) -> str:
 def global_weighted_wvs_frame(csv_path: Path) -> pd.DataFrame:
     df = pd.read_csv(
         csv_path,
-        usecols=["B_COUNTRY_ALPHA", "W_WEIGHT", "PWGHT", "Q260", "Q262", "Q275"],
+        usecols=["B_COUNTRY_ALPHA", "W_WEIGHT", "PWGHT", "Q260", "Q262", "Q275", "Q289"],
     )
     df["combined_weight"] = df["W_WEIGHT"].fillna(1.0) * df["PWGHT"].fillna(1.0)
     df["gender_global"] = df["Q260"].map(map_wvs_gender)
     df["age_global"] = df["Q262"].map(map_wvs_age)
     df["education3_global"] = df["Q275"].map(map_wvs_education3)
+    df["religion_global"] = df["Q289"].map(map_wvs_religion)
     df["region_global"] = df["B_COUNTRY_ALPHA"].map(map_wvs_region)
     return df
 
@@ -400,6 +419,8 @@ def build_global_panel_config_dict(
     gender_dist = _normalized_weighted_distribution(df, "gender_global")
     age_dist = _normalized_weighted_distribution(df, "age_global")
     region_dist = _normalized_weighted_distribution(df, "region_global")
+    education_dist = _normalized_weighted_distribution(df, "education3_global")
+    religion_dist = _normalized_weighted_distribution(df, "religion_global")
     return {
         "panel_size": panel_size,
         "tolerance": tolerance,
@@ -425,6 +446,30 @@ def build_global_panel_config_dict(
                 "nested_key": None,
                 "slack_categories": ["Prefer not to say"],
                 "population_proportions": age_dist,
+            },
+            {
+                "name": "education",
+                "column": "education",
+                "nested_key": None,
+                "slack_categories": ["Prefer not to say"],
+                "value_map": {
+                    "Some Primary": "Secondary or less",
+                    "Completed Primary School": "Secondary or less",
+                    "Some Secondary": "Secondary or less",
+                    "Completed Secondary School": "Secondary or less",
+                    "Vocational": "Secondary or less",
+                    "Some University but no degree": "Some tertiary",
+                    "University Bachelors Degree": "Bachelor or higher",
+                    "Graduate / Professional degree": "Bachelor or higher",
+                },
+                "population_proportions": education_dist,
+            },
+            {
+                "name": "religion",
+                "column": "religion",
+                "nested_key": "simplified",
+                "slack_categories": ["Prefer not to say"],
+                "population_proportions": religion_dist,
             },
         ],
     }

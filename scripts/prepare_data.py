@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import random
 import sys
 from pathlib import Path
@@ -524,6 +525,44 @@ def drop_zero_weight(pairs: List[dict]) -> List[dict]:
     return kept
 
 
+def transform_soft_weights(
+    probabilities: pd.Series,
+    transform: str,
+    clip_min: float | None = None,
+    clip_max: float | None = None,
+    clip_lower_quantile: float = 0.05,
+    clip_upper_quantile: float = 0.95,
+) -> pd.Series:
+    weights = probabilities.astype(float).copy()
+    if transform == "linear":
+        return weights
+    if transform == "sqrt":
+        return weights.pow(0.5)
+    if transform == "square":
+        return weights.pow(2.0)
+    if transform == "clip":
+        positive = weights[weights > 0.0]
+        if positive.empty:
+            return weights
+        lower = clip_min if clip_min is not None else float(positive.quantile(clip_lower_quantile))
+        upper = clip_max if clip_max is not None else float(positive.quantile(clip_upper_quantile))
+        if not math.isfinite(lower) or not math.isfinite(upper):
+            raise ValueError(
+                f"Invalid clip bounds for soft weights: lower={lower}, upper={upper}"
+            )
+        if lower > upper:
+            raise ValueError(
+                f"Invalid clip bounds for soft weights: lower={lower} > upper={upper}"
+            )
+        print(
+            "Soft weight clip bounds: "
+            f"lower={lower:.8f}, upper={upper:.8f}, "
+            f"lower_quantile={clip_lower_quantile}, upper_quantile={clip_upper_quantile}"
+        )
+        return weights.clip(lower=lower, upper=upper)
+    raise ValueError(f"Unknown soft-weight transform: {transform}")
+
+
 def save_jsonl(records: Iterable[dict], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
@@ -580,6 +619,11 @@ def prepare_soft_panel(
     conversations_df: Optional[pd.DataFrame] = None,
     use_conversations: bool = False,
     delta: float = 0.0,
+    weight_transform: str = "linear",
+    clip_min: float | None = None,
+    clip_max: float | None = None,
+    clip_lower_quantile: float = 0.05,
+    clip_upper_quantile: float = 0.95,
 ) -> List[dict]:
     prepared = prepare_panel_data(survey_df, panel_config)
     probabilities = estimate_selection_probabilities(
@@ -591,7 +635,14 @@ def prepare_soft_panel(
         num_workers=num_workers,
         algorithm=panel_algorithm,
     )
-    weights = probabilities.copy()
+    weights = transform_soft_weights(
+        probabilities=probabilities,
+        transform=weight_transform,
+        clip_min=clip_min,
+        clip_max=clip_max,
+        clip_lower_quantile=clip_lower_quantile,
+        clip_upper_quantile=clip_upper_quantile,
+    )
     weights.index = prepared["user_id"].values
     filtered = utterances_df
     if use_conversations and conversations_df is not None:
@@ -667,6 +718,36 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--panel-seed", type=int, default=42)
     parser.add_argument("--num-panel-samples", type=int, default=2000)
     parser.add_argument("--num-workers", type=int, default=1, help="Parallel workers for soft panel sampling.")
+    parser.add_argument(
+        "--soft-weight-transform",
+        choices=["linear", "sqrt", "square", "clip"],
+        default="linear",
+        help="Transform to apply to soft-panel inclusion probabilities before attaching them as training weights.",
+    )
+    parser.add_argument(
+        "--soft-weight-clip-min",
+        type=float,
+        default=None,
+        help="Lower clipping bound for --soft-weight-transform clip. If unset, uses the lower quantile bound.",
+    )
+    parser.add_argument(
+        "--soft-weight-clip-max",
+        type=float,
+        default=None,
+        help="Upper clipping bound for --soft-weight-transform clip. If unset, uses the upper quantile bound.",
+    )
+    parser.add_argument(
+        "--soft-weight-clip-lower-quantile",
+        type=float,
+        default=0.05,
+        help="Lower quantile used to derive the clipping floor from the positive pi_i distribution when explicit bounds are unset.",
+    )
+    parser.add_argument(
+        "--soft-weight-clip-upper-quantile",
+        type=float,
+        default=0.95,
+        help="Upper quantile used to derive the clipping ceiling from the positive pi_i distribution when explicit bounds are unset.",
+    )
     parser.add_argument(
         "--dataset-format",
         choices=["chat", "raw"],
@@ -754,7 +835,8 @@ def main() -> None:
             f"path={args.panel_config}, "
             f"algorithm={args.panel_algorithm}, "
             f"num_workers={args.num_workers}, "
-            f"num_panel_samples={args.num_panel_samples if args.mode == 'soft' else 'n/a'}"
+            f"num_panel_samples={args.num_panel_samples if args.mode == 'soft' else 'n/a'}, "
+            f"soft_weight_transform={args.soft_weight_transform if args.mode == 'soft' else 'n/a'}"
         )
     else:
         panel_config = None  # type: ignore
@@ -793,6 +875,11 @@ def main() -> None:
             conversations_df=conversations_df,
             use_conversations=args.use_conversations,
             delta=args.delta,
+            weight_transform=args.soft_weight_transform,
+            clip_min=args.soft_weight_clip_min,
+            clip_max=args.soft_weight_clip_max,
+            clip_lower_quantile=args.soft_weight_clip_lower_quantile,
+            clip_upper_quantile=args.soft_weight_clip_upper_quantile,
         )
     else:
         print("Starting US-representative/full preparation.")

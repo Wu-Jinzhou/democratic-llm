@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 
 if [[ -f .venv/bin/activate ]]; then
@@ -25,13 +25,10 @@ PRISM_GLOBAL_WVS_HARD_MODEL="${PRISM_GLOBAL_WVS_HARD_MODEL:-checkpoints/llama3.1
 
 WVS_CSV="${WVS_CSV:-wvs/WVS_Cross-National_Wave_7_csv_v6_0.csv}"
 QUESTIONS_JSON="${QUESTIONS_JSON:-wvs/subjective_questions.json}"
-PANEL_CONFIG_OUTPUT="${PANEL_CONFIG_OUTPUT:-configs/panel_config_global_wvs.yaml}"
 
 BATCH_SIZE="${BATCH_SIZE:-64}"
 MIN_RESPONDENTS="${MIN_RESPONDENTS:-100}"
 SYSTEM_PROMPT="${SYSTEM_PROMPT:-}"
-PANEL_SIZE="${PANEL_SIZE:-100}"
-TOLERANCE="${TOLERANCE:-0.10}"
 
 HF_TOKEN="${HF_TOKEN:-${HUGGING_FACE_HUB_TOKEN:-}}"
 

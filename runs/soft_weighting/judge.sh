@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/_common.sh"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/_eval_common.sh"
+
+log "Judging PRISM soft-weighting responses with $JUDGE_MODEL."
+log "  QUESTIONS_DIR=$QUESTIONS_DIR"
+log "  RESPONSES_DIR=$RESPONSES_DIR"
+log "  LISTWISE_PATH=$LISTWISE_PATH"
+log "  PREFERENCES_PATH=$PREFERENCES_PATH"
+log "  GEN_BATCH_SIZE=$GEN_BATCH_SIZE"
+log "  MAX_NEW_TOKENS=$MAX_NEW_TOKENS"
+log "  OVERWRITE_RESPONSES=$OVERWRITE_RESPONSES"
+log "  JUDGE_WORKERS=$JUDGE_WORKERS"
+log "  NUM_JUDGES=$NUM_JUDGES"
+log "  SYSTEM_PROMPT=${SYSTEM_PROMPT:-<empty>}"
+log "  MODELS=${MODEL_LIST[*]}"
+
+CMD=(
+  "$PYTHON" -u scripts/evaluate_constitution.py
+  --questions-dir "$QUESTIONS_DIR"
+  --mode listwise
+  --models "${MODEL_LIST[@]}"
+  --judge-model "$JUDGE_MODEL"
+  --num-judges "$NUM_JUDGES"
+  --judge-workers "$JUDGE_WORKERS"
+  --judge-retries "$JUDGE_RETRIES"
+  --retry-backoff "$RETRY_BACKOFF"
+  --judge-max-output-tokens "$JUDGE_MAX_OUTPUT_TOKENS"
+  --responses-dir "$RESPONSES_DIR"
+  --output "$LISTWISE_PATH"
+  --preferences-output "$PREFERENCES_PATH"
+  --batch-size "$GEN_BATCH_SIZE"
+  --max-new-tokens "$MAX_NEW_TOKENS"
+  --system-prompt "$SYSTEM_PROMPT"
+)
+if [[ "$OVERWRITE_RESPONSES" == "1" ]]; then
+  CMD+=(--overwrite-responses)
+fi
+CMD+=("${QUESTION_ARGS[@]}")
+if [[ ${#HF_ARGS[@]} -gt 0 ]]; then
+  CMD+=("${HF_ARGS[@]}")
+fi
+"${CMD[@]}"
+
+log "Finished judging. Outputs: $LISTWISE_PATH and $PREFERENCES_PATH"

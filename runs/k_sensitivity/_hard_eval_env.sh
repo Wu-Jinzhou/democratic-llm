@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/_eval_common.sh"
+
+REFERENCE_MODEL="${REFERENCE_MODEL:-$HARD_BASE_MODEL}"
+CONTROL_K50_MODEL="${CONTROL_K50_MODEL:-$HARD_K50_MODEL}"
+CONTROL_K100_MODEL="${CONTROL_K100_MODEL:-$HARD_K100_MODEL}"
+
+EVAL_DIR="${EVAL_DIR:-$EVAL_ROOT/hard/no_system_prompt}"
+RESPONSES_DIR="${RESPONSES_DIR:-$EVAL_DIR/responses}"
+LISTWISE_PATH="${LISTWISE_PATH:-$EVAL_DIR/listwise.jsonl}"
+PREFERENCES_PATH="${PREFERENCES_PATH:-$EVAL_DIR/preferences.jsonl}"
+
+MODEL_LIST=(
+  "$REFERENCE_MODEL"
+  "$CONTROL_K50_MODEL"
+  "$CONTROL_K100_MODEL"
+)
+
+mkdir -p "$EVAL_DIR" "$RESPONSES_DIR"

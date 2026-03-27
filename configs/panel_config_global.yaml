@@ -1,0 +1,89 @@
+panel_size: 145
+tolerance: 0.8
+locale_filter: null
+attributes:
+- name: region
+  column: location
+  nested_key: reside_region
+  # Source: UN World Population Prospects 2024 Revision, mid-2025 estimates
+  # Via statisticstimes.com (from UN WPP 2024 medium variant)
+  # Americas = Northern America + South America + Central America + Caribbean
+  slack_categories:
+  - Prefer not to say
+  population_proportions:
+    Africa: 0.18828236531631
+    Americas: 0.12821508313780
+    Asia: 0.58740856979899
+    Europe: 0.09043170831284
+    Oceania: 0.00566227343405
+    Prefer not to say: 0.00000000000000
+- name: gender
+  column: gender
+  nested_key: null
+  # Source: UN World Population Prospects 2024 Revision
+  # Global sex ratio ~1.018 (males per female), end-2025 estimates
+  slack_categories:
+  - Prefer not to say
+  value_map:
+    Non-binary / third gender: Prefer not to say
+  population_proportions:
+    Female: 0.49529617453106
+    Male: 0.50440382546894
+    Prefer not to say: 0.00030000000000
+- name: age
+  column: age
+  nested_key: null
+  # Source: UN World Population Prospects 2024 Revision
+  # Adults 18+ only, mid-2025 estimates by 5-year age group
+  # 18-24 = 2/5 of 15-19 cohort + full 20-24 cohort
+  slack_categories:
+  - Prefer not to say
+  population_proportions:
+    18-24 years old: 0.15026957729305
+    25-34 years old: 0.20775843381656
+    35-44 years old: 0.18931733504945
+    45-54 years old: 0.17036868310527
+    55-64 years old: 0.13314811678634
+    65+ years old: 0.14813785394933
+    Prefer not to say: 0.00100000000000
+- name: education
+  column: education
+  nested_key: null
+  # Source: UNESCO/UIS + Wittgenstein Centre for Demography
+  # Global population 25+ educational attainment (~2020-2023)
+  # Secondary or less: no schooling through completed upper secondary
+  # Some tertiary: short-cycle tertiary, some university without degree
+  # Bachelor or higher: ISCED 6+ (bachelor's, master's, doctoral)
+  slack_categories:
+  - Prefer not to say
+  value_map:
+    Some Primary: Secondary or less
+    Completed Primary School: Secondary or less
+    Some Secondary: Secondary or less
+    Completed Secondary School: Secondary or less
+    Vocational: Secondary or less
+    Some University but no degree: Some tertiary
+    University Bachelors Degree: Bachelor or higher
+    Graduate / Professional degree: Bachelor or higher
+  population_proportions:
+    Bachelor or higher: 0.15888000000000
+    Prefer not to say: 0.00700000000000
+    Secondary or less: 0.75468000000000
+    Some tertiary: 0.07944000000000
+- name: religion
+  column: religion
+  nested_key: simplified
+  # Source: Pew Research Center, "How the Global Religious Landscape
+  #   Changed From 2010 to 2020" (released June 2025)
+  # Christian: 28.8%, Muslim: 25.3%, Unaffiliated: 24.2%
+  # Other: Hindu (14.9%) + Buddhist (4.1%) + Folk/Other (2.2%) = 21.2%
+  # Jewish: 0.2%
+  slack_categories:
+  - Prefer not to say
+  population_proportions:
+    Christian: 0.28540020060181
+    Jewish: 0.00198194583751
+    Muslim: 0.25071614844534
+    No Affiliation: 0.23981544633902
+    Other: 0.21008625877633
+    Prefer not to say: 0.01200000000000

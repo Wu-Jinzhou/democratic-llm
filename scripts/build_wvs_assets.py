@@ -41,7 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--panel-config-output",
         type=Path,
-        default=Path("configs/panel_config_global_wvs.yaml"),
+        default=Path("configs/panel_config_global_wvs_generated.yaml"),
         help="Where to write the WVS-derived global panel config.",
     )
     parser.add_argument(
@@ -56,29 +56,37 @@ def parse_args() -> argparse.Namespace:
         default=0.10,
         help="Relative tolerance for each demographic target in the panel config.",
     )
+    parser.add_argument(
+        "--skip-panel-config",
+        action="store_true",
+        help="Only write the filtered subjective question set; do not regenerate a panel config.",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     questions = write_subjective_questions(args.questions_output)
-    config = write_global_panel_config(
-        args.wvs_csv,
-        args.panel_config_output,
-        panel_size=args.panel_size,
-        tolerance=args.tolerance,
-    )
+    config = None
+    if not args.skip_panel_config:
+        config = write_global_panel_config(
+            args.wvs_csv,
+            args.panel_config_output,
+            panel_size=args.panel_size,
+            tolerance=args.tolerance,
+        )
 
     wvs = pd.read_csv(args.wvs_csv, usecols=["B_COUNTRY_ALPHA"])
     countries = int(wvs["B_COUNTRY_ALPHA"].dropna().nunique())
     summary = {
         "question_count": len(questions),
         "country_count": countries,
-        "panel_size": int(config["panel_size"]),
-        "tolerance": float(config["tolerance"]),
         "question_file": str(args.questions_output),
-        "panel_config_file": str(args.panel_config_output),
     }
+    if config is not None:
+        summary["panel_size"] = int(config["panel_size"])
+        summary["tolerance"] = float(config["tolerance"])
+        summary["panel_config_file"] = str(args.panel_config_output)
     print(json.dumps(summary, indent=2))
 
 

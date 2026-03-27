@@ -2,4 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-exec "$SCRIPT_DIR/community_alignment/run_everything_community_alignment_8b.sh" "$@"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/_soft_eval_env.sh"
+
+exec "$SCRIPT_DIR/_score.sh"
