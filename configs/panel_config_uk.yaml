@@ -1,0 +1,101 @@
+tolerance: 0.1
+panel_size: 145
+locale_filter: uk
+attributes:
+  - name: gender
+    column: gender
+    nested_key: null
+    slack_categories:
+      - "Non-binary / third gender"
+      - "Prefer not to say"
+    population_proportions:
+      Female: 0.510
+      Male: 0.490
+      "Non-binary / third gender": 0.0
+      "Prefer not to say": 0.0
+
+  - name: age
+    column: age
+    nested_key: null
+    population_proportions:
+      "18-24 years old": 0.1050152425
+      "25-34 years old": 0.1705430938
+      "35-44 years old": 0.1639099256
+      "45-54 years old": 0.1676125901
+      "55-64 years old": 0.1585550065
+      "65+ years old": 0.2343641415
+
+  - name: ethnicity
+    column: ethnicity
+    nested_key: simplified
+    slack_categories:
+      - "Prefer not to say"
+    value_map:
+      Hispanic: Other
+    population_proportions:
+      White: 0.817
+      Asian: 0.093
+      Black: 0.039
+      Mixed: 0.030
+      Other: 0.021
+      "Prefer not to say": 0.0
+
+  - name: religion
+    column: religion
+    nested_key: simplified
+    population_proportions:
+      Christian: 0.462
+      "No Affiliation": 0.372
+      Muslim: 0.065
+      Jewish: 0.005
+      Other: 0.036
+      "Prefer not to say": 0.060
+
+  - name: education
+    column: education
+    nested_key: null
+    slack_categories:
+      - "Prefer not to say"
+    value_map:
+      "Some Secondary": "Secondary or less"
+      "Completed Secondary School": "Secondary or less"
+      Vocational: "Some tertiary"
+      "Some University but no degree": "Some tertiary"
+      "University Bachelors Degree": "Bachelor or higher"
+      "Graduate / Professional degree": "Bachelor or higher"
+      "Prefer not to say": "Prefer not to say"
+    population_proportions:
+      "Secondary or less": 0.340
+      "Some tertiary": 0.190
+      "Bachelor or higher": 0.470
+      "Prefer not to say": 0.0
+
+  - name: employment_status
+    column: employment_status
+    nested_key: null
+    slack_categories:
+      - "Prefer not to say"
+    population_proportions:
+      "Working full-time": 0.4019459459
+      "Working part-time": 0.1706266266
+      Student: 0.0560560561
+      "Unemployed, seeking work": 0.0340340340
+      Retired: 0.2162162162
+      "Homemaker / Stay-at-home parent": 0.0480480480
+      "Unemployed, not seeking work": 0.0730730731
+      "Prefer not to say": 0.0
+
+  - name: marital_status
+    column: marital_status
+    nested_key: null
+    slack_categories:
+      - "Prefer not to say"
+    value_map:
+      "Divorced / Separated": "Previously married / separated / widowed"
+      Widowed: "Previously married / separated / widowed"
+      "Prefer not to say": "Prefer not to say"
+    population_proportions:
+      "Never been married": 0.379
+      Married: 0.446
+      "Previously married / separated / widowed": 0.175
+      "Prefer not to say": 0.0

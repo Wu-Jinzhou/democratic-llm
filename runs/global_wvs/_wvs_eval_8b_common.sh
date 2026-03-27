@@ -19,6 +19,9 @@ PRISM_FULL_MODEL="${PRISM_FULL_MODEL:-checkpoints/llama3.1-8b-full-prism}"
 PRISM_SOFT_MODEL="${PRISM_SOFT_MODEL:-checkpoints/llama3.1-8b-soft-panel}"
 PRISM_HARD_MODEL="${PRISM_HARD_MODEL:-checkpoints/llama3.1-8b-hard-panel}"
 PRISM_US_REP_MODEL="${PRISM_US_REP_MODEL:-checkpoints/llama3.1-8b-us-rep}"
+PRISM_UK_REP_MODEL="${PRISM_UK_REP_MODEL:-checkpoints/llama3.1-8b-uk-rep}"
+PRISM_UK_SOFT_MODEL="${PRISM_UK_SOFT_MODEL:-checkpoints/llama3.1-8b-uk-soft-panel}"
+PRISM_UK_HARD_MODEL="${PRISM_UK_HARD_MODEL:-checkpoints/llama3.1-8b-uk-hard-panel}"
 
 PRISM_GLOBAL_WVS_SOFT_MODEL="${PRISM_GLOBAL_WVS_SOFT_MODEL:-checkpoints/llama3.1-8b-global-wvs-soft-panel}"
 PRISM_GLOBAL_WVS_HARD_MODEL="${PRISM_GLOBAL_WVS_HARD_MODEL:-checkpoints/llama3.1-8b-global-wvs-hard-panel}"
@@ -50,18 +53,40 @@ case "$MODEL_SET" in
       "$PRISM_GLOBAL_WVS_HARD_MODEL"
     )
     ;;
+  uk)
+    MODEL_LIST=(
+      "$PRISM_FULL_MODEL"
+      "$PRISM_UK_REP_MODEL"
+      "$PRISM_UK_SOFT_MODEL"
+      "$PRISM_UK_HARD_MODEL"
+    )
+    ;;
+  us_uk)
+    MODEL_LIST=(
+      "$PRISM_FULL_MODEL"
+      "$PRISM_SOFT_MODEL"
+      "$PRISM_HARD_MODEL"
+      "$PRISM_US_REP_MODEL"
+      "$PRISM_UK_REP_MODEL"
+      "$PRISM_UK_SOFT_MODEL"
+      "$PRISM_UK_HARD_MODEL"
+    )
+    ;;
   all)
     MODEL_LIST=(
       "$PRISM_FULL_MODEL"
       "$PRISM_SOFT_MODEL"
       "$PRISM_HARD_MODEL"
       "$PRISM_US_REP_MODEL"
+      "$PRISM_UK_REP_MODEL"
+      "$PRISM_UK_SOFT_MODEL"
+      "$PRISM_UK_HARD_MODEL"
       "$PRISM_GLOBAL_WVS_SOFT_MODEL"
       "$PRISM_GLOBAL_WVS_HARD_MODEL"
     )
     ;;
   *)
-    echo "Invalid MODEL_SET=$MODEL_SET. Expected one of: us, global, all." >&2
+    echo "Invalid MODEL_SET=$MODEL_SET. Expected one of: us, uk, us_uk, global, all." >&2
     exit 1
     ;;
 esac

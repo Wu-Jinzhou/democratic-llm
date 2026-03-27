@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Build DPO-ready datasets from PRISM data using hard/soft sortition or full US-REP subset.
+Build DPO-ready datasets from PRISM data using hard/soft sortition or fixed locale subsets.
 
 Outputs a JSONL with columns:
 - prompt: list of {"role","content"} messages (conversational format) or raw text
@@ -675,6 +675,25 @@ def prepare_us_rep(
     return attach_weights(pairs, None)
 
 
+def prepare_uk_rep(
+    survey_df: pd.DataFrame,
+    utterances_df: pd.DataFrame,
+    system_prompt: Optional[str],
+    dataset_format: str,
+    conversations_df: Optional[pd.DataFrame] = None,
+    use_conversations: bool = False,
+    delta: float = 0.0,
+) -> List[dict]:
+    ids = survey_df.loc[survey_df["included_in_UK_REP"] == True, "user_id"]
+    filtered = utterances_df[utterances_df["user_id"].isin(ids)]
+    if use_conversations and conversations_df is not None:
+        conv_filtered = conversations_df[conversations_df["user_id"].isin(ids)]
+        pairs = build_pairs_from_conversations(conv_filtered, filtered, delta, system_prompt, dataset_format)
+    else:
+        pairs = build_pairs(filtered, system_prompt, dataset_format, delta)
+    return attach_weights(pairs, None)
+
+
 def prepare_full(
     survey_df: pd.DataFrame,
     utterances_df: pd.DataFrame,
@@ -704,7 +723,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--mode",
-        choices=["hard", "soft", "us_rep", "full"],
+        choices=["hard", "soft", "us_rep", "uk_rep", "full"],
         required=True,
         help="Which dataset variant to produce.",
     )
@@ -881,8 +900,8 @@ def main() -> None:
             clip_lower_quantile=args.soft_weight_clip_lower_quantile,
             clip_upper_quantile=args.soft_weight_clip_upper_quantile,
         )
-    else:
-        print("Starting US-representative/full preparation.")
+    elif args.mode == "us_rep":
+        print("Starting US-representative preparation.")
         records = prepare_us_rep(
             survey_df=survey_df,
             utterances_df=utterances_df,
@@ -892,7 +911,18 @@ def main() -> None:
             use_conversations=args.use_conversations,
             delta=args.delta,
         )
-    if args.mode == "full":
+    elif args.mode == "uk_rep":
+        print("Starting UK-representative preparation.")
+        records = prepare_uk_rep(
+            survey_df=survey_df,
+            utterances_df=utterances_df,
+            system_prompt=args.system_prompt,
+            dataset_format=args.dataset_format,
+            conversations_df=conversations_df,
+            use_conversations=args.use_conversations,
+            delta=args.delta,
+        )
+    else:
         print("Switching to full-dataset preparation.")
         records = prepare_full(
             survey_df=survey_df,
@@ -903,7 +933,7 @@ def main() -> None:
             use_conversations=args.use_conversations,
             delta=args.delta,
         )
-    if normalize_all and args.mode in {"full", "us_rep"}:
+    if normalize_all and args.mode in {"full", "us_rep", "uk_rep"}:
         records = normalize_per_rater(records)
 
     # Global normalization to keep average weight ~1 across contributing examples
