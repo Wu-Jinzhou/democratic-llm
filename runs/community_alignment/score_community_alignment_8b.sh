@@ -37,77 +37,77 @@ log "  BOOTSTRAP_SAMPLES=$BOOTSTRAP_SAMPLES"
 log "  VIS_ROOT=$VIS_ROOT"
 
 log "Scoring / ranking"
-"$PYTHON" scripts/fit_bradley_terry.py \
-  --preferences "$PREFERENCES_PATH" \
-  --output "${EVAL_DIR}/bradley_terry_scores.json" \
-  --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-  --bootstrap-workers "$NUM_WORKERS"
+# "$PYTHON" scripts/fit_bradley_terry.py \
+#   --preferences "$PREFERENCES_PATH" \
+#   --output "${EVAL_DIR}/bradley_terry_scores.json" \
+#   --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+#   --bootstrap-workers "$NUM_WORKERS"
 
-"$PYTHON" scripts/score_rankings.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "${EVAL_DIR}/ranking_scores_plackett-luce.json" \
-  --method plackett-luce \
-  --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-  --bootstrap-workers "$NUM_WORKERS"
+# "$PYTHON" scripts/score_rankings.py \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${EVAL_DIR}/ranking_scores_plackett-luce.json" \
+#   --method plackett-luce \
+#   --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+#   --bootstrap-workers "$NUM_WORKERS"
 
-"$PYTHON" scripts/score_rankings.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "${EVAL_DIR}/ranking_scores_borda.json" \
-  --method borda \
-  --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-  --bootstrap-workers "$NUM_WORKERS"
+# "$PYTHON" scripts/score_rankings.py \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${EVAL_DIR}/ranking_scores_borda.json" \
+#   --method borda \
+#   --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+#   --bootstrap-workers "$NUM_WORKERS"
 
-"$PYTHON" scripts/score_rankings.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "${EVAL_DIR}/ranking_scores_copeland.json" \
-  --method copeland \
-  --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-  --bootstrap-workers "$NUM_WORKERS"
+# "$PYTHON" scripts/score_rankings.py \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${EVAL_DIR}/ranking_scores_copeland.json" \
+#   --method copeland \
+#   --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+#   --bootstrap-workers "$NUM_WORKERS"
 
-"$PYTHON" scripts/score_rankings.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "${EVAL_DIR}/ranking_scores_kemeny.json" \
-  --method kemeny
+# "$PYTHON" scripts/score_rankings.py \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${EVAL_DIR}/ranking_scores_kemeny.json" \
+#   --method kemeny
 
-"$PYTHON" scripts/score_rankings.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "${EVAL_DIR}/ranking_scores_mallows.json" \
-  --method mallows \
-  --mallows-bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-  --mallows-bootstrap-workers "$NUM_WORKERS"
+# "$PYTHON" scripts/score_rankings.py \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${EVAL_DIR}/ranking_scores_mallows.json" \
+#   --method mallows \
+#   --mallows-bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+#   --mallows-bootstrap-workers "$NUM_WORKERS"
 
-"$PYTHON" scripts/test_iia_plackett_luce.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "${EVAL_DIR}/iia_plackett_luce.json" \
-  --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-  --bootstrap-workers "$NUM_WORKERS"
+# "$PYTHON" scripts/test_iia_plackett_luce.py \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${EVAL_DIR}/iia_plackett_luce.json" \
+#   --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+#   --bootstrap-workers "$NUM_WORKERS"
 
-log "Diagnostics"
-"$PYTHON" scripts/analysis/judge_reliability.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "${DIAG_DIR}/judge_reliability.json" \
-  --per-question-csv "${DIAG_DIR}/judge_reliability_per_question.csv"
+# log "Diagnostics"
+# "$PYTHON" scripts/analysis/judge_reliability.py \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${DIAG_DIR}/judge_reliability.json" \
+#   --per-question-csv "${DIAG_DIR}/judge_reliability_per_question.csv"
 
-"$PYTHON" scripts/analysis/pairwise_effects.py \
-  --preferences "$PREFERENCES_PATH" \
-  --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-  --seed 42 \
-  --output "${DIAG_DIR}/pairwise_effects.json"
+# "$PYTHON" scripts/analysis/pairwise_effects.py \
+#   --preferences "$PREFERENCES_PATH" \
+#   --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+#   --seed 42 \
+#   --output "${DIAG_DIR}/pairwise_effects.json"
 
-"$PYTHON" scripts/analysis/clauses_soft_vs_full.py \
-  --preferences "$PREFERENCES_PATH" \
-  --soft-model "$SOFT_MODEL" \
-  --full-model "$FULL_EN_GLOBAL_MODEL" \
-  --listwise "$LISTWISE_PATH" \
-  --output "${DIAG_DIR}/clauses_soft_vs_full_en_global.csv"
+# "$PYTHON" scripts/analysis/clauses_soft_vs_full.py \
+#   --preferences "$PREFERENCES_PATH" \
+#   --soft-model "$SOFT_MODEL" \
+#   --full-model "$FULL_EN_GLOBAL_MODEL" \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${DIAG_DIR}/clauses_soft_vs_full_en_global.csv"
 
-"$PYTHON" scripts/ablations/ablation_order_bias.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "${EVAL_DIR}/order_bias.json"
+# "$PYTHON" scripts/ablations/ablation_order_bias.py \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${EVAL_DIR}/order_bias.json"
 
-"$PYTHON" scripts/ablations/ablation_verbosity_bias.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "${EVAL_DIR}/verbosity_bias.json"
+# "$PYTHON" scripts/ablations/ablation_verbosity_bias.py \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${EVAL_DIR}/verbosity_bias.json"
 
 log "Visualizations"
 "$PYTHON" "$VIS_ROOT/plot_scores.py" \
