@@ -55,7 +55,7 @@ log "  OVERWRITE_RESPONSES=$OVERWRITE_RESPONSES"
 log "  SOFT_MODEL=$SOFT_MODEL"
 log "  HARD_MODEL=$HARD_MODEL"
 log "  FULL_US_MODEL=$FULL_US_MODEL"
-log "  FULL_EN_GLOBAL_MODEL=$FULL_EN_GLOBAL_MODEL"
+log "  FULL_GLOBAL_MODEL=$FULL_GLOBAL_MODEL"
 log "  EVAL_DIR=$EVAL_DIR"
 log "  RESPONSES_DIR=$RESPONSES_DIR"
 
@@ -79,7 +79,7 @@ fi
 
 if [[ "$RUN_GENERATION" == "1" ]]; then
   mkdir -p "$RESPONSES_DIR"
-  for model_id in "$FULL_EN_GLOBAL_MODEL" "$SOFT_MODEL" "$HARD_MODEL"; do
+  for model_id in "$FULL_GLOBAL_MODEL" "$SOFT_MODEL" "$HARD_MODEL"; do
     responses_path="$RESPONSES_DIR/$(safe_model_id "$model_id").jsonl"
     if [[ -f "$responses_path" ]]; then
       log "Removing stale cached responses for retrained model: $responses_path"

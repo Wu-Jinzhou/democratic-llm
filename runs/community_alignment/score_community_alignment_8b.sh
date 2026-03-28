@@ -37,44 +37,44 @@ log "  BOOTSTRAP_SAMPLES=$BOOTSTRAP_SAMPLES"
 log "  VIS_ROOT=$VIS_ROOT"
 
 log "Scoring / ranking"
-# "$PYTHON" scripts/fit_bradley_terry.py \
-#   --preferences "$PREFERENCES_PATH" \
-#   --output "${EVAL_DIR}/bradley_terry_scores.json" \
-#   --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-#   --bootstrap-workers "$NUM_WORKERS"
+"$PYTHON" scripts/fit_bradley_terry.py \
+  --preferences "$PREFERENCES_PATH" \
+  --output "${EVAL_DIR}/bradley_terry_scores.json" \
+  --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+  --bootstrap-workers "$NUM_WORKERS"
 
-# "$PYTHON" scripts/score_rankings.py \
-#   --listwise "$LISTWISE_PATH" \
-#   --output "${EVAL_DIR}/ranking_scores_plackett-luce.json" \
-#   --method plackett-luce \
-#   --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-#   --bootstrap-workers "$NUM_WORKERS"
+"$PYTHON" scripts/score_rankings.py \
+  --listwise "$LISTWISE_PATH" \
+  --output "${EVAL_DIR}/ranking_scores_plackett-luce.json" \
+  --method plackett-luce \
+  --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+  --bootstrap-workers "$NUM_WORKERS"
 
-# "$PYTHON" scripts/score_rankings.py \
-#   --listwise "$LISTWISE_PATH" \
-#   --output "${EVAL_DIR}/ranking_scores_borda.json" \
-#   --method borda \
-#   --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-#   --bootstrap-workers "$NUM_WORKERS"
+"$PYTHON" scripts/score_rankings.py \
+  --listwise "$LISTWISE_PATH" \
+  --output "${EVAL_DIR}/ranking_scores_borda.json" \
+  --method borda \
+  --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+  --bootstrap-workers "$NUM_WORKERS"
 
-# "$PYTHON" scripts/score_rankings.py \
-#   --listwise "$LISTWISE_PATH" \
-#   --output "${EVAL_DIR}/ranking_scores_copeland.json" \
-#   --method copeland \
-#   --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-#   --bootstrap-workers "$NUM_WORKERS"
+"$PYTHON" scripts/score_rankings.py \
+  --listwise "$LISTWISE_PATH" \
+  --output "${EVAL_DIR}/ranking_scores_copeland.json" \
+  --method copeland \
+  --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+  --bootstrap-workers "$NUM_WORKERS"
 
-# "$PYTHON" scripts/score_rankings.py \
-#   --listwise "$LISTWISE_PATH" \
-#   --output "${EVAL_DIR}/ranking_scores_kemeny.json" \
-#   --method kemeny
+"$PYTHON" scripts/score_rankings.py \
+  --listwise "$LISTWISE_PATH" \
+  --output "${EVAL_DIR}/ranking_scores_kemeny.json" \
+  --method kemeny
 
-# "$PYTHON" scripts/score_rankings.py \
-#   --listwise "$LISTWISE_PATH" \
-#   --output "${EVAL_DIR}/ranking_scores_mallows.json" \
-#   --method mallows \
-#   --mallows-bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-#   --mallows-bootstrap-workers "$NUM_WORKERS"
+"$PYTHON" scripts/score_rankings.py \
+  --listwise "$LISTWISE_PATH" \
+  --output "${EVAL_DIR}/ranking_scores_mallows.json" \
+  --method mallows \
+  --mallows-bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+  --mallows-bootstrap-workers "$NUM_WORKERS"
 
 # "$PYTHON" scripts/test_iia_plackett_luce.py \
 #   --listwise "$LISTWISE_PATH" \
@@ -97,7 +97,7 @@ log "Scoring / ranking"
 # "$PYTHON" scripts/analysis/clauses_soft_vs_full.py \
 #   --preferences "$PREFERENCES_PATH" \
 #   --soft-model "$SOFT_MODEL" \
-#   --full-model "$FULL_EN_GLOBAL_MODEL" \
+#   --full-model "$FULL_GLOBAL_MODEL" \
 #   --listwise "$LISTWISE_PATH" \
 #   --output "${DIAG_DIR}/clauses_soft_vs_full_en_global.csv"
 
@@ -190,7 +190,7 @@ log "Visualizations"
 
 "$PYTHON" "$VIS_ROOT/model_vs_baseline_delta.py" \
   --preferences "$PREFERENCES_PATH" \
-  --baseline-models "$FULL_EN_GLOBAL_MODEL" "$BASE_MODEL" \
+  --baseline-models "$FULL_GLOBAL_MODEL" "$BASE_MODEL" \
   --output-dir "$PLOTS_DIR"
 
 "$PYTHON" "$VIS_ROOT/compose_scores_grid.py" \
