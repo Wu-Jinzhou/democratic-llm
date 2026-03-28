@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/_common.sh"
 
-RUN_PREP="${RUN_PREP:-1}"
+RUN_PREP="${RUN_PREP:-0}"
 RUN_TRAIN="${RUN_TRAIN:-1}"
 RUN_GENERATE="${RUN_GENERATE:-1}"
 RUN_JUDGE="${RUN_JUDGE:-1}"
