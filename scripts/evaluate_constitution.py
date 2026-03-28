@@ -302,6 +302,10 @@ def parse_ranking(payload: Dict, labels: List[str]) -> List[str]:
     if not isinstance(ranking, list):
         raise ValueError(f"Invalid ranking payload: {payload}")
     normalized = [_normalize_label(item, labels) for item in ranking]
+    # Some judge outputs include empty-string artifacts inside the ranking list
+    # while still containing each real label exactly once. Ignore those blanks
+    # before validating the permutation.
+    normalized = [label for label in normalized if label]
     label_set = {label.upper() for label in labels}
     if len(normalized) != len(labels):
         raise ValueError(f"Ranking missing labels or contains duplicates: {normalized}")
@@ -744,6 +748,12 @@ def main() -> None:
                         if attempt > args.judge_retries:
                             raise RuntimeError(f"Judge failed after retries: {exc}") from exc
                         sleep_for = args.retry_backoff ** attempt
+                        print(
+                            f"[judge retry] mode=listwise question_id={question_id} "
+                            f"judge_idx={judge_idx} attempt={attempt}/{args.judge_retries} "
+                            f"sleep={sleep_for:.1f}s error={exc}",
+                            flush=True,
+                        )
                         time.sleep(sleep_for)
 
             for model_i, model_j in model_pairs:
@@ -837,6 +847,12 @@ def main() -> None:
                             if attempt > args.judge_retries:
                                 raise RuntimeError(f"Judge failed after retries: {exc}") from exc
                             sleep_for = args.retry_backoff ** attempt
+                            print(
+                                f"[judge retry] mode=pairwise question_id={question_id} "
+                                f"pair={model_i}__vs__{model_j} attempt={attempt}/{args.judge_retries} "
+                                f"sleep={sleep_for:.1f}s error={exc}",
+                                flush=True,
+                            )
                             time.sleep(sleep_for)
 
                 majority_winner = None
