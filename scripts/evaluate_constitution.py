@@ -744,6 +744,12 @@ def main() -> None:
                         if attempt > args.judge_retries:
                             raise RuntimeError(f"Judge failed after retries: {exc}") from exc
                         sleep_for = args.retry_backoff ** attempt
+                        print(
+                            f"[judge retry] mode=listwise question_id={question_id} "
+                            f"judge_idx={judge_idx} attempt={attempt}/{args.judge_retries} "
+                            f"sleep={sleep_for:.1f}s error={exc}",
+                            flush=True,
+                        )
                         time.sleep(sleep_for)
 
             for model_i, model_j in model_pairs:
@@ -837,6 +843,12 @@ def main() -> None:
                             if attempt > args.judge_retries:
                                 raise RuntimeError(f"Judge failed after retries: {exc}") from exc
                             sleep_for = args.retry_backoff ** attempt
+                            print(
+                                f"[judge retry] mode=pairwise question_id={question_id} "
+                                f"pair={model_i}__vs__{model_j} attempt={attempt}/{args.judge_retries} "
+                                f"sleep={sleep_for:.1f}s error={exc}",
+                                flush=True,
+                            )
                             time.sleep(sleep_for)
 
                 majority_winner = None
