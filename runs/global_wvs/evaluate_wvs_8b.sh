@@ -2,12 +2,18 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+MODEL_SET="${MODEL_SET:-global}"
+EVAL_DIR="${EVAL_DIR:-artifacts/evaluations/wvs/global/llama3.1-8b}"
+export MODEL_SET
+export EVAL_DIR
+
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/_wvs_eval_8b_common.sh"
 
 mkdir -p "$EVAL_DIR"
 
-log "WVS evaluation configuration:"
+log "Global WVS evaluation configuration:"
 log "  WVS_CSV=$WVS_CSV"
 log "  QUESTIONS_JSON=$QUESTIONS_JSON"
 log "  MODEL_SET=$MODEL_SET"
