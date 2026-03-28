@@ -302,6 +302,10 @@ def parse_ranking(payload: Dict, labels: List[str]) -> List[str]:
     if not isinstance(ranking, list):
         raise ValueError(f"Invalid ranking payload: {payload}")
     normalized = [_normalize_label(item, labels) for item in ranking]
+    # Some judge outputs include empty-string artifacts inside the ranking list
+    # while still containing each real label exactly once. Ignore those blanks
+    # before validating the permutation.
+    normalized = [label for label in normalized if label]
     label_set = {label.upper() for label in labels}
     if len(normalized) != len(labels):
         raise ValueError(f"Ranking missing labels or contains duplicates: {normalized}")
