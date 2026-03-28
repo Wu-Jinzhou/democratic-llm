@@ -114,7 +114,9 @@ def compute_question_probabilities(
             for label in OPTION_LABELS:
                 token_ids = torch.tensor(option_tokens[label], device=last_logits.device)
                 label_logits.append(torch.logsumexp(last_logits[idx, token_ids], dim=0))
-            label_logits_tensor = torch.stack(label_logits)
+            # Cast to fp32 before moving to CPU/NumPy; some PyTorch builds do not support
+            # exporting CPU bfloat16 tensors directly to NumPy.
+            label_logits_tensor = torch.stack(label_logits).to(dtype=torch.float32)
             label_probs = torch.softmax(label_logits_tensor, dim=0).detach().cpu().numpy()
             rows.append(
                 {
