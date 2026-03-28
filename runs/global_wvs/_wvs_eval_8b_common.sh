@@ -49,6 +49,16 @@ case "$MODEL_SET" in
   global)
     MODEL_LIST=(
       "$PRISM_FULL_MODEL"
+      "$PRISM_SOFT_MODEL"
+      "$PRISM_HARD_MODEL"
+      "$PRISM_US_REP_MODEL"
+      "$PRISM_GLOBAL_WVS_SOFT_MODEL"
+      "$PRISM_GLOBAL_WVS_HARD_MODEL"
+    )
+    ;;
+  global_only)
+    MODEL_LIST=(
+      "$PRISM_FULL_MODEL"
       "$PRISM_GLOBAL_WVS_SOFT_MODEL"
       "$PRISM_GLOBAL_WVS_HARD_MODEL"
     )
@@ -86,7 +96,7 @@ case "$MODEL_SET" in
     )
     ;;
   *)
-    echo "Invalid MODEL_SET=$MODEL_SET. Expected one of: us, uk, us_uk, global, all." >&2
+    echo "Invalid MODEL_SET=$MODEL_SET. Expected one of: us, uk, us_uk, global, global_only, all." >&2
     exit 1
     ;;
 esac
