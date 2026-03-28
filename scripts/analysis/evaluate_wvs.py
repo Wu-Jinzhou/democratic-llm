@@ -50,7 +50,7 @@ def load_hf_model(model_id: str, hf_token: str | None):
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
         token=hf_token,
-        torch_dtype=torch.bfloat16,
+        dtype=torch.bfloat16,
         device_map="auto",
     )
     model.eval()
@@ -101,7 +101,7 @@ def compute_question_probabilities(
     prompts = [build_chat_prompt(tokenizer, build_messages(question, system_prompt)) for question in questions]
     option_tokens = option_token_sets(tokenizer)
     rows: List[dict] = []
-    for start in tqdm(range(0, len(questions), batch_size), desc="Scoring WVS questions"):
+    for start in tqdm(range(0, len(questions), batch_size), desc="Scoring WVS question batches"):
         batch_questions = questions[start : start + batch_size]
         batch_prompts = prompts[start : start + batch_size]
         inputs = tokenizer(batch_prompts, return_tensors="pt", padding=True).to(model.device)
