@@ -1,0 +1,690 @@
+{
+  "question_count": 49,
+  "min_respondents": 100,
+  "models": {
+    "checkpoints/llama3.1-8b-full-prism": {
+      "top_countries": [
+        {
+          "model": "checkpoints/llama3.1-8b-full-prism",
+          "country_alpha": "TJK",
+          "country": "Tajikistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.6044541899802545,
+          "mean_total_variation": 0.4766722824460472,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-full-prism",
+          "country_alpha": "UZB",
+          "country": "Uzbekistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.602553758099874,
+          "mean_total_variation": 0.48346679395773295,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-full-prism",
+          "country_alpha": "IND",
+          "country": "India",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5894368755928431,
+          "mean_total_variation": 0.49851395754755506,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-full-prism",
+          "country_alpha": "MMR",
+          "country": "Myanmar",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5890702706412364,
+          "mean_total_variation": 0.4926081890656696,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-full-prism",
+          "country_alpha": "PHL",
+          "country": "Philippines",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5800852175674048,
+          "mean_total_variation": 0.5133515949189328,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-full-prism",
+          "country_alpha": "IDN",
+          "country": "Indonesia",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5785222703166434,
+          "mean_total_variation": 0.5140060580720743,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-full-prism",
+          "country_alpha": "PAK",
+          "country": "Pakistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5728790296653259,
+          "mean_total_variation": 0.5137898835533417,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-full-prism",
+          "country_alpha": "NGA",
+          "country": "Nigeria",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.569862389441548,
+          "mean_total_variation": 0.531712284316131,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-full-prism",
+          "country_alpha": "KEN",
+          "country": "Kenya",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5676409675979347,
+          "mean_total_variation": 0.5347973091008215,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-full-prism",
+          "country_alpha": "GLOBAL",
+          "country": "Global aggregate",
+          "region": "Global",
+          "weight_scheme": "global",
+          "mean_js_similarity": 0.563121270426673,
+          "mean_total_variation": 0.5366512749270855,
+          "questions_used": 49
+        }
+      ],
+      "global": {
+        "model": "checkpoints/llama3.1-8b-full-prism",
+        "country_alpha": "GLOBAL",
+        "country": "Global aggregate",
+        "region": "Global",
+        "weight_scheme": "global",
+        "mean_js_similarity": 0.563121270426673,
+        "mean_total_variation": 0.5366512749270855,
+        "questions_used": 49
+      }
+    },
+    "checkpoints/llama3.1-8b-soft-panel": {
+      "top_countries": [
+        {
+          "model": "checkpoints/llama3.1-8b-soft-panel",
+          "country_alpha": "TJK",
+          "country": "Tajikistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5986459194150263,
+          "mean_total_variation": 0.4839000942825917,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-soft-panel",
+          "country_alpha": "UZB",
+          "country": "Uzbekistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5983889876439807,
+          "mean_total_variation": 0.4896157108477144,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-soft-panel",
+          "country_alpha": "MMR",
+          "country": "Myanmar",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5854517016286827,
+          "mean_total_variation": 0.49681057914390103,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-soft-panel",
+          "country_alpha": "IND",
+          "country": "India",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5842805672754711,
+          "mean_total_variation": 0.5068383528422523,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-soft-panel",
+          "country_alpha": "PHL",
+          "country": "Philippines",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5756510759168777,
+          "mean_total_variation": 0.5158595372729627,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-soft-panel",
+          "country_alpha": "IDN",
+          "country": "Indonesia",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.574547487643965,
+          "mean_total_variation": 0.517266751848264,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-soft-panel",
+          "country_alpha": "PAK",
+          "country": "Pakistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5683829028689096,
+          "mean_total_variation": 0.5216716361005068,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-soft-panel",
+          "country_alpha": "NGA",
+          "country": "Nigeria",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5644256195515894,
+          "mean_total_variation": 0.5376866731156801,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-soft-panel",
+          "country_alpha": "KEN",
+          "country": "Kenya",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5626484915166039,
+          "mean_total_variation": 0.5395489594203806,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-soft-panel",
+          "country_alpha": "GLOBAL",
+          "country": "Global aggregate",
+          "region": "Global",
+          "weight_scheme": "global",
+          "mean_js_similarity": 0.5572691732014894,
+          "mean_total_variation": 0.5442452272774114,
+          "questions_used": 49
+        }
+      ],
+      "global": {
+        "model": "checkpoints/llama3.1-8b-soft-panel",
+        "country_alpha": "GLOBAL",
+        "country": "Global aggregate",
+        "region": "Global",
+        "weight_scheme": "global",
+        "mean_js_similarity": 0.5572691732014894,
+        "mean_total_variation": 0.5442452272774114,
+        "questions_used": 49
+      }
+    },
+    "checkpoints/llama3.1-8b-hard-panel": {
+      "top_countries": [
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country_alpha": "TJK",
+          "country": "Tajikistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.6019943215297884,
+          "mean_total_variation": 0.4797570801353349,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country_alpha": "UZB",
+          "country": "Uzbekistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5948697144206966,
+          "mean_total_variation": 0.4938889067569649,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country_alpha": "IND",
+          "country": "India",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5866086843997117,
+          "mean_total_variation": 0.4998900663632237,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country_alpha": "MMR",
+          "country": "Myanmar",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5814953165879184,
+          "mean_total_variation": 0.49848783307147804,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country_alpha": "PAK",
+          "country": "Pakistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5714622875958617,
+          "mean_total_variation": 0.5147971398805693,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country_alpha": "PHL",
+          "country": "Philippines",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5671148895804373,
+          "mean_total_variation": 0.5287969651771842,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country_alpha": "IDN",
+          "country": "Indonesia",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5655279675217854,
+          "mean_total_variation": 0.5270619989412579,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country_alpha": "NGA",
+          "country": "Nigeria",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5592637421899228,
+          "mean_total_variation": 0.5435121151512927,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country_alpha": "KEN",
+          "country": "Kenya",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.557891748427631,
+          "mean_total_variation": 0.5461969229924405,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country_alpha": "GLOBAL",
+          "country": "Global aggregate",
+          "region": "Global",
+          "weight_scheme": "global",
+          "mean_js_similarity": 0.5531987667828859,
+          "mean_total_variation": 0.5514170385040318,
+          "questions_used": 49
+        }
+      ],
+      "global": {
+        "model": "checkpoints/llama3.1-8b-hard-panel",
+        "country_alpha": "GLOBAL",
+        "country": "Global aggregate",
+        "region": "Global",
+        "weight_scheme": "global",
+        "mean_js_similarity": 0.5531987667828859,
+        "mean_total_variation": 0.5514170385040318,
+        "questions_used": 49
+      }
+    },
+    "checkpoints/llama3.1-8b-us-rep": {
+      "top_countries": [
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country_alpha": "TJK",
+          "country": "Tajikistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.6091366215091178,
+          "mean_total_variation": 0.4700281931494405,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country_alpha": "UZB",
+          "country": "Uzbekistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.6016502161069296,
+          "mean_total_variation": 0.4820902320842749,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country_alpha": "IND",
+          "country": "India",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5901966801383366,
+          "mean_total_variation": 0.49583815895854955,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country_alpha": "MMR",
+          "country": "Myanmar",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5892829493845566,
+          "mean_total_variation": 0.48844636911968586,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country_alpha": "PAK",
+          "country": "Pakistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5761436942059017,
+          "mean_total_variation": 0.5068142077918759,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country_alpha": "PHL",
+          "country": "Philippines",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.575978080815128,
+          "mean_total_variation": 0.5167390894217341,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country_alpha": "IDN",
+          "country": "Indonesia",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5734483374361746,
+          "mean_total_variation": 0.5155066138524631,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country_alpha": "NGA",
+          "country": "Nigeria",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5701293019227535,
+          "mean_total_variation": 0.5254848596498248,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country_alpha": "KEN",
+          "country": "Kenya",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5690204163673998,
+          "mean_total_variation": 0.5302761154379065,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country_alpha": "GLOBAL",
+          "country": "Global aggregate",
+          "region": "Global",
+          "weight_scheme": "global",
+          "mean_js_similarity": 0.5595306603021843,
+          "mean_total_variation": 0.541277976674791,
+          "questions_used": 49
+        }
+      ],
+      "global": {
+        "model": "checkpoints/llama3.1-8b-us-rep",
+        "country_alpha": "GLOBAL",
+        "country": "Global aggregate",
+        "region": "Global",
+        "weight_scheme": "global",
+        "mean_js_similarity": 0.5595306603021843,
+        "mean_total_variation": 0.541277976674791,
+        "questions_used": 49
+      }
+    },
+    "checkpoints/llama3.1-8b-global-wvs-soft-panel": {
+      "top_countries": [
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-soft-panel",
+          "country_alpha": "TJK",
+          "country": "Tajikistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5366827654314695,
+          "mean_total_variation": 0.5538557607225956,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-soft-panel",
+          "country_alpha": "IND",
+          "country": "India",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5278759997519128,
+          "mean_total_variation": 0.5631706609721254,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-soft-panel",
+          "country_alpha": "UZB",
+          "country": "Uzbekistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5212552857845676,
+          "mean_total_variation": 0.5758259783309434,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-soft-panel",
+          "country_alpha": "PAK",
+          "country": "Pakistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5057656671657769,
+          "mean_total_variation": 0.5931603297211977,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-soft-panel",
+          "country_alpha": "ETH",
+          "country": "Ethiopia",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5056239761179958,
+          "mean_total_variation": 0.5949786973052591,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-soft-panel",
+          "country_alpha": "IDN",
+          "country": "Indonesia",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5037129759166202,
+          "mean_total_variation": 0.603607769667607,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-soft-panel",
+          "country_alpha": "PHL",
+          "country": "Philippines",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5031478078255394,
+          "mean_total_variation": 0.6005888819400312,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-soft-panel",
+          "country_alpha": "MMR",
+          "country": "Myanmar",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5017510406603435,
+          "mean_total_variation": 0.5980357178782407,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-soft-panel",
+          "country_alpha": "NGA",
+          "country": "Nigeria",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.49976814814040366,
+          "mean_total_variation": 0.6060936006259279,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-soft-panel",
+          "country_alpha": "KEN",
+          "country": "Kenya",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.4986761206130161,
+          "mean_total_variation": 0.6062418469188794,
+          "questions_used": 49
+        }
+      ],
+      "global": {
+        "model": "checkpoints/llama3.1-8b-global-wvs-soft-panel",
+        "country_alpha": "GLOBAL",
+        "country": "Global aggregate",
+        "region": "Global",
+        "weight_scheme": "global",
+        "mean_js_similarity": 0.48804359607484143,
+        "mean_total_variation": 0.6248234497733599,
+        "questions_used": 49
+      }
+    },
+    "checkpoints/llama3.1-8b-global-wvs-hard-panel": {
+      "top_countries": [
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-hard-panel",
+          "country_alpha": "TJK",
+          "country": "Tajikistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5323832598894257,
+          "mean_total_variation": 0.5615465861597373,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-hard-panel",
+          "country_alpha": "IND",
+          "country": "India",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5242512426266268,
+          "mean_total_variation": 0.5711646056844133,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-hard-panel",
+          "country_alpha": "UZB",
+          "country": "Uzbekistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5178627947822301,
+          "mean_total_variation": 0.5843504509090967,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-hard-panel",
+          "country_alpha": "ETH",
+          "country": "Ethiopia",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5060225888161585,
+          "mean_total_variation": 0.5996221380676514,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-hard-panel",
+          "country_alpha": "PAK",
+          "country": "Pakistan",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5023680949654655,
+          "mean_total_variation": 0.5994433726823897,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-hard-panel",
+          "country_alpha": "KEN",
+          "country": "Kenya",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5011271348984334,
+          "mean_total_variation": 0.6059171075491138,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-hard-panel",
+          "country_alpha": "PHL",
+          "country": "Philippines",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5010484198581615,
+          "mean_total_variation": 0.6046904036562918,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-hard-panel",
+          "country_alpha": "IDN",
+          "country": "Indonesia",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.5005799684399161,
+          "mean_total_variation": 0.609095751096757,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-hard-panel",
+          "country_alpha": "NGA",
+          "country": "Nigeria",
+          "region": "Africa",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.500224088811226,
+          "mean_total_variation": 0.6077175532639959,
+          "questions_used": 49
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-global-wvs-hard-panel",
+          "country_alpha": "MMR",
+          "country": "Myanmar",
+          "region": "Asia",
+          "weight_scheme": "country",
+          "mean_js_similarity": 0.49648976400711975,
+          "mean_total_variation": 0.606332769575063,
+          "questions_used": 49
+        }
+      ],
+      "global": {
+        "model": "checkpoints/llama3.1-8b-global-wvs-hard-panel",
+        "country_alpha": "GLOBAL",
+        "country": "Global aggregate",
+        "region": "Global",
+        "weight_scheme": "global",
+        "mean_js_similarity": 0.4878630378803551,
+        "mean_total_variation": 0.6280833201638973,
+        "questions_used": 49
+      }
+    }
+  }
+}
