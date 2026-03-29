@@ -1,0 +1,96 @@
+{
+  "method": "bradley-terry",
+  "models": [
+    "checkpoints/llama3.1-8b-full-prism",
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-soft-panel-clipped",
+    "checkpoints/llama3.1-8b-soft-panel-sqrt",
+    "checkpoints/llama3.1-8b-soft-panel-square"
+  ],
+  "num_comparisons": 45000,
+  "bt_mode": "majority",
+  "max_iter": 1000,
+  "tol": 1e-06,
+  "bootstrap_samples": 1000,
+  "bootstrap": {
+    "samples": 1000,
+    "seed": 42,
+    "alpha": 0.05,
+    "workers": 96
+  },
+  "results": [
+    {
+      "model": "checkpoints/llama3.1-8b-hard-panel",
+      "score": 0.3394677880171995,
+      "ability": 1.4042000595608126,
+      "wins": 9004.0,
+      "score_mean": 0.3399188883019252,
+      "score_std": 0.023930979702986882,
+      "score_ci_lower": 0.29386289830681606,
+      "score_ci_upper": 0.3853511465797745,
+      "ability_ci_lower": 1.341599955431987,
+      "ability_ci_upper": 1.4701304620989157
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-soft-panel-square",
+      "score": 0.014160897113574154,
+      "ability": 1.0142616375805498,
+      "wins": 7565.0,
+      "score_mean": 0.014099032283773684,
+      "score_std": 0.017496092867418184,
+      "score_ci_lower": -0.022568503612719254,
+      "score_ci_upper": 0.047206132916594194,
+      "ability_ci_lower": 0.9776842599953641,
+      "ability_ci_upper": 1.0483380837956244
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-soft-panel-clipped",
+      "score": 0.013265684279609101,
+      "ability": 1.0133540638420298,
+      "wins": 7561.0,
+      "score_mean": 0.012985966282674902,
+      "score_std": 0.019584543431565935,
+      "score_ci_lower": -0.02657420877628593,
+      "score_ci_upper": 0.051959692673468526,
+      "ability_ci_lower": 0.9737757784453098,
+      "ability_ci_upper": 1.053333284609039
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-soft-panel-sqrt",
+      "score": -0.02546075310578497,
+      "ability": 0.9748606384673052,
+      "wins": 7388.0,
+      "score_mean": -0.025610563727437845,
+      "score_std": 0.018904534503649352,
+      "score_ci_lower": -0.06298661208795102,
+      "score_ci_upper": 0.009994860176651394,
+      "ability_ci_lower": 0.9389560442659246,
+      "ability_ci_upper": 1.0100449756180776
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-soft-panel",
+      "score": -0.140734410942968,
+      "ability": 0.8687200035882688,
+      "wins": 6874.0,
+      "score_mean": -0.1398772201544003,
+      "score_std": 0.02254667878618393,
+      "score_ci_lower": -0.18287430001207308,
+      "score_ci_upper": -0.09372323912680097,
+      "ability_ci_lower": 0.8328728412635599,
+      "ability_ci_upper": 0.9105347277583927
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-full-prism",
+      "score": -0.20069920536162983,
+      "ability": 0.8181584922329384,
+      "wins": 6608.0,
+      "score_mean": -0.20151610298653597,
+      "score_std": 0.022327758986853408,
+      "score_ci_lower": -0.24555127356806405,
+      "score_ci_upper": -0.15816024425740585,
+      "ability_ci_lower": 0.7822731728294311,
+      "ability_ci_upper": 0.8537129684063206
+    }
+  ]
+}

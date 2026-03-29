@@ -694,6 +694,34 @@ def prepare_uk_rep(
     return attach_weights(pairs, None)
 
 
+def prepare_us_balanced(
+    survey_df: pd.DataFrame,
+    utterances_df: pd.DataFrame,
+    system_prompt: Optional[str],
+    dataset_format: str,
+    conversations_df: Optional[pd.DataFrame] = None,
+    use_conversations: bool = False,
+    delta: float = 0.0,
+) -> List[dict]:
+    ids = set(survey_df.loc[survey_df["included_in_US_REP"] == True, "user_id"].astype(str).tolist())
+    filtered = utterances_df[utterances_df["user_id"].astype(str).isin(ids)].copy()
+    if "included_in_balanced_subset" in filtered.columns:
+        filtered = filtered[filtered["included_in_balanced_subset"] == True].copy()
+    if use_conversations and conversations_df is not None:
+        conv_filtered = conversations_df[conversations_df["user_id"].astype(str).isin(ids)].copy()
+        if "included_in_balanced_subset" in conv_filtered.columns:
+            conv_filtered = conv_filtered[conv_filtered["included_in_balanced_subset"] == True].copy()
+        if "conversation_id" in filtered.columns and "conversation_id" in conv_filtered.columns:
+            conv_ids = set(conv_filtered["conversation_id"].astype(str).tolist())
+            filtered = filtered[filtered["conversation_id"].astype(str).isin(conv_ids)].copy()
+        pairs = build_pairs_from_conversations(
+            conv_filtered, filtered, delta, system_prompt, dataset_format
+        )
+    else:
+        pairs = build_pairs(filtered, system_prompt, dataset_format, delta)
+    return attach_weights(pairs, None)
+
+
 def prepare_full(
     survey_df: pd.DataFrame,
     utterances_df: pd.DataFrame,
@@ -723,7 +751,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--mode",
-        choices=["hard", "soft", "us_rep", "uk_rep", "full"],
+        choices=["hard", "soft", "us_rep", "us_balanced", "uk_rep", "full"],
         required=True,
         help="Which dataset variant to produce.",
     )
@@ -922,6 +950,17 @@ def main() -> None:
             use_conversations=args.use_conversations,
             delta=args.delta,
         )
+    elif args.mode == "us_balanced":
+        print("Starting US balanced-subset preparation.")
+        records = prepare_us_balanced(
+            survey_df=survey_df,
+            utterances_df=utterances_df,
+            system_prompt=args.system_prompt,
+            dataset_format=args.dataset_format,
+            conversations_df=conversations_df,
+            use_conversations=args.use_conversations,
+            delta=args.delta,
+        )
     else:
         print("Switching to full-dataset preparation.")
         records = prepare_full(
@@ -933,7 +972,7 @@ def main() -> None:
             use_conversations=args.use_conversations,
             delta=args.delta,
         )
-    if normalize_all and args.mode in {"full", "us_rep", "uk_rep"}:
+    if normalize_all and args.mode in {"full", "us_rep", "us_balanced", "uk_rep"}:
         records = normalize_per_rater(records)
 
     # Global normalization to keep average weight ~1 across contributing examples

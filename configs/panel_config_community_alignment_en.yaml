@@ -1,17 +1,19 @@
 # Community Alignment panel drawn from the English-assigned subset across all locales.
-# Target proportions remain the US demographic targets used in the original CA setup;
-# only the candidate pool changes from locale-filtered US to global English-assigned rows.
+# We keep the candidate pool global-English, but use the Community Alignment
+# paper's published balanced US subset as the balancing target:
+# age, gender, and ethnicity only, with the paper-implied target proportions
+# from Tables 7-9.
 tolerance: 0.1
-panel_size: 235
+panel_size: 350
 attributes:
   - name: age
     column: age
     nested_key: null
     population_proportions:
-      "18-34": 0.29
-      "35-45": 0.17
-      "46-54": 0.16
-      "55+": 0.38
+      "18-34": 0.446
+      "35-45": 0.251
+      "46-54": 0.126
+      "55+": 0.177
   - name: gender
     column: gender
     nested_key: null
@@ -19,23 +21,10 @@ attributes:
       - Other
       - "Prefer not to say"
     population_proportions:
-      Female: 0.51
-      Male: 0.48
-      Other: 0.005
-      "Prefer not to say": 0.005
-  - name: education
-    column: education
-    nested_key: null
-    slack_categories:
-      - Other
-      - "Prefer not to say"
-    population_proportions:
-      "(At most) Complete Secondary": 0.36
-      "Some post-secondary": 0.25
-      "Post-secondary graduate": 0.23
-      "Some or complete graduate degree": 0.15
-      Other: 0.005
-      "Prefer not to say": 0.005
+      Male: 0.514
+      Female: 0.477
+      Other: 0.009
+      "Prefer not to say": 0.0
   - name: ethnicity
     column: ethnicity
     nested_key: null
@@ -43,20 +32,9 @@ attributes:
       - Other
       - "Prefer not to say"
     population_proportions:
-      White: 0.60
-      "Black or African American": 0.12
-      "Hispanic or Latino": 0.18
-      Asian: 0.06
-      Other: 0.02
-      "Prefer not to say": 0.02
-  - name: political
-    column: political
-    nested_key: null
-    slack_categories:
-      - "Prefer not to say"
-    population_proportions:
-      Liberal: 0.24
-      Moderate: 0.38
-      Conservative: 0.33
-      "No identification": 0.04
-      "Prefer not to say": 0.01
+      White: 0.520
+      "Black or African American": 0.149
+      Asian: 0.100
+      "Hispanic or Latino": 0.094
+      Other: 0.037
+      "Prefer not to say": 0.100

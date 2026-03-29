@@ -5,4 +5,5 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/_hard_eval_env.sh"
 
-exec "$SCRIPT_DIR/_judge.sh"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/_judge.sh"

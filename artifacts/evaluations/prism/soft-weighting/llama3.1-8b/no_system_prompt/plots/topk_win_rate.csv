@@ -1,0 +1,7 @@
+model,top3_win_rate
+checkpoints/llama3.1-8b-hard-panel,0.11726666666666667
+checkpoints/llama3.1-8b-soft-panel-square,0.21553333333333333
+checkpoints/llama3.1-8b-soft-panel-clipped,0.20886666666666667
+checkpoints/llama3.1-8b-soft-panel-sqrt,0.20226666666666668
+checkpoints/llama3.1-8b-soft-panel,0.132
+checkpoints/llama3.1-8b-full-prism,0.12406666666666667

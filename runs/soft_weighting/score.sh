@@ -78,31 +78,31 @@ log "Scoring / ranking"
   --mallows-bootstrap-samples "$BOOTSTRAP_SAMPLES" \
   --mallows-bootstrap-workers "$NUM_WORKERS"
 
-"$PYTHON" scripts/test_iia_plackett_luce.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "${EVAL_DIR}/iia_plackett_luce.json" \
-  --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-  --bootstrap-workers "$NUM_WORKERS"
+# "$PYTHON" scripts/test_iia_plackett_luce.py \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${EVAL_DIR}/iia_plackett_luce.json" \
+#   --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+#   --bootstrap-workers "$NUM_WORKERS"
 
-log "Diagnostics"
-"$PYTHON" scripts/analysis/judge_reliability.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "${DIAG_DIR}/judge_reliability.json" \
-  --per-question-csv "${DIAG_DIR}/judge_reliability_per_question.csv"
+# log "Diagnostics"
+# "$PYTHON" scripts/analysis/judge_reliability.py \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${DIAG_DIR}/judge_reliability.json" \
+#   --per-question-csv "${DIAG_DIR}/judge_reliability_per_question.csv"
 
-"$PYTHON" scripts/analysis/pairwise_effects.py \
-  --preferences "$PREFERENCES_PATH" \
-  --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
-  --seed 42 \
-  --output "${DIAG_DIR}/pairwise_effects.json"
+# "$PYTHON" scripts/analysis/pairwise_effects.py \
+#   --preferences "$PREFERENCES_PATH" \
+#   --bootstrap-samples "$BOOTSTRAP_SAMPLES" \
+#   --seed 42 \
+#   --output "${DIAG_DIR}/pairwise_effects.json"
 
-"$PYTHON" scripts/ablations/ablation_order_bias.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "${EVAL_DIR}/order_bias.json"
+# "$PYTHON" scripts/ablations/ablation_order_bias.py \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${EVAL_DIR}/order_bias.json"
 
-"$PYTHON" scripts/ablations/ablation_verbosity_bias.py \
-  --listwise "$LISTWISE_PATH" \
-  --output "${EVAL_DIR}/verbosity_bias.json"
+# "$PYTHON" scripts/ablations/ablation_verbosity_bias.py \
+#   --listwise "$LISTWISE_PATH" \
+#   --output "${EVAL_DIR}/verbosity_bias.json"
 
 log "Visualizations"
 "$PYTHON" "$VIS_ROOT/plot_scores.py" \

@@ -1,0 +1,26 @@
+{
+  "method": "kemeny",
+  "models": [
+    "checkpoints/llama3.1-8b-full-prism",
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-soft-panel-clipped",
+    "checkpoints/llama3.1-8b-soft-panel-sqrt",
+    "checkpoints/llama3.1-8b-soft-panel-square"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "kemeny": {
+    "method": "bruteforce",
+    "ranking": [
+      "checkpoints/llama3.1-8b-hard-panel",
+      "checkpoints/llama3.1-8b-soft-panel-square",
+      "checkpoints/llama3.1-8b-soft-panel-clipped",
+      "checkpoints/llama3.1-8b-soft-panel-sqrt",
+      "checkpoints/llama3.1-8b-soft-panel",
+      "checkpoints/llama3.1-8b-full-prism"
+    ],
+    "score": 124031.0
+  }
+}

@@ -1,0 +1,186 @@
+{
+  "method": "mallows",
+  "models": [
+    "checkpoints/llama3.1-8b-full-prism",
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-soft-panel-clipped",
+    "checkpoints/llama3.1-8b-soft-panel-sqrt",
+    "checkpoints/llama3.1-8b-soft-panel-square"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "mallows": {
+    "consensus": [
+      "checkpoints/llama3.1-8b-hard-panel",
+      "checkpoints/llama3.1-8b-soft-panel-square",
+      "checkpoints/llama3.1-8b-soft-panel-clipped",
+      "checkpoints/llama3.1-8b-soft-panel-sqrt",
+      "checkpoints/llama3.1-8b-soft-panel",
+      "checkpoints/llama3.1-8b-full-prism"
+    ],
+    "consensus_method": "bruteforce",
+    "phi": 0.10980325892751346,
+    "log_likelihood_train": -78442.64662568105,
+    "log_likelihood_test": -19618.7870975809,
+    "params": {
+      "test_fraction": 0.2,
+      "seed": 42,
+      "phi_max": 10.0,
+      "phi_grid": 200,
+      "phi_tol": 0.0001,
+      "kemeny_method": "bruteforce",
+      "kemeny_bruteforce_max": 8,
+      "kemeny_ilp_max": 12,
+      "kemeny_ilp_max_seconds": 60,
+      "bootstrap_samples": 1000,
+      "bootstrap_workers": 96
+    },
+    "mean_kendall_train": 6.726333333333334,
+    "mean_kendall_test": 6.751,
+    "n_train": 12000,
+    "n_test": 3000,
+    "bootstrap": {
+      "samples": 1000,
+      "seed": 42,
+      "workers": 96,
+      "exact_match_rate": 0.619,
+      "rank_probabilities": {
+        "checkpoints/llama3.1-8b-full-prism": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "checkpoints/llama3.1-8b-hard-panel": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "checkpoints/llama3.1-8b-soft-panel": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "checkpoints/llama3.1-8b-soft-panel-clipped": [
+          0.0,
+          0.376,
+          0.619,
+          0.005,
+          0.0,
+          0.0
+        ],
+        "checkpoints/llama3.1-8b-soft-panel-sqrt": [
+          0.0,
+          0.0,
+          0.047,
+          0.953,
+          0.0,
+          0.0
+        ],
+        "checkpoints/llama3.1-8b-soft-panel-square": [
+          0.0,
+          0.624,
+          0.334,
+          0.042,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "pairwise_probabilities": {
+      "method": "exact",
+      "matrix": {
+        "checkpoints/llama3.1-8b-hard-panel": {
+          "checkpoints/llama3.1-8b-soft-panel-square": 0.5274232672974889,
+          "checkpoints/llama3.1-8b-soft-panel-clipped": 0.5456321917555491,
+          "checkpoints/llama3.1-8b-soft-panel-sqrt": 0.563731894693612,
+          "checkpoints/llama3.1-8b-soft-panel": 0.5816799943290043,
+          "checkpoints/llama3.1-8b-full-prism": 0.5994353895217431
+        },
+        "checkpoints/llama3.1-8b-soft-panel-square": {
+          "checkpoints/llama3.1-8b-hard-panel": 0.47257673270251443,
+          "checkpoints/llama3.1-8b-soft-panel-clipped": 0.5274232672974891,
+          "checkpoints/llama3.1-8b-soft-panel-sqrt": 0.5456321917555494,
+          "checkpoints/llama3.1-8b-soft-panel": 0.5637318946936125,
+          "checkpoints/llama3.1-8b-full-prism": 0.5816799943290052
+        },
+        "checkpoints/llama3.1-8b-soft-panel-clipped": {
+          "checkpoints/llama3.1-8b-hard-panel": 0.45436780824445383,
+          "checkpoints/llama3.1-8b-soft-panel-square": 0.47257673270251427,
+          "checkpoints/llama3.1-8b-soft-panel-sqrt": 0.5274232672974889,
+          "checkpoints/llama3.1-8b-soft-panel": 0.5456321917555494,
+          "checkpoints/llama3.1-8b-full-prism": 0.5637318946936124
+        },
+        "checkpoints/llama3.1-8b-soft-panel-sqrt": {
+          "checkpoints/llama3.1-8b-hard-panel": 0.43626810530639126,
+          "checkpoints/llama3.1-8b-soft-panel-square": 0.45436780824445416,
+          "checkpoints/llama3.1-8b-soft-panel-clipped": 0.4725767327025143,
+          "checkpoints/llama3.1-8b-soft-panel": 0.5274232672974886,
+          "checkpoints/llama3.1-8b-full-prism": 0.5456321917555492
+        },
+        "checkpoints/llama3.1-8b-soft-panel": {
+          "checkpoints/llama3.1-8b-hard-panel": 0.41832000567099986,
+          "checkpoints/llama3.1-8b-soft-panel-square": 0.43626810530639126,
+          "checkpoints/llama3.1-8b-soft-panel-clipped": 0.4543678082444541,
+          "checkpoints/llama3.1-8b-soft-panel-sqrt": 0.4725767327025146,
+          "checkpoints/llama3.1-8b-full-prism": 0.5274232672974889
+        },
+        "checkpoints/llama3.1-8b-full-prism": {
+          "checkpoints/llama3.1-8b-hard-panel": 0.4005646104782622,
+          "checkpoints/llama3.1-8b-soft-panel-square": 0.4183200056709996,
+          "checkpoints/llama3.1-8b-soft-panel-clipped": 0.43626810530639126,
+          "checkpoints/llama3.1-8b-soft-panel-sqrt": 0.45436780824445394,
+          "checkpoints/llama3.1-8b-soft-panel": 0.47257673270251427
+        }
+      }
+    }
+  },
+  "plackett_luce_compare": {
+    "log_likelihood_train": -78384.71608842761,
+    "log_likelihood_test": -19598.907892965035,
+    "results": [
+      {
+        "model": "checkpoints/llama3.1-8b-hard-panel",
+        "score": 0.20165959156074734,
+        "ability": 1.223431470821461
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel-square",
+        "score": 0.09342087654258834,
+        "ability": 1.0979237283830574
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel-clipped",
+        "score": 0.07780314197120669,
+        "ability": 1.0809098519416573
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel-sqrt",
+        "score": 0.042469143760918766,
+        "ability": 1.0433838609750985
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel",
+        "score": -0.182107292996178,
+        "ability": 0.8335119056282531
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-full-prism",
+        "score": -0.2332454608392831,
+        "ability": 0.791959154705395
+      }
+    ],
+    "max_iter": 1000,
+    "tol": 1e-06
+  }
+}

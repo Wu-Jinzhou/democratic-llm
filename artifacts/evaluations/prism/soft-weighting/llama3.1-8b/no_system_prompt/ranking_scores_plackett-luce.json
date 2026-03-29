@@ -1,0 +1,91 @@
+{
+  "method": "plackett-luce",
+  "models": [
+    "checkpoints/llama3.1-8b-full-prism",
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-soft-panel-clipped",
+    "checkpoints/llama3.1-8b-soft-panel-sqrt",
+    "checkpoints/llama3.1-8b-soft-panel-square"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "bootstrap_samples": 1000,
+  "bootstrap_seed": 42,
+  "bootstrap_workers": 96,
+  "bootstrap_alpha": 0.05,
+  "plackett_luce": {
+    "results": [
+      {
+        "model": "checkpoints/llama3.1-8b-hard-panel",
+        "score": 0.1986887096994093,
+        "ability": 1.219802194201622,
+        "score_mean": 0.19884219395934896,
+        "score_std": 0.011414544311614743,
+        "score_ci_lower": 0.17610538856051597,
+        "score_ci_upper": 0.2210595823799851,
+        "ability_ci_lower": 1.1925637346034628,
+        "ability_ci_upper": 1.2473977512767496
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel-square",
+        "score": 0.09316238822568491,
+        "ability": 1.0976399646028103,
+        "score_mean": 0.09332113707270813,
+        "score_std": 0.007948488987948987,
+        "score_ci_lower": 0.07785608838678348,
+        "score_ci_upper": 0.1090603622713033,
+        "ability_ci_lower": 1.0809670837589758,
+        "ability_ci_upper": 1.1152296661054322
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel-clipped",
+        "score": 0.07769174364034913,
+        "ability": 1.0807894470949175,
+        "score_mean": 0.0780469734900336,
+        "score_std": 0.008097386349716592,
+        "score_ci_lower": 0.06218309917013527,
+        "score_ci_upper": 0.09426652264902105,
+        "ability_ci_lower": 1.0641571731863289,
+        "ability_ci_upper": 1.0988525759919536
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel-sqrt",
+        "score": 0.04823628379347209,
+        "ability": 1.0494185866368322,
+        "score_mean": 0.048291572469663216,
+        "score_std": 0.008246803169561487,
+        "score_ci_lower": 0.032146797821502746,
+        "score_ci_upper": 0.06418163340017811,
+        "ability_ci_lower": 1.032669087751275,
+        "ability_ci_upper": 1.066286054335424
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel",
+        "score": -0.1886346614306829,
+        "ability": 0.8280889842827898,
+        "score_mean": -0.18853379507714163,
+        "score_std": 0.009958032009499485,
+        "score_ci_lower": -0.20734101042087133,
+        "score_ci_upper": -0.16947032215215382,
+        "ability_ci_lower": 0.8127424490814372,
+        "ability_ci_upper": 0.8441118055303597
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-full-prism",
+        "score": -0.22914446392823304,
+        "ability": 0.7952136455196926,
+        "score_mean": -0.2299680819146121,
+        "score_std": 0.009629370630838362,
+        "score_ci_lower": -0.24812921092283494,
+        "score_ci_upper": -0.21100727475983036,
+        "ability_ci_lower": 0.7802591187635745,
+        "ability_ci_upper": 0.8097681759908503
+      }
+    ],
+    "max_iter": 1000,
+    "tol": 1e-06,
+    "bootstrap_samples": 1000
+  }
+}
