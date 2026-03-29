@@ -7,8 +7,8 @@ source "$SCRIPT_DIR/_common.sh"
 
 RUN_TRAIN="${RUN_TRAIN:-0}"
 RUN_GENERATE="${RUN_GENERATE:-0}"
-RUN_JUDGE="${RUN_JUDGE:-0}"
-RUN_SCORE="${RUN_SCORE:-1}"
+RUN_JUDGE="${RUN_JUDGE:-1}"
+RUN_SCORE="${RUN_SCORE:-0}"
 
 log "PRISM k-sensitivity run configuration:"
 log "  MODEL_ID=$MODEL_ID"
