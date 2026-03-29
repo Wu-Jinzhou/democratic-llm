@@ -1,0 +1,981 @@
+model,country,mean_js_similarity,mean_total_variation,questions_used
+checkpoints/llama3.1-8b-full-prism,Poland (Non-national sample),0.7422023566855189,0.3160322605818279,8
+checkpoints/llama3.1-8b-full-prism,Russia (Non-national sample),0.6991611476541396,0.38118764769130564,22
+checkpoints/llama3.1-8b-full-prism,India (Old national sample),0.6962870052101539,0.36614472282082633,83
+checkpoints/llama3.1-8b-full-prism,Nigeria (Non-national sample),0.678943814906597,0.39998589826718045,219
+checkpoints/llama3.1-8b-full-prism,Egypt (Non-national sample),0.6785040545449313,0.3995852404242401,55
+checkpoints/llama3.1-8b-full-prism,India (Non-national sample),0.6716754492772223,0.40601525766653057,252
+checkpoints/llama3.1-8b-full-prism,China (Non-national sample),0.6708402652017029,0.3971165193920773,226
+checkpoints/llama3.1-8b-full-prism,Venezuela (Non-national sample),0.6600533671278774,0.4182129145208308,125
+checkpoints/llama3.1-8b-full-prism,Bolivia (Non-national sample),0.6542663860833934,0.42216678392060747,125
+checkpoints/llama3.1-8b-full-prism,Brazil (Non-national sample),0.6508227518939331,0.4248114213600886,185
+checkpoints/llama3.1-8b-full-prism,Pakistan (Non-national sample),0.6458677521464131,0.4427611936823059,24
+checkpoints/llama3.1-8b-full-prism,Angola (Non-national sample),0.6445494164240996,0.4460452852160619,86
+checkpoints/llama3.1-8b-full-prism,Czech Rep.,0.6435497479021707,0.4331857540061586,239
+checkpoints/llama3.1-8b-full-prism,Ethiopia (Non-national sample),0.6434333798405751,0.426479284334795,75
+checkpoints/llama3.1-8b-full-prism,S. Africa (Non-national sample),0.6417963648485641,0.4359025811419354,73
+checkpoints/llama3.1-8b-full-prism,Kuwait,0.6373434483911499,0.44821229809423135,95
+checkpoints/llama3.1-8b-full-prism,Morocco (Non-national sample),0.6372317561765122,0.4412771511693809,77
+checkpoints/llama3.1-8b-full-prism,Palest. ter.,0.6368975693931249,0.4390300882357522,234
+checkpoints/llama3.1-8b-full-prism,Britain,0.6352129145215604,0.4421061166916008,647
+checkpoints/llama3.1-8b-full-prism,Indonesia (Non-national sample),0.6295626356827482,0.45244236439519997,105
+checkpoints/llama3.1-8b-full-prism,Israel,0.6277381616855272,0.45047525173996267,344
+checkpoints/llama3.1-8b-full-prism,Guatemala (Non-national sample),0.6263699779016838,0.46627302137278615,87
+checkpoints/llama3.1-8b-full-prism,S. Africa,0.626172567211264,0.4618651441645222,330
+checkpoints/llama3.1-8b-full-prism,Senegal (Non-national sample),0.6258874531464143,0.46423843430224104,119
+checkpoints/llama3.1-8b-full-prism,Ivory Coast (Non-national sample),0.6254375603196187,0.4668817115933662,119
+checkpoints/llama3.1-8b-full-prism,India (Current national sample),0.6232644369167992,0.4669013082631272,229
+checkpoints/llama3.1-8b-full-prism,Ghana,0.6205145710072529,0.47191730748203037,243
+checkpoints/llama3.1-8b-full-prism,Uzbekistan,0.6176167583277344,0.4759377307860677,89
+checkpoints/llama3.1-8b-full-prism,Bangladesh (Non-national sample),0.6168051729864245,0.47647692646766837,124
+checkpoints/llama3.1-8b-full-prism,Russia,0.6137747261147884,0.46940152529490903,712
+checkpoints/llama3.1-8b-full-prism,Tanzania,0.611691569632269,0.4808741822777505,245
+checkpoints/llama3.1-8b-full-prism,Mali,0.6082252724573927,0.48548570786219825,75
+checkpoints/llama3.1-8b-full-prism,Honduras (Non-national sample),0.6080201537292318,0.491469056989358,87
+checkpoints/llama3.1-8b-full-prism,Poland,0.6076368594911562,0.47659074956338904,578
+checkpoints/llama3.1-8b-full-prism,Mali (Non-national sample),0.6071058935623311,0.48821120717551897,87
+checkpoints/llama3.1-8b-full-prism,Uganda,0.6033670452555194,0.4887918826117505,215
+checkpoints/llama3.1-8b-full-prism,Jordan,0.5992772249678749,0.47801330931912445,597
+checkpoints/llama3.1-8b-full-prism,Turkey,0.5982440668229153,0.4924806307674576,662
+checkpoints/llama3.1-8b-full-prism,France,0.5942020271476889,0.4842027775630417,758
+checkpoints/llama3.1-8b-full-prism,UK,0.5934300015768236,0.4903120728147722,846
+checkpoints/llama3.1-8b-full-prism,USA,0.5926098557757576,0.49180308437494424,846
+checkpoints/llama3.1-8b-full-prism,United States,0.5926098557757576,0.49180308437494424,846
+checkpoints/llama3.1-8b-full-prism,Senegal,0.5909786569980772,0.5017186527246206,155
+checkpoints/llama3.1-8b-full-prism,El Salvador,0.5883042375375265,0.4945361014065817,92
+checkpoints/llama3.1-8b-full-prism,S. Korea,0.5849971268601786,0.5007888183254423,467
+checkpoints/llama3.1-8b-full-prism,Egypt,0.5843187672580787,0.4934297037912855,421
+checkpoints/llama3.1-8b-full-prism,Spain,0.5840870571902222,0.4978518693787845,670
+checkpoints/llama3.1-8b-full-prism,Indonesia,0.5839794662647395,0.5010712013727106,594
+checkpoints/llama3.1-8b-full-prism,Mexico,0.5828556567345147,0.5008459747770871,598
+checkpoints/llama3.1-8b-full-prism,Germany,0.5823897239628762,0.5038194549384081,844
+checkpoints/llama3.1-8b-full-prism,Taiwan,0.5819268982761465,0.49270755718819403,49
+checkpoints/llama3.1-8b-full-prism,Pakistan,0.5795975319665686,0.5097854363184645,563
+checkpoints/llama3.1-8b-full-prism,Argentina,0.5781522612578048,0.505739919657545,571
+checkpoints/llama3.1-8b-full-prism,Italy,0.5777415340284299,0.5106269781721371,609
+checkpoints/llama3.1-8b-full-prism,Burkina Faso,0.5761994459950726,0.5208465183562385,48
+checkpoints/llama3.1-8b-full-prism,Lebanon,0.5723065773542036,0.5133524358124656,598
+checkpoints/llama3.1-8b-full-prism,Japan,0.5716862605985051,0.5160992454146496,708
+checkpoints/llama3.1-8b-full-prism,Vietnam (Non-national sample),0.5695920138942933,0.5208489481968875,68
+checkpoints/llama3.1-8b-full-prism,Kenya,0.5683889066790949,0.5240787621973968,569
+checkpoints/llama3.1-8b-full-prism,Bulgaria,0.5664794002423587,0.5280847047086267,302
+checkpoints/llama3.1-8b-full-prism,Ukraine,0.5643740889720819,0.5286806766338259,475
+checkpoints/llama3.1-8b-full-prism,Brazil,0.5597313928952858,0.5287763711684753,493
+checkpoints/llama3.1-8b-full-prism,Lithuania,0.5565706402726669,0.5338320759078796,237
+checkpoints/llama3.1-8b-full-prism,Canada,0.5522890024542029,0.5359754254286252,663
+checkpoints/llama3.1-8b-full-prism,Honduras,0.5521394299142748,0.5186947163524737,2
+checkpoints/llama3.1-8b-full-prism,Hungary,0.548734169277115,0.5436900640143284,302
+checkpoints/llama3.1-8b-full-prism,Slovakia,0.5485601666899259,0.5412308841781975,386
+checkpoints/llama3.1-8b-full-prism,Tunisia,0.5473827523622598,0.54335831007927,421
+checkpoints/llama3.1-8b-full-prism,Nigeria,0.547337979835843,0.5455750711369391,469
+checkpoints/llama3.1-8b-full-prism,Chile,0.544324772735628,0.5448217840600774,403
+checkpoints/llama3.1-8b-full-prism,Peru,0.5403562080402284,0.5551228009975954,417
+checkpoints/llama3.1-8b-full-prism,Ivory Coast,0.5335569527905448,0.5493039596057754,2
+checkpoints/llama3.1-8b-full-prism,Philippines,0.5264875368002202,0.5666380411461609,495
+checkpoints/llama3.1-8b-full-prism,Australia,0.5237944937234157,0.5668931971243497,538
+checkpoints/llama3.1-8b-full-prism,Malaysia,0.5215858961345491,0.5678311054100036,376
+checkpoints/llama3.1-8b-full-prism,Greece,0.5208435787746113,0.5684723621793598,467
+checkpoints/llama3.1-8b-full-prism,China,0.5170928838679721,0.5722296383582604,289
+checkpoints/llama3.1-8b-full-prism,Venezuela,0.5128214277410436,0.5753343625753837,345
+checkpoints/llama3.1-8b-full-prism,Netherlands,0.5108126236889193,0.5865795655280137,468
+checkpoints/llama3.1-8b-full-prism,Sweden,0.5083079755033463,0.5869490495210005,411
+checkpoints/llama3.1-8b-full-prism,Belgium,0.5083040299062302,0.576049523434801,103
+checkpoints/llama3.1-8b-full-prism,Bolivia,0.4984031060410398,0.5913873319353314,253
+checkpoints/llama3.1-8b-full-prism,Thailand,0.49321932621252956,0.6022432047359882,252
+checkpoints/llama3.1-8b-full-prism,Colombia,0.49218733453002234,0.5959161283933436,280
+checkpoints/llama3.1-8b-full-prism,Morocco,0.4913231566324543,0.6013190054963019,273
+checkpoints/llama3.1-8b-full-prism,Kazakhstan,0.48937067927003924,0.6054531578592653,196
+checkpoints/llama3.1-8b-full-prism,North Macedonia,0.48752424888361207,0.6113189758945193,115
+checkpoints/llama3.1-8b-full-prism,Colombia (Non-national sample),0.48558819125402286,0.6247250855415816,1
+checkpoints/llama3.1-8b-full-prism,New Zealand,0.48490792155657936,0.6105406028555798,248
+checkpoints/llama3.1-8b-full-prism,Jordan (Non-national sample),0.48489943935003355,0.6248019110115137,1
+checkpoints/llama3.1-8b-full-prism,Romania,0.4842888200414972,0.6089949865130617,199
+checkpoints/llama3.1-8b-full-prism,Serbia,0.4836209238905319,0.6162202678366989,199
+checkpoints/llama3.1-8b-full-prism,Albania,0.4809935899931296,0.6201531964962238,115
+checkpoints/llama3.1-8b-full-prism,Bangladesh,0.4794313903491142,0.6168638712076029,255
+checkpoints/llama3.1-8b-full-prism,Uruguay,0.4792247003226666,0.6191114115515948,199
+checkpoints/llama3.1-8b-full-prism,Ethiopia,0.4791473061877943,0.6188085256869889,232
+checkpoints/llama3.1-8b-full-prism,Vietnam,0.47844731080214165,0.6261726209861073,317
+checkpoints/llama3.1-8b-full-prism,Armenia,0.4775483329275767,0.6154851798651657,199
+checkpoints/llama3.1-8b-full-prism,Iraq,0.4767483672769601,0.6102990143426809,189
+checkpoints/llama3.1-8b-full-prism,Cyprus,0.47592532868720744,0.6232121180844031,199
+checkpoints/llama3.1-8b-full-prism,Montenegro,0.47576167131072716,0.6234019620457161,115
+checkpoints/llama3.1-8b-full-prism,Belarus,0.4745750800007597,0.6290240661473254,115
+checkpoints/llama3.1-8b-full-prism,Iran,0.4736378633581038,0.6168055110389458,194
+checkpoints/llama3.1-8b-full-prism,Czechia,0.4712730255904148,0.6320801999546632,199
+checkpoints/llama3.1-8b-full-prism,Nicaragua,0.4711741453770657,0.6214004923950638,250
+checkpoints/llama3.1-8b-full-prism,Andorra,0.46742484246367416,0.6320055578066139,198
+checkpoints/llama3.1-8b-full-prism,Kyrgyzstan,0.46725776643001,0.6339497655408675,195
+checkpoints/llama3.1-8b-full-prism,Zimbabwe,0.46714537874724904,0.6305437732953111,199
+checkpoints/llama3.1-8b-full-prism,Libya,0.4663385926237864,0.6295711869066198,199
+checkpoints/llama3.1-8b-full-prism,Estonia,0.4659296344169272,0.6375126665794726,115
+checkpoints/llama3.1-8b-full-prism,Philippines (Non-national sample),0.4657818527532992,0.6308502386704099,1
+checkpoints/llama3.1-8b-full-prism,Puerto Rico,0.46563791481806677,0.6245129211549253,199
+checkpoints/llama3.1-8b-full-prism,Singapore,0.46554924746444754,0.6282082465458245,245
+checkpoints/llama3.1-8b-full-prism,Georgia,0.4647035429804594,0.6351966912463791,115
+checkpoints/llama3.1-8b-full-prism,Croatia,0.4631982646790121,0.641593695948681,115
+checkpoints/llama3.1-8b-full-prism,Ecuador,0.4628902546265983,0.6329130183185325,199
+checkpoints/llama3.1-8b-full-prism,Bosnia Herzegovina,0.461951580804325,0.6395022235756799,115
+checkpoints/llama3.1-8b-full-prism,Guatemala,0.461767359877642,0.628396299612692,201
+checkpoints/llama3.1-8b-full-prism,Austria,0.4601558699838528,0.6482209630382805,115
+checkpoints/llama3.1-8b-full-prism,Latvia,0.4592961318245327,0.6460950876594085,116
+checkpoints/llama3.1-8b-full-prism,Maldives,0.4578655754684322,0.64624760978974,199
+checkpoints/llama3.1-8b-full-prism,Great Britain,0.45758304340976486,0.647041990461465,199
+checkpoints/llama3.1-8b-full-prism,Northern Ireland,0.45545361646175303,0.6468974559048031,198
+checkpoints/llama3.1-8b-full-prism,Tajikistan,0.4529908310975412,0.6347086894027179,190
+checkpoints/llama3.1-8b-full-prism,Myanmar,0.45298532553672755,0.6374008173372143,196
+checkpoints/llama3.1-8b-full-prism,Slovenia,0.45188839769128514,0.6594084344916452,115
+checkpoints/llama3.1-8b-full-prism,Portugal,0.45126485454801396,0.6538677518315877,115
+checkpoints/llama3.1-8b-full-prism,Hong Kong SAR,0.4474842795542234,0.6569058847050558,199
+checkpoints/llama3.1-8b-full-prism,Mongolia,0.4471979844992771,0.6478009847539444,199
+checkpoints/llama3.1-8b-full-prism,Finland,0.44677715552061,0.6666568040140098,115
+checkpoints/llama3.1-8b-full-prism,Tanzania (Non-national sample),0.4449801136750777,0.669951216194848,1
+checkpoints/llama3.1-8b-full-prism,Denmark,0.44451588882962206,0.6666881309206678,175
+checkpoints/llama3.1-8b-full-prism,Switzerland,0.4438197024485296,0.672653198615419,115
+checkpoints/llama3.1-8b-full-prism,Azerbaijan,0.44169614312132843,0.6682178242658393,115
+checkpoints/llama3.1-8b-full-prism,Angola,0.44135049363399526,0.7141851537560092,2
+checkpoints/llama3.1-8b-full-prism,Macau SAR,0.4343187397983122,0.6725463400363632,198
+checkpoints/llama3.1-8b-full-prism,Iceland,0.4340718166597557,0.6846830782495131,114
+checkpoints/llama3.1-8b-full-prism,Taiwan ROC,0.4316826657893045,0.6700923883183136,199
+checkpoints/llama3.1-8b-full-prism,Norway,0.4309743248590365,0.6843203667443268,115
+checkpoints/llama3.1-8b-full-prism,South Korea,0.412416226802234,0.695028067156887,199
+checkpoints/llama3.1-8b-soft-panel,Poland (Non-national sample),0.7390788614854072,0.3203749973412212,8
+checkpoints/llama3.1-8b-soft-panel,Russia (Non-national sample),0.6939118883189349,0.3880354311192088,22
+checkpoints/llama3.1-8b-soft-panel,India (Old national sample),0.6934640421270447,0.3701568935589397,83
+checkpoints/llama3.1-8b-soft-panel,Nigeria (Non-national sample),0.6745441491786928,0.4058496683175789,219
+checkpoints/llama3.1-8b-soft-panel,Egypt (Non-national sample),0.6737994221580288,0.406021103979227,55
+checkpoints/llama3.1-8b-soft-panel,India (Non-national sample),0.6676576694204126,0.4113732785178852,252
+checkpoints/llama3.1-8b-soft-panel,China (Non-national sample),0.6668243157327556,0.4023659387881827,226
+checkpoints/llama3.1-8b-soft-panel,Venezuela (Non-national sample),0.6549148313761083,0.4251895088219148,125
+checkpoints/llama3.1-8b-soft-panel,Bolivia (Non-national sample),0.6492270637799372,0.4286057037854309,125
+checkpoints/llama3.1-8b-soft-panel,Brazil (Non-national sample),0.6465363257194904,0.4304113218699873,185
+checkpoints/llama3.1-8b-soft-panel,Pakistan (Non-national sample),0.6427800996236916,0.4468232604398455,24
+checkpoints/llama3.1-8b-soft-panel,Angola (Non-national sample),0.6393024745295357,0.45316428817149695,86
+checkpoints/llama3.1-8b-soft-panel,Czech Rep.,0.6391023769587354,0.43884113352299703,239
+checkpoints/llama3.1-8b-soft-panel,Ethiopia (Non-national sample),0.6384356736695186,0.4329881766819792,75
+checkpoints/llama3.1-8b-soft-panel,S. Africa (Non-national sample),0.6367009958937635,0.4426327235209283,73
+checkpoints/llama3.1-8b-soft-panel,Morocco (Non-national sample),0.6344826420602622,0.4447751926970802,77
+checkpoints/llama3.1-8b-soft-panel,Kuwait,0.6327740392837047,0.4546198353105573,95
+checkpoints/llama3.1-8b-soft-panel,Palest. ter.,0.632640230798529,0.4445854708693216,234
+checkpoints/llama3.1-8b-soft-panel,Britain,0.6309906791495238,0.44769948963820283,647
+checkpoints/llama3.1-8b-soft-panel,Indonesia (Non-national sample),0.6244782034136824,0.45876539112165077,105
+checkpoints/llama3.1-8b-soft-panel,Israel,0.6234315668751282,0.45591537095273316,344
+checkpoints/llama3.1-8b-soft-panel,Guatemala (Non-national sample),0.6216191061585157,0.4728507468286151,87
+checkpoints/llama3.1-8b-soft-panel,S. Africa,0.6209203855209856,0.4689368329107044,330
+checkpoints/llama3.1-8b-soft-panel,Senegal (Non-national sample),0.6207508230152835,0.4711202362461949,119
+checkpoints/llama3.1-8b-soft-panel,Ivory Coast (Non-national sample),0.6202401634528609,0.47396104371285586,119
+checkpoints/llama3.1-8b-soft-panel,India (Current national sample),0.6185159172937635,0.47320213342947154,229
+checkpoints/llama3.1-8b-soft-panel,Ghana,0.6156914158230455,0.478223386914156,243
+checkpoints/llama3.1-8b-soft-panel,Bangladesh (Non-national sample),0.6120521590569298,0.482938499726597,124
+checkpoints/llama3.1-8b-soft-panel,Uzbekistan,0.6118942497611628,0.48380102292505645,89
+checkpoints/llama3.1-8b-soft-panel,Russia,0.6102445826024855,0.4738446465114005,712
+checkpoints/llama3.1-8b-soft-panel,Tanzania,0.6067533406756258,0.48772510386593076,245
+checkpoints/llama3.1-8b-soft-panel,Poland,0.6040506314354009,0.48087479771784236,578
+checkpoints/llama3.1-8b-soft-panel,Honduras (Non-national sample),0.6027411100313698,0.4986278880413816,87
+checkpoints/llama3.1-8b-soft-panel,Mali,0.6026946463106884,0.4928669202774027,75
+checkpoints/llama3.1-8b-soft-panel,Mali (Non-national sample),0.6015903549335925,0.4961635570418651,87
+checkpoints/llama3.1-8b-soft-panel,Uganda,0.5986924546669977,0.495347389028215,215
+checkpoints/llama3.1-8b-soft-panel,Jordan,0.5964375524267108,0.4819177213407982,597
+checkpoints/llama3.1-8b-soft-panel,Turkey,0.5954068144654273,0.49628591703749286,662
+checkpoints/llama3.1-8b-soft-panel,France,0.5908315609029511,0.4885110898290516,758
+checkpoints/llama3.1-8b-soft-panel,UK,0.5904390152685032,0.4941926727634495,846
+checkpoints/llama3.1-8b-soft-panel,USA,0.5895060347458109,0.4959385078883377,846
+checkpoints/llama3.1-8b-soft-panel,United States,0.5895060347458109,0.4959385078883377,846
+checkpoints/llama3.1-8b-soft-panel,Senegal,0.5862598832467301,0.5079037396682644,155
+checkpoints/llama3.1-8b-soft-panel,El Salvador,0.58313453630287,0.5017354141650525,92
+checkpoints/llama3.1-8b-soft-panel,Egypt,0.5816108027868185,0.4972426716275362,421
+checkpoints/llama3.1-8b-soft-panel,Indonesia,0.5813271590865584,0.5047061987764717,594
+checkpoints/llama3.1-8b-soft-panel,Spain,0.5809902334974926,0.5018734338159907,670
+checkpoints/llama3.1-8b-soft-panel,S. Korea,0.5804539195937322,0.5065787396578612,467
+checkpoints/llama3.1-8b-soft-panel,Mexico,0.5799237023504307,0.5045771526835736,598
+checkpoints/llama3.1-8b-soft-panel,Germany,0.5792558391093645,0.507989157230683,844
+checkpoints/llama3.1-8b-soft-panel,Taiwan,0.5773645566225784,0.4978474052815144,49
+checkpoints/llama3.1-8b-soft-panel,Pakistan,0.5768642583069539,0.5139099924203357,563
+checkpoints/llama3.1-8b-soft-panel,Argentina,0.5752681600251085,0.509659091028902,571
+checkpoints/llama3.1-8b-soft-panel,Italy,0.5738464919561829,0.5156202665570149,609
+checkpoints/llama3.1-8b-soft-panel,Burkina Faso,0.5717667310168735,0.5272564764262327,48
+checkpoints/llama3.1-8b-soft-panel,Lebanon,0.5692212268858019,0.5172985054187581,598
+checkpoints/llama3.1-8b-soft-panel,Japan,0.5685473914073212,0.5198550195389903,708
+checkpoints/llama3.1-8b-soft-panel,Vietnam (Non-national sample),0.5658016755937336,0.5262878907692099,68
+checkpoints/llama3.1-8b-soft-panel,Kenya,0.5657996857867202,0.5274067128356651,569
+checkpoints/llama3.1-8b-soft-panel,Bulgaria,0.5634427101104127,0.5317275179844608,302
+checkpoints/llama3.1-8b-soft-panel,Ukraine,0.5614791497426428,0.5320536505010777,475
+checkpoints/llama3.1-8b-soft-panel,Brazil,0.5569210318530968,0.5326547614629358,493
+checkpoints/llama3.1-8b-soft-panel,Lithuania,0.5543820059071585,0.5361837532915444,237
+checkpoints/llama3.1-8b-soft-panel,Canada,0.5492322146624832,0.5397873473691785,663
+checkpoints/llama3.1-8b-soft-panel,Slovakia,0.5462659075197424,0.5439177223962783,386
+checkpoints/llama3.1-8b-soft-panel,Hungary,0.5454799541571836,0.547685634406346,302
+checkpoints/llama3.1-8b-soft-panel,Nigeria,0.5447847795104641,0.548870678869196,469
+checkpoints/llama3.1-8b-soft-panel,Tunisia,0.5446751008968674,0.5472737168627803,421
+checkpoints/llama3.1-8b-soft-panel,Honduras,0.5440365605901609,0.5323011486934358,2
+checkpoints/llama3.1-8b-soft-panel,Chile,0.5422062798017849,0.5476106821420623,403
+checkpoints/llama3.1-8b-soft-panel,Peru,0.5376374053083187,0.5587547450124277,417
+checkpoints/llama3.1-8b-soft-panel,Philippines,0.523982383383059,0.5700219440297967,495
+checkpoints/llama3.1-8b-soft-panel,Ivory Coast,0.5231098362099034,0.5523733305008024,2
+checkpoints/llama3.1-8b-soft-panel,Australia,0.5208089539784613,0.5710370703823374,538
+checkpoints/llama3.1-8b-soft-panel,Malaysia,0.5196808911022436,0.5701276051705426,376
+checkpoints/llama3.1-8b-soft-panel,Greece,0.5184082500601984,0.5716400166082812,467
+checkpoints/llama3.1-8b-soft-panel,China,0.5150907781022416,0.5755253911256494,289
+checkpoints/llama3.1-8b-soft-panel,Venezuela,0.5108198794801363,0.5784306135183589,345
+checkpoints/llama3.1-8b-soft-panel,Netherlands,0.5083674765873191,0.5895494927123034,468
+checkpoints/llama3.1-8b-soft-panel,Sweden,0.5052191673980064,0.590869253788339,411
+checkpoints/llama3.1-8b-soft-panel,Belgium,0.5033489947718031,0.5825800232811029,103
+checkpoints/llama3.1-8b-soft-panel,Bolivia,0.49729902201585885,0.592832023027794,253
+checkpoints/llama3.1-8b-soft-panel,Thailand,0.4924634101124196,0.6027439142097634,252
+checkpoints/llama3.1-8b-soft-panel,Colombia,0.49087025745674523,0.5978880917365211,280
+checkpoints/llama3.1-8b-soft-panel,Morocco,0.4901004711670803,0.6026288521911951,273
+checkpoints/llama3.1-8b-soft-panel,Kazakhstan,0.4894064971469711,0.6046096546929044,196
+checkpoints/llama3.1-8b-soft-panel,North Macedonia,0.4873942232598943,0.6104266465544881,115
+checkpoints/llama3.1-8b-soft-panel,Colombia (Non-national sample),0.48600326694255547,0.6240938235390497,1
+checkpoints/llama3.1-8b-soft-panel,Jordan (Non-national sample),0.485199084516891,0.6233435067335982,1
+checkpoints/llama3.1-8b-soft-panel,New Zealand,0.4847492281743913,0.6106342131999634,248
+checkpoints/llama3.1-8b-soft-panel,Serbia,0.48383489692188497,0.6157857245376859,199
+checkpoints/llama3.1-8b-soft-panel,Romania,0.483784387957178,0.6090993496101642,199
+checkpoints/llama3.1-8b-soft-panel,Albania,0.4812708631521236,0.6194648384604161,115
+checkpoints/llama3.1-8b-soft-panel,Uruguay,0.4796632341367907,0.6186361515288983,199
+checkpoints/llama3.1-8b-soft-panel,Bangladesh,0.47850679388038014,0.619001787948269,255
+checkpoints/llama3.1-8b-soft-panel,Ethiopia,0.4781072261915288,0.6206968878283038,232
+checkpoints/llama3.1-8b-soft-panel,Armenia,0.47735078260974195,0.6153674056247486,199
+checkpoints/llama3.1-8b-soft-panel,Vietnam,0.4770837452438266,0.6278959168803575,317
+checkpoints/llama3.1-8b-soft-panel,Iraq,0.4770140817722706,0.6100638940401807,189
+checkpoints/llama3.1-8b-soft-panel,Cyprus,0.47597423694318136,0.6232412667651741,199
+checkpoints/llama3.1-8b-soft-panel,Montenegro,0.4756319699744423,0.6233792872616062,115
+checkpoints/llama3.1-8b-soft-panel,Belarus,0.4748423374762983,0.627813036153849,115
+checkpoints/llama3.1-8b-soft-panel,Iran,0.47404994733370365,0.6164170171420293,194
+checkpoints/llama3.1-8b-soft-panel,Czechia,0.4718565350939231,0.6310849475624233,199
+checkpoints/llama3.1-8b-soft-panel,Nicaragua,0.47018499648432177,0.6232897842370653,250
+checkpoints/llama3.1-8b-soft-panel,Andorra,0.4674185929183575,0.6322967077635334,198
+checkpoints/llama3.1-8b-soft-panel,Zimbabwe,0.46661600385748875,0.6322210398832688,199
+checkpoints/llama3.1-8b-soft-panel,Kyrgyzstan,0.46644447930638927,0.6347197612018194,195
+checkpoints/llama3.1-8b-soft-panel,Philippines (Non-national sample),0.4660820611168406,0.6302189766678781,1
+checkpoints/llama3.1-8b-soft-panel,Estonia,0.4659684249623371,0.6367624071376737,115
+checkpoints/llama3.1-8b-soft-panel,Libya,0.4658229344354443,0.6312933499666172,199
+checkpoints/llama3.1-8b-soft-panel,Puerto Rico,0.4654770331460659,0.6246855876422478,199
+checkpoints/llama3.1-8b-soft-panel,Singapore,0.46446488754381265,0.6291538274409304,245
+checkpoints/llama3.1-8b-soft-panel,Georgia,0.46393869165884466,0.636219347893362,115
+checkpoints/llama3.1-8b-soft-panel,Croatia,0.46325894105139287,0.6411211908983352,115
+checkpoints/llama3.1-8b-soft-panel,Ecuador,0.4631423705064289,0.6326044680853163,199
+checkpoints/llama3.1-8b-soft-panel,Guatemala,0.46196868268354074,0.6281948041348439,201
+checkpoints/llama3.1-8b-soft-panel,Bosnia Herzegovina,0.46175255336453885,0.6402437567204414,115
+checkpoints/llama3.1-8b-soft-panel,Austria,0.46071252528632317,0.6477395268152496,115
+checkpoints/llama3.1-8b-soft-panel,Latvia,0.45960483343778613,0.6450775619595795,116
+checkpoints/llama3.1-8b-soft-panel,Great Britain,0.4585951633538279,0.6453539264420156,199
+checkpoints/llama3.1-8b-soft-panel,Maldives,0.4578423426945882,0.6464797265157699,199
+checkpoints/llama3.1-8b-soft-panel,Northern Ireland,0.45639767379894386,0.6457795236515156,198
+checkpoints/llama3.1-8b-soft-panel,Tajikistan,0.4531457099776391,0.6345385999360169,190
+checkpoints/llama3.1-8b-soft-panel,Slovenia,0.45264986558801723,0.6580808768287166,115
+checkpoints/llama3.1-8b-soft-panel,Myanmar,0.4522668870415989,0.6394191476498203,196
+checkpoints/llama3.1-8b-soft-panel,Portugal,0.45114654632794565,0.653400321794179,115
+checkpoints/llama3.1-8b-soft-panel,Hong Kong SAR,0.44798717842220487,0.6553357072246464,199
+checkpoints/llama3.1-8b-soft-panel,Finland,0.4478979658093694,0.6653638958380457,115
+checkpoints/llama3.1-8b-soft-panel,Mongolia,0.447534143846286,0.6474118356906146,199
+checkpoints/llama3.1-8b-soft-panel,Tanzania (Non-national sample),0.44510501310535044,0.669319954192316,1
+checkpoints/llama3.1-8b-soft-panel,Switzerland,0.44474463769400907,0.6709833918664012,115
+checkpoints/llama3.1-8b-soft-panel,Denmark,0.4438646415685797,0.667483095528329,175
+checkpoints/llama3.1-8b-soft-panel,Azerbaijan,0.442301803682416,0.6668863988786438,115
+checkpoints/llama3.1-8b-soft-panel,Iceland,0.43567411912150267,0.6825233528361333,114
+checkpoints/llama3.1-8b-soft-panel,Macau SAR,0.43474544827695094,0.6709275992038886,198
+checkpoints/llama3.1-8b-soft-panel,Angola,0.43315167728864334,0.7211197331310228,2
+checkpoints/llama3.1-8b-soft-panel,Taiwan ROC,0.43203649118185433,0.669612415014891,199
+checkpoints/llama3.1-8b-soft-panel,Norway,0.4316054889743711,0.6830301738096533,115
+checkpoints/llama3.1-8b-soft-panel,South Korea,0.4123576353446114,0.6949945237982202,199
+checkpoints/llama3.1-8b-hard-panel,Poland (Non-national sample),0.7438524964270491,0.3134498477675087,8
+checkpoints/llama3.1-8b-hard-panel,Russia (Non-national sample),0.6994803813449813,0.380738891044129,22
+checkpoints/llama3.1-8b-hard-panel,India (Old national sample),0.6978266585298638,0.364454766320854,83
+checkpoints/llama3.1-8b-hard-panel,Nigeria (Non-national sample),0.6737192927224124,0.40781300607259674,219
+checkpoints/llama3.1-8b-hard-panel,Egypt (Non-national sample),0.6725202197773944,0.40839460593746546,55
+checkpoints/llama3.1-8b-hard-panel,China (Non-national sample),0.6718440070260405,0.396373390110545,226
+checkpoints/llama3.1-8b-hard-panel,India (Non-national sample),0.6667277151887406,0.41320411669640306,252
+checkpoints/llama3.1-8b-hard-panel,Venezuela (Non-national sample),0.6570618342735628,0.42371065070566466,125
+checkpoints/llama3.1-8b-hard-panel,Bolivia (Non-national sample),0.6529251126544473,0.4242982532708826,125
+checkpoints/llama3.1-8b-hard-panel,Pakistan (Non-national sample),0.6497074896644796,0.43839621049901406,24
+checkpoints/llama3.1-8b-hard-panel,Brazil (Non-national sample),0.6491299499358079,0.42793134281221257,185
+checkpoints/llama3.1-8b-hard-panel,Ethiopia (Non-national sample),0.642640434877702,0.42795383035096324,75
+checkpoints/llama3.1-8b-hard-panel,Czech Rep.,0.6417481939881906,0.4357161283233254,239
+checkpoints/llama3.1-8b-hard-panel,Angola (Non-national sample),0.6402191475718442,0.45338675330738454,86
+checkpoints/llama3.1-8b-hard-panel,S. Africa (Non-national sample),0.6392234207447739,0.44108509808792706,73
+checkpoints/llama3.1-8b-hard-panel,Palest. ter.,0.6362715334376188,0.4402624667971623,234
+checkpoints/llama3.1-8b-hard-panel,Morocco (Non-national sample),0.6356288671873896,0.4443042755279864,77
+checkpoints/llama3.1-8b-hard-panel,Kuwait,0.6341751869312379,0.4528764902590469,95
+checkpoints/llama3.1-8b-hard-panel,Britain,0.6323784771355038,0.44675968099058855,647
+checkpoints/llama3.1-8b-hard-panel,Indonesia (Non-national sample),0.6285180169933737,0.4545396346675805,105
+checkpoints/llama3.1-8b-hard-panel,Israel,0.6241473363775659,0.45617206658721526,344
+checkpoints/llama3.1-8b-hard-panel,S. Africa,0.6220691093636147,0.46760469273871763,330
+checkpoints/llama3.1-8b-hard-panel,Senegal (Non-national sample),0.6216670667858336,0.47016429955937256,119
+checkpoints/llama3.1-8b-hard-panel,Guatemala (Non-national sample),0.621037634711442,0.4744564126429032,87
+checkpoints/llama3.1-8b-hard-panel,Ivory Coast (Non-national sample),0.620739871462008,0.4737587383049075,119
+checkpoints/llama3.1-8b-hard-panel,India (Current national sample),0.61795431794588,0.47392483409323727,229
+checkpoints/llama3.1-8b-hard-panel,Ghana,0.6146660030465346,0.4803125857867031,243
+checkpoints/llama3.1-8b-hard-panel,Uzbekistan,0.6140469040936579,0.481915803317001,89
+checkpoints/llama3.1-8b-hard-panel,Russia,0.6130429261534441,0.4700845555906649,712
+checkpoints/llama3.1-8b-hard-panel,Bangladesh (Non-national sample),0.6113647927901648,0.4841899794801485,124
+checkpoints/llama3.1-8b-hard-panel,Tanzania,0.6067129706382223,0.4883858470382462,245
+checkpoints/llama3.1-8b-hard-panel,Mali,0.6055811996449815,0.49071668020514647,75
+checkpoints/llama3.1-8b-hard-panel,Poland,0.6046240809722031,0.48083457548727226,578
+checkpoints/llama3.1-8b-hard-panel,Honduras (Non-national sample),0.6030493769997181,0.4993410211787599,87
+checkpoints/llama3.1-8b-hard-panel,Mali (Non-national sample),0.6019730079550488,0.49604098696874094,87
+checkpoints/llama3.1-8b-hard-panel,Jordan,0.5987680122009602,0.47830332860402547,597
+checkpoints/llama3.1-8b-hard-panel,Uganda,0.5981944543184685,0.4953777773461358,215
+checkpoints/llama3.1-8b-hard-panel,Turkey,0.5971448024310854,0.4929921521613371,662
+checkpoints/llama3.1-8b-hard-panel,France,0.5919567449654282,0.487229733607521,758
+checkpoints/llama3.1-8b-hard-panel,UK,0.5907489992636508,0.4938562866271466,846
+checkpoints/llama3.1-8b-hard-panel,USA,0.5896756909866111,0.4961251640595992,846
+checkpoints/llama3.1-8b-hard-panel,United States,0.5896756909866111,0.4961251640595992,846
+checkpoints/llama3.1-8b-hard-panel,Honduras,0.5864751452707971,0.4685945403135973,2
+checkpoints/llama3.1-8b-hard-panel,Egypt,0.5862136188363097,0.4896526533924399,421
+checkpoints/llama3.1-8b-hard-panel,El Salvador,0.5861489490789773,0.49814311648932985,92
+checkpoints/llama3.1-8b-hard-panel,Taiwan,0.5859401386878064,0.4871442514729462,49
+checkpoints/llama3.1-8b-hard-panel,Senegal,0.5859208636171613,0.5085290928284442,155
+checkpoints/llama3.1-8b-hard-panel,S. Korea,0.5834350658705663,0.5029199903914179,467
+checkpoints/llama3.1-8b-hard-panel,Spain,0.5819581522477205,0.5005552677858507,670
+checkpoints/llama3.1-8b-hard-panel,Mexico,0.5810798846888263,0.5022429704728231,598
+checkpoints/llama3.1-8b-hard-panel,Indonesia,0.5806572459499428,0.5047385536509618,594
+checkpoints/llama3.1-8b-hard-panel,Germany,0.5804705779638282,0.5060178791056967,844
+checkpoints/llama3.1-8b-hard-panel,Pakistan,0.5781583753734502,0.5106038812882647,563
+checkpoints/llama3.1-8b-hard-panel,Argentina,0.5768510102586677,0.5066943526265755,571
+checkpoints/llama3.1-8b-hard-panel,Italy,0.576214262762617,0.5121726972741014,609
+checkpoints/llama3.1-8b-hard-panel,Lebanon,0.5709936702443369,0.5142784868488579,598
+checkpoints/llama3.1-8b-hard-panel,Japan,0.5704295391199192,0.5168291612233854,708
+checkpoints/llama3.1-8b-hard-panel,Burkina Faso,0.5691330560939146,0.5294564180551596,48
+checkpoints/llama3.1-8b-hard-panel,Ivory Coast,0.5680002531099324,0.5079587708542985,2
+checkpoints/llama3.1-8b-hard-panel,Bulgaria,0.5651043521038543,0.5299532580767401,302
+checkpoints/llama3.1-8b-hard-panel,Kenya,0.5636716491734959,0.5294015590852363,569
+checkpoints/llama3.1-8b-hard-panel,Ukraine,0.5635025446129548,0.5291356906075892,475
+checkpoints/llama3.1-8b-hard-panel,Vietnam (Non-national sample),0.5622222148512948,0.5321519507135415,68
+checkpoints/llama3.1-8b-hard-panel,Brazil,0.5579266439252365,0.5309222785245444,493
+checkpoints/llama3.1-8b-hard-panel,Lithuania,0.5556150621860836,0.534155340888522,237
+checkpoints/llama3.1-8b-hard-panel,Canada,0.5492826566979246,0.5389736170374243,663
+checkpoints/llama3.1-8b-hard-panel,Hungary,0.5467553059926619,0.5453023812095378,302
+checkpoints/llama3.1-8b-hard-panel,Slovakia,0.5467164426452846,0.5432905515874705,386
+checkpoints/llama3.1-8b-hard-panel,Tunisia,0.5466046969558441,0.5426760435005769,421
+checkpoints/llama3.1-8b-hard-panel,Nigeria,0.5434012760942605,0.5489262412923035,469
+checkpoints/llama3.1-8b-hard-panel,Chile,0.5419863569875486,0.5469707222980436,403
+checkpoints/llama3.1-8b-hard-panel,Peru,0.5386895280530443,0.5566408304460192,417
+checkpoints/llama3.1-8b-hard-panel,Philippines,0.5225098277895807,0.5720591405606539,495
+checkpoints/llama3.1-8b-hard-panel,Australia,0.5220876949547707,0.5684666572943589,538
+checkpoints/llama3.1-8b-hard-panel,Greece,0.5196089964992092,0.5690512435655286,467
+checkpoints/llama3.1-8b-hard-panel,Malaysia,0.5193994661378559,0.5700658171121352,376
+checkpoints/llama3.1-8b-hard-panel,China,0.5158945812355696,0.5730659442905162,289
+checkpoints/llama3.1-8b-hard-panel,Belgium,0.5117006729495339,0.5700413530839743,103
+checkpoints/llama3.1-8b-hard-panel,Venezuela,0.5101721511385182,0.5773414467008887,345
+checkpoints/llama3.1-8b-hard-panel,Netherlands,0.5098800646028003,0.586718496639546,468
+checkpoints/llama3.1-8b-hard-panel,Sweden,0.5071356192929084,0.587849712527591,411
+checkpoints/llama3.1-8b-hard-panel,Bolivia,0.49746973039688636,0.589565000178429,253
+checkpoints/llama3.1-8b-hard-panel,Thailand,0.492733265487741,0.5991755226607731,252
+checkpoints/llama3.1-8b-hard-panel,Angola,0.49168969486413533,0.6510111996612593,2
+checkpoints/llama3.1-8b-hard-panel,Colombia,0.490243317675864,0.5952025057342338,280
+checkpoints/llama3.1-8b-hard-panel,Morocco,0.48825022336700064,0.6028991392436539,273
+checkpoints/llama3.1-8b-hard-panel,Kazakhstan,0.48821164622761926,0.6010785434357206,196
+checkpoints/llama3.1-8b-hard-panel,New Zealand,0.484091360842529,0.6105364291147453,248
+checkpoints/llama3.1-8b-hard-panel,North Macedonia,0.48323703699162335,0.6146371127805991,115
+checkpoints/llama3.1-8b-hard-panel,Romania,0.48203991057674406,0.6080576797785112,199
+checkpoints/llama3.1-8b-hard-panel,Serbia,0.48080849324213276,0.6188800998702434,199
+checkpoints/llama3.1-8b-hard-panel,Albania,0.47847440155780246,0.6203296605867372,115
+checkpoints/llama3.1-8b-hard-panel,Bangladesh,0.4777508281876371,0.61643905077622,255
+checkpoints/llama3.1-8b-hard-panel,Vietnam,0.4752948864125457,0.6300075056834804,317
+checkpoints/llama3.1-8b-hard-panel,Uruguay,0.4752381626760377,0.6203767781877481,199
+checkpoints/llama3.1-8b-hard-panel,Ethiopia,0.4751549055061649,0.6212834467671285,232
+checkpoints/llama3.1-8b-hard-panel,Jordan (Non-national sample),0.47510354236460983,0.6378048814838138,1
+checkpoints/llama3.1-8b-hard-panel,Colombia (Non-national sample),0.4746161683508878,0.6397429173287288,1
+checkpoints/llama3.1-8b-hard-panel,Iraq,0.4745026135165256,0.609534131257127,189
+checkpoints/llama3.1-8b-hard-panel,Belarus,0.4744701586807373,0.6241075688016127,115
+checkpoints/llama3.1-8b-hard-panel,Cyprus,0.4740789559546493,0.6225437495671009,199
+checkpoints/llama3.1-8b-hard-panel,Armenia,0.47323693462999444,0.6179068098387065,199
+checkpoints/llama3.1-8b-hard-panel,Montenegro,0.4705854694107439,0.6277530744181224,115
+checkpoints/llama3.1-8b-hard-panel,Czechia,0.46957845942641624,0.6326755479661992,199
+checkpoints/llama3.1-8b-hard-panel,Iran,0.46923289023597575,0.6204226811414183,194
+checkpoints/llama3.1-8b-hard-panel,Nicaragua,0.4687960476932071,0.6204970343692774,250
+checkpoints/llama3.1-8b-hard-panel,Singapore,0.4649564224308696,0.6258578407798981,245
+checkpoints/llama3.1-8b-hard-panel,Andorra,0.4649560674788104,0.632450532345551,198
+checkpoints/llama3.1-8b-hard-panel,Libya,0.46492774313612134,0.6293952862619825,199
+checkpoints/llama3.1-8b-hard-panel,Estonia,0.4645096297310626,0.6384502398953538,115
+checkpoints/llama3.1-8b-hard-panel,Kyrgyzstan,0.46364103860059286,0.6345274180405844,195
+checkpoints/llama3.1-8b-hard-panel,Zimbabwe,0.461277687398252,0.6342260399743453,199
+checkpoints/llama3.1-8b-hard-panel,Puerto Rico,0.46104130065579474,0.6270015108850551,199
+checkpoints/llama3.1-8b-hard-panel,Georgia,0.4603973423550284,0.638414615643101,115
+checkpoints/llama3.1-8b-hard-panel,Ecuador,0.46017931955183744,0.6330610142408899,199
+checkpoints/llama3.1-8b-hard-panel,Guatemala,0.45974397458280053,0.6272397826437848,201
+checkpoints/llama3.1-8b-hard-panel,Croatia,0.4590887777614362,0.6429778669128347,115
+checkpoints/llama3.1-8b-hard-panel,Austria,0.4588307348558647,0.6481694438394399,115
+checkpoints/llama3.1-8b-hard-panel,Latvia,0.45846254990545093,0.643834502565007,116
+checkpoints/llama3.1-8b-hard-panel,Bosnia Herzegovina,0.4577732753811691,0.6412177036463563,115
+checkpoints/llama3.1-8b-hard-panel,Philippines (Non-national sample),0.4554197026187202,0.645868070457557,1
+checkpoints/llama3.1-8b-hard-panel,Great Britain,0.4554008978410933,0.6469794215359562,199
+checkpoints/llama3.1-8b-hard-panel,Maldives,0.4535327037853874,0.6490073374229095,199
+checkpoints/llama3.1-8b-hard-panel,Northern Ireland,0.453275933044319,0.6455312169820954,198
+checkpoints/llama3.1-8b-hard-panel,Tajikistan,0.45201481280086436,0.6319199316868661,190
+checkpoints/llama3.1-8b-hard-panel,Portugal,0.45064813605167975,0.6537588208965216,115
+checkpoints/llama3.1-8b-hard-panel,Slovenia,0.44934557188113183,0.6611591371000218,115
+checkpoints/llama3.1-8b-hard-panel,Myanmar,0.44784438432017953,0.6406561283968731,196
+checkpoints/llama3.1-8b-hard-panel,Hong Kong SAR,0.4464778023203089,0.6556220196244408,199
+checkpoints/llama3.1-8b-hard-panel,Mongolia,0.4452835892332928,0.6483672641282845,199
+checkpoints/llama3.1-8b-hard-panel,Finland,0.4442508581758716,0.6684622446752089,115
+checkpoints/llama3.1-8b-hard-panel,Denmark,0.4429872672348732,0.6660334539475272,175
+checkpoints/llama3.1-8b-hard-panel,Switzerland,0.44165765225404074,0.6719433611248626,115
+checkpoints/llama3.1-8b-hard-panel,Azerbaijan,0.4389614250555048,0.666990321626466,115
+checkpoints/llama3.1-8b-hard-panel,Tanzania (Non-national sample),0.43440968374499267,0.6849690479819951,1
+checkpoints/llama3.1-8b-hard-panel,Macau SAR,0.43271203070239644,0.6703099543082703,198
+checkpoints/llama3.1-8b-hard-panel,Iceland,0.4318066677916547,0.6854929053896243,114
+checkpoints/llama3.1-8b-hard-panel,Taiwan ROC,0.4306569116249912,0.6698786536489071,199
+checkpoints/llama3.1-8b-hard-panel,Norway,0.4278453582846643,0.6870979087335333,115
+checkpoints/llama3.1-8b-hard-panel,South Korea,0.4111754627143703,0.6954520583722977,199
+checkpoints/llama3.1-8b-us-rep,Poland (Non-national sample),0.7382307791133396,0.3203740708886288,8
+checkpoints/llama3.1-8b-us-rep,Russia (Non-national sample),0.6912450554699352,0.3915393425482595,22
+checkpoints/llama3.1-8b-us-rep,India (Old national sample),0.6887359724912469,0.37769800359426486,83
+checkpoints/llama3.1-8b-us-rep,Nigeria (Non-national sample),0.6690709877991249,0.4141903099990213,219
+checkpoints/llama3.1-8b-us-rep,Egypt (Non-national sample),0.6672881707856622,0.4160629461200754,55
+checkpoints/llama3.1-8b-us-rep,China (Non-national sample),0.6652317597188374,0.40567288033909205,226
+checkpoints/llama3.1-8b-us-rep,India (Non-national sample),0.6621955622753568,0.41906938809769395,252
+checkpoints/llama3.1-8b-us-rep,Venezuela (Non-national sample),0.6505299857939209,0.43261365594951223,125
+checkpoints/llama3.1-8b-us-rep,Bolivia (Non-national sample),0.6466863431731349,0.433061647955741,125
+checkpoints/llama3.1-8b-us-rep,Brazil (Non-national sample),0.6427848095432076,0.43658582549784136,185
+checkpoints/llama3.1-8b-us-rep,Pakistan (Non-national sample),0.63825170242694,0.4543228037769727,24
+checkpoints/llama3.1-8b-us-rep,Ethiopia (Non-national sample),0.6366010718862831,0.4361911167017504,75
+checkpoints/llama3.1-8b-us-rep,Czech Rep.,0.6355000793316421,0.44467303364715277,239
+checkpoints/llama3.1-8b-us-rep,Angola (Non-national sample),0.6352437327408519,0.46025590896203794,86
+checkpoints/llama3.1-8b-us-rep,S. Africa (Non-national sample),0.6323549740920594,0.45000541868227645,73
+checkpoints/llama3.1-8b-us-rep,Palest. ter.,0.6293130244863481,0.4494517208982613,234
+checkpoints/llama3.1-8b-us-rep,Morocco (Non-national sample),0.6285942065536986,0.45323801961514537,77
+checkpoints/llama3.1-8b-us-rep,Britain,0.6271585402401861,0.4536136575005697,647
+checkpoints/llama3.1-8b-us-rep,Kuwait,0.6263833424992853,0.4636276939398419,95
+checkpoints/llama3.1-8b-us-rep,Indonesia (Non-national sample),0.6224506231923139,0.4632619192587279,105
+checkpoints/llama3.1-8b-us-rep,Israel,0.6185559944479714,0.46342935878218483,344
+checkpoints/llama3.1-8b-us-rep,Senegal (Non-national sample),0.6160608190138559,0.47791370315638887,119
+checkpoints/llama3.1-8b-us-rep,Guatemala (Non-national sample),0.6157846117054563,0.4819566301115984,87
+checkpoints/llama3.1-8b-us-rep,Ivory Coast (Non-national sample),0.6157162136995619,0.48060564762735986,119
+checkpoints/llama3.1-8b-us-rep,S. Africa,0.6149245564293344,0.4770162715481845,330
+checkpoints/llama3.1-8b-us-rep,India (Current national sample),0.6124113725837316,0.4813858321643508,229
+checkpoints/llama3.1-8b-us-rep,Ghana,0.6093544381727419,0.48757263413598045,243
+checkpoints/llama3.1-8b-us-rep,Russia,0.6087236435831996,0.4759933286818947,712
+checkpoints/llama3.1-8b-us-rep,Uzbekistan,0.6079987670984663,0.4907255420829122,89
+checkpoints/llama3.1-8b-us-rep,Bangladesh (Non-national sample),0.6063715634746236,0.49124339747069995,124
+checkpoints/llama3.1-8b-us-rep,Tanzania,0.6006696667627583,0.49692268032192555,245
+checkpoints/llama3.1-8b-us-rep,Poland,0.6001649565065756,0.4866189652957143,578
+checkpoints/llama3.1-8b-us-rep,Mali,0.598958221742273,0.4993484684029186,75
+checkpoints/llama3.1-8b-us-rep,Honduras (Non-national sample),0.5975751363161187,0.5070308192363189,87
+checkpoints/llama3.1-8b-us-rep,Mali (Non-national sample),0.5967069319519939,0.5043097377042411,87
+checkpoints/llama3.1-8b-us-rep,Jordan,0.5943720401595592,0.4848422665845962,597
+checkpoints/llama3.1-8b-us-rep,Uganda,0.5928223985633875,0.5035547731887224,215
+checkpoints/llama3.1-8b-us-rep,Turkey,0.5923072154175056,0.500097952228515,662
+checkpoints/llama3.1-8b-us-rep,France,0.587443617649053,0.49337608389029,758
+checkpoints/llama3.1-8b-us-rep,UK,0.5872814314610023,0.49893506242812735,846
+checkpoints/llama3.1-8b-us-rep,USA,0.5860344708263621,0.5011863570365697,846
+checkpoints/llama3.1-8b-us-rep,United States,0.5860344708263621,0.5011863570365697,846
+checkpoints/llama3.1-8b-us-rep,Egypt,0.5823713375215764,0.4961539013550822,421
+checkpoints/llama3.1-8b-us-rep,Senegal,0.5801331961569812,0.5166305503268689,155
+checkpoints/llama3.1-8b-us-rep,El Salvador,0.5799034700620073,0.5072120540980795,92
+checkpoints/llama3.1-8b-us-rep,Honduras,0.5789046113235363,0.4941914953520846,2
+checkpoints/llama3.1-8b-us-rep,S. Korea,0.5785242163127233,0.5088996514755076,467
+checkpoints/llama3.1-8b-us-rep,Indonesia,0.5783395033292712,0.5080976498144943,594
+checkpoints/llama3.1-8b-us-rep,Spain,0.5775532181106154,0.5066195314801409,670
+checkpoints/llama3.1-8b-us-rep,Germany,0.5772877145406232,0.5105946630667525,844
+checkpoints/llama3.1-8b-us-rep,Taiwan,0.5771271383565477,0.49740144055432794,49
+checkpoints/llama3.1-8b-us-rep,Mexico,0.5767212653513973,0.5087199811058103,598
+checkpoints/llama3.1-8b-us-rep,Pakistan,0.5741164412300248,0.5165972834337067,563
+checkpoints/llama3.1-8b-us-rep,Argentina,0.5731635184053226,0.51214558601143,571
+checkpoints/llama3.1-8b-us-rep,Italy,0.5710200889912709,0.5192210820694807,609
+checkpoints/llama3.1-8b-us-rep,Japan,0.5671823139812499,0.5211026619232543,708
+checkpoints/llama3.1-8b-us-rep,Lebanon,0.5669243535553767,0.5201812742672653,598
+checkpoints/llama3.1-8b-us-rep,Burkina Faso,0.5621000357972327,0.5397318054032062,48
+checkpoints/llama3.1-8b-us-rep,Kenya,0.561675025647521,0.5317602154616825,569
+checkpoints/llama3.1-8b-us-rep,Bulgaria,0.5605925113275727,0.53593979268183,302
+checkpoints/llama3.1-8b-us-rep,Ukraine,0.5601862381055392,0.5336694737439918,475
+checkpoints/llama3.1-8b-us-rep,Ivory Coast,0.5597164625954891,0.5335557258927858,2
+checkpoints/llama3.1-8b-us-rep,Vietnam (Non-national sample),0.5584285342109925,0.5378050655075187,68
+checkpoints/llama3.1-8b-us-rep,Brazil,0.5534399568541956,0.5372304385879803,493
+checkpoints/llama3.1-8b-us-rep,Lithuania,0.5522890186467209,0.538158202883085,237
+checkpoints/llama3.1-8b-us-rep,Canada,0.5460198253713155,0.5438148285480587,663
+checkpoints/llama3.1-8b-us-rep,Slovakia,0.5447340393372782,0.5463080041272247,386
+checkpoints/llama3.1-8b-us-rep,Hungary,0.5421638456357762,0.551223823591363,302
+checkpoints/llama3.1-8b-us-rep,Tunisia,0.541915241724429,0.5494518167162551,421
+checkpoints/llama3.1-8b-us-rep,Nigeria,0.5412875148594138,0.5518945521964622,469
+checkpoints/llama3.1-8b-us-rep,Chile,0.5393987820902562,0.5515272995509394,403
+checkpoints/llama3.1-8b-us-rep,Peru,0.535322883982432,0.5616382832818125,417
+checkpoints/llama3.1-8b-us-rep,Philippines,0.5205986335031322,0.5749222393150641,495
+checkpoints/llama3.1-8b-us-rep,Australia,0.5180231203341489,0.574146459963241,538
+checkpoints/llama3.1-8b-us-rep,Malaysia,0.5179096167701086,0.5714279046751128,376
+checkpoints/llama3.1-8b-us-rep,Greece,0.5160390987635851,0.573798097388291,467
+checkpoints/llama3.1-8b-us-rep,China,0.5145655509898088,0.5754237891944236,289
+checkpoints/llama3.1-8b-us-rep,Venezuela,0.5076999953105213,0.5809421450076097,345
+checkpoints/llama3.1-8b-us-rep,Netherlands,0.5067764060710501,0.5909499238392031,468
+checkpoints/llama3.1-8b-us-rep,Belgium,0.5028242264189243,0.5795597537223863,103
+checkpoints/llama3.1-8b-us-rep,Sweden,0.502480227052292,0.5939983174454316,411
+checkpoints/llama3.1-8b-us-rep,Bolivia,0.4966105864394807,0.5924642775418235,253
+checkpoints/llama3.1-8b-us-rep,Thailand,0.4925548853166409,0.6016165286200443,252
+checkpoints/llama3.1-8b-us-rep,Kazakhstan,0.4896164942792796,0.6007414050100721,196
+checkpoints/llama3.1-8b-us-rep,Colombia,0.48828815849397267,0.5997876703835322,280
+checkpoints/llama3.1-8b-us-rep,Morocco,0.48756113546010466,0.6042260739208656,273
+checkpoints/llama3.1-8b-us-rep,New Zealand,0.4837894545734614,0.6118250844422946,248
+checkpoints/llama3.1-8b-us-rep,Romania,0.4823703716468508,0.6089544631375524,199
+checkpoints/llama3.1-8b-us-rep,Serbia,0.48187777963166634,0.6175923060077649,199
+checkpoints/llama3.1-8b-us-rep,North Macedonia,0.481272957507499,0.6172768669475115,115
+checkpoints/llama3.1-8b-us-rep,Colombia (Non-national sample),0.4790540951679194,0.631728633315147,1
+checkpoints/llama3.1-8b-us-rep,Bangladesh,0.4786718980957176,0.6163434801285192,255
+checkpoints/llama3.1-8b-us-rep,Jordan (Non-national sample),0.4783047186624605,0.6320590929907339,1
+checkpoints/llama3.1-8b-us-rep,Iraq,0.47785854879247974,0.6054836375223325,189
+checkpoints/llama3.1-8b-us-rep,Albania,0.47762193184542634,0.6216316668222609,115
+checkpoints/llama3.1-8b-us-rep,Uruguay,0.47735252656293975,0.6192301949351787,199
+checkpoints/llama3.1-8b-us-rep,Angola,0.476394194924333,0.6747648057116383,2
+checkpoints/llama3.1-8b-us-rep,Cyprus,0.4755820525399041,0.6210076583179232,199
+checkpoints/llama3.1-8b-us-rep,Ethiopia,0.47503602539290973,0.6227519943803573,232
+checkpoints/llama3.1-8b-us-rep,Armenia,0.4749400834315294,0.617962950327933,199
+checkpoints/llama3.1-8b-us-rep,Vietnam,0.47439024240323274,0.6314100412895145,317
+checkpoints/llama3.1-8b-us-rep,Belarus,0.47330301221973015,0.6265268757403255,115
+checkpoints/llama3.1-8b-us-rep,Iran,0.4724825703238154,0.61844643705264,194
+checkpoints/llama3.1-8b-us-rep,Czechia,0.4705556956114183,0.6321235334383128,199
+checkpoints/llama3.1-8b-us-rep,Montenegro,0.46954339683312846,0.6314322951582333,115
+checkpoints/llama3.1-8b-us-rep,Nicaragua,0.46811773922705596,0.6234966105798964,250
+checkpoints/llama3.1-8b-us-rep,Libya,0.46629033550478094,0.6273599367760141,199
+checkpoints/llama3.1-8b-us-rep,Kyrgyzstan,0.46540870270640156,0.6329037382170628,195
+checkpoints/llama3.1-8b-us-rep,Andorra,0.4653939541790012,0.6325858119227981,198
+checkpoints/llama3.1-8b-us-rep,Singapore,0.46504246383636344,0.6261942069473133,245
+checkpoints/llama3.1-8b-us-rep,Estonia,0.4643475644345717,0.6376250954774646,115
+checkpoints/llama3.1-8b-us-rep,Zimbabwe,0.46286731428523303,0.6330384487487292,199
+checkpoints/llama3.1-8b-us-rep,Puerto Rico,0.46261372172690424,0.6269822201238628,199
+checkpoints/llama3.1-8b-us-rep,Ecuador,0.461373732398796,0.633279372859103,199
+checkpoints/llama3.1-8b-us-rep,Philippines (Non-national sample),0.4602572347189221,0.6378537864439751,1
+checkpoints/llama3.1-8b-us-rep,Guatemala,0.46011899158219743,0.62689020220389,201
+checkpoints/llama3.1-8b-us-rep,Georgia,0.4592304224148655,0.6403889168608728,115
+checkpoints/llama3.1-8b-us-rep,Austria,0.4579131393879633,0.650547964478946,115
+checkpoints/llama3.1-8b-us-rep,Latvia,0.45781405225964894,0.6433241464027245,116
+checkpoints/llama3.1-8b-us-rep,Great Britain,0.45763073105832935,0.6462865648810412,199
+checkpoints/llama3.1-8b-us-rep,Croatia,0.4574625434346675,0.6466160331075607,115
+checkpoints/llama3.1-8b-us-rep,Maldives,0.4564404614475179,0.6454055880200458,199
+checkpoints/llama3.1-8b-us-rep,Bosnia Herzegovina,0.45638211379570776,0.6443447646256059,115
+checkpoints/llama3.1-8b-us-rep,Tajikistan,0.4559601264986717,0.6282772828832757,190
+checkpoints/llama3.1-8b-us-rep,Northern Ireland,0.45501264638254213,0.6461951928180167,198
+checkpoints/llama3.1-8b-us-rep,Portugal,0.4506308187753362,0.6528185889912578,115
+checkpoints/llama3.1-8b-us-rep,Myanmar,0.4504167796636267,0.6395940290000923,196
+checkpoints/llama3.1-8b-us-rep,Hong Kong SAR,0.44849735526479373,0.6528841900157033,199
+checkpoints/llama3.1-8b-us-rep,Slovenia,0.44814187018588436,0.6622800783357086,115
+checkpoints/llama3.1-8b-us-rep,Mongolia,0.4465841837471303,0.6460400351988532,199
+checkpoints/llama3.1-8b-us-rep,Finland,0.4454016530267583,0.6678515678714788,115
+checkpoints/llama3.1-8b-us-rep,Switzerland,0.44174490653815235,0.6744093144979917,115
+checkpoints/llama3.1-8b-us-rep,Denmark,0.44104132990303013,0.6696861144347579,175
+checkpoints/llama3.1-8b-us-rep,Tanzania (Non-national sample),0.43867897748723783,0.6769547639684133,1
+checkpoints/llama3.1-8b-us-rep,Azerbaijan,0.43846466813472773,0.6688310877519177,115
+checkpoints/llama3.1-8b-us-rep,Macau SAR,0.43403816241147275,0.6699385529700228,198
+checkpoints/llama3.1-8b-us-rep,Taiwan ROC,0.43274732848056574,0.6665525024104842,199
+checkpoints/llama3.1-8b-us-rep,Iceland,0.4315646510111701,0.6877034743479908,114
+checkpoints/llama3.1-8b-us-rep,Norway,0.4286288187487442,0.6852784738297244,115
+checkpoints/llama3.1-8b-us-rep,South Korea,0.4129583643125603,0.6931917110747631,199
+checkpoints/llama3.1-8b-uk-rep,Poland (Non-national sample),0.7416331784568292,0.3176856681534872,8
+checkpoints/llama3.1-8b-uk-rep,Russia (Non-national sample),0.7002292342995183,0.37987355479648566,22
+checkpoints/llama3.1-8b-uk-rep,India (Old national sample),0.691877528080469,0.37188550142765237,83
+checkpoints/llama3.1-8b-uk-rep,Egypt (Non-national sample),0.6761105971311586,0.4019824981394807,55
+checkpoints/llama3.1-8b-uk-rep,Nigeria (Non-national sample),0.6756552356144978,0.4039771170471138,219
+checkpoints/llama3.1-8b-uk-rep,India (Non-national sample),0.6689783614879721,0.4091375090230562,252
+checkpoints/llama3.1-8b-uk-rep,China (Non-national sample),0.6683567596980927,0.40039480097240987,226
+checkpoints/llama3.1-8b-uk-rep,Venezuela (Non-national sample),0.6570942847000786,0.4218217781482769,125
+checkpoints/llama3.1-8b-uk-rep,Bolivia (Non-national sample),0.6513919801365813,0.4255694761710362,125
+checkpoints/llama3.1-8b-uk-rep,Pakistan (Non-national sample),0.6509977063209997,0.4357275690627557,24
+checkpoints/llama3.1-8b-uk-rep,Brazil (Non-national sample),0.6491813836746443,0.4266243518938345,185
+checkpoints/llama3.1-8b-uk-rep,Angola (Non-national sample),0.6409053207113327,0.45046749970879774,86
+checkpoints/llama3.1-8b-uk-rep,Czech Rep.,0.6394958864352177,0.4383761663055163,239
+checkpoints/llama3.1-8b-uk-rep,Ethiopia (Non-national sample),0.6394472611337169,0.43162473712899396,75
+checkpoints/llama3.1-8b-uk-rep,S. Africa (Non-national sample),0.6377419931861964,0.4407594529309107,73
+checkpoints/llama3.1-8b-uk-rep,Morocco (Non-national sample),0.6364970092847566,0.4418325545924561,77
+checkpoints/llama3.1-8b-uk-rep,Kuwait,0.635404419059891,0.4501448189954221,95
+checkpoints/llama3.1-8b-uk-rep,Palest. ter.,0.6350150484877063,0.44168486575509547,234
+checkpoints/llama3.1-8b-uk-rep,Britain,0.631778760038977,0.44616956956023907,647
+checkpoints/llama3.1-8b-uk-rep,Indonesia (Non-national sample),0.6278532043186691,0.45414601514267233,105
+checkpoints/llama3.1-8b-uk-rep,Guatemala (Non-national sample),0.6232172927600982,0.47012199656546794,87
+checkpoints/llama3.1-8b-uk-rep,Israel,0.6226470236331898,0.45719350077397464,344
+checkpoints/llama3.1-8b-uk-rep,Senegal (Non-national sample),0.6224274079403211,0.4681380379323527,119
+checkpoints/llama3.1-8b-uk-rep,S. Africa,0.6218604534280975,0.46637825879288985,330
+checkpoints/llama3.1-8b-uk-rep,Ivory Coast (Non-national sample),0.6217970370284571,0.47111803973127614,119
+checkpoints/llama3.1-8b-uk-rep,India (Current national sample),0.6207345900529971,0.47031484014968605,229
+checkpoints/llama3.1-8b-uk-rep,Ghana,0.616374123084375,0.4771065183346351,243
+checkpoints/llama3.1-8b-uk-rep,Uzbekistan,0.6148389336818014,0.47908067946389843,89
+checkpoints/llama3.1-8b-uk-rep,Bangladesh (Non-national sample),0.6130620375989418,0.4807542804902744,124
+checkpoints/llama3.1-8b-uk-rep,Russia,0.6116083551067019,0.4715919749694489,712
+checkpoints/llama3.1-8b-uk-rep,Tanzania,0.6077518251147258,0.4858600611206934,245
+checkpoints/llama3.1-8b-uk-rep,Honduras (Non-national sample),0.6045796733483272,0.49589691804650743,87
+checkpoints/llama3.1-8b-uk-rep,Mali,0.6043700266703053,0.49048538283983306,75
+checkpoints/llama3.1-8b-uk-rep,Poland,0.6036544561015802,0.481437402188718,578
+checkpoints/llama3.1-8b-uk-rep,Mali (Non-national sample),0.603574986105427,0.49216352319415496,87
+checkpoints/llama3.1-8b-uk-rep,Uganda,0.5998064905823783,0.4927515274707635,215
+checkpoints/llama3.1-8b-uk-rep,Jordan,0.5968807394144781,0.48122241063459287,597
+checkpoints/llama3.1-8b-uk-rep,Turkey,0.596871312309478,0.49322049768032666,662
+checkpoints/llama3.1-8b-uk-rep,France,0.5911304524102416,0.48757201349447243,758
+checkpoints/llama3.1-8b-uk-rep,UK,0.5903115046560051,0.49364875479494646,846
+checkpoints/llama3.1-8b-uk-rep,USA,0.5891833091942411,0.4958287528305257,846
+checkpoints/llama3.1-8b-uk-rep,United States,0.5891833091942411,0.4958287528305257,846
+checkpoints/llama3.1-8b-uk-rep,Senegal,0.5858917189612401,0.50774334569609,155
+checkpoints/llama3.1-8b-uk-rep,El Salvador,0.5843831023817109,0.498389259436041,92
+checkpoints/llama3.1-8b-uk-rep,Egypt,0.5839891853615724,0.49399868796184115,421
+checkpoints/llama3.1-8b-uk-rep,S. Korea,0.5809271047399802,0.5060798004157848,467
+checkpoints/llama3.1-8b-uk-rep,Spain,0.5807874573677603,0.501596305241184,670
+checkpoints/llama3.1-8b-uk-rep,Indonesia,0.5799799638422509,0.50597562504595,594
+checkpoints/llama3.1-8b-uk-rep,Mexico,0.5796396642018286,0.5040556880285156,598
+checkpoints/llama3.1-8b-uk-rep,Germany,0.5791955819912972,0.5074377470496565,844
+checkpoints/llama3.1-8b-uk-rep,Pakistan,0.5776662421948828,0.5111055749025846,563
+checkpoints/llama3.1-8b-uk-rep,Argentina,0.5758491895651338,0.5078397711666032,571
+checkpoints/llama3.1-8b-uk-rep,Italy,0.5743258681599455,0.5143049404490585,609
+checkpoints/llama3.1-8b-uk-rep,Taiwan,0.5727118558247754,0.5063192166996154,49
+checkpoints/llama3.1-8b-uk-rep,Lebanon,0.569794833989017,0.5158368156328323,598
+checkpoints/llama3.1-8b-uk-rep,Burkina Faso,0.5693097637294872,0.5301619628780853,48
+checkpoints/llama3.1-8b-uk-rep,Japan,0.5684431468460575,0.5201876217219759,708
+checkpoints/llama3.1-8b-uk-rep,Honduras,0.5674406543698549,0.5073073429139396,2
+checkpoints/llama3.1-8b-uk-rep,Vietnam (Non-national sample),0.5647671953108409,0.5271028601335771,68
+checkpoints/llama3.1-8b-uk-rep,Bulgaria,0.564371844515141,0.5301778390610354,302
+checkpoints/llama3.1-8b-uk-rep,Kenya,0.5636939689084237,0.529227131719027,569
+checkpoints/llama3.1-8b-uk-rep,Ukraine,0.5626347940739729,0.5298313672191127,475
+checkpoints/llama3.1-8b-uk-rep,Brazil,0.5560447430463593,0.533149792259157,493
+checkpoints/llama3.1-8b-uk-rep,Lithuania,0.5537209095086637,0.5371575738771603,237
+checkpoints/llama3.1-8b-uk-rep,Ivory Coast,0.5490004210145069,0.5240928449935593,2
+checkpoints/llama3.1-8b-uk-rep,Canada,0.5483919554662153,0.5399691133267169,663
+checkpoints/llama3.1-8b-uk-rep,Slovakia,0.5457943847641429,0.5440182902434548,386
+checkpoints/llama3.1-8b-uk-rep,Hungary,0.5445168633407882,0.5484413459784139,302
+checkpoints/llama3.1-8b-uk-rep,Tunisia,0.544306484423738,0.5465703504652897,421
+checkpoints/llama3.1-8b-uk-rep,Nigeria,0.5426392968084948,0.5506114768308619,469
+checkpoints/llama3.1-8b-uk-rep,Chile,0.5413499763654387,0.54778050183758,403
+checkpoints/llama3.1-8b-uk-rep,Peru,0.5376316212279564,0.5584347022777982,417
+checkpoints/llama3.1-8b-uk-rep,Philippines,0.5216998805621054,0.5723388947211294,495
+checkpoints/llama3.1-8b-uk-rep,Australia,0.5201885577779498,0.5705134178699387,538
+checkpoints/llama3.1-8b-uk-rep,Malaysia,0.5186984040302889,0.5705638144533736,376
+checkpoints/llama3.1-8b-uk-rep,Greece,0.5166843248268457,0.5732977248512859,467
+checkpoints/llama3.1-8b-uk-rep,China,0.516366446699481,0.5735565308491338,289
+checkpoints/llama3.1-8b-uk-rep,Venezuela,0.5092234328130001,0.5792741366314217,345
+checkpoints/llama3.1-8b-uk-rep,Netherlands,0.5076264689800989,0.5901144708259485,468
+checkpoints/llama3.1-8b-uk-rep,Belgium,0.5052446990711377,0.5804405112381631,103
+checkpoints/llama3.1-8b-uk-rep,Sweden,0.5042823701934109,0.5913146453918146,411
+checkpoints/llama3.1-8b-uk-rep,Bolivia,0.4964245917959895,0.5933263660273436,253
+checkpoints/llama3.1-8b-uk-rep,Thailand,0.492044240063892,0.6018718695906022,252
+checkpoints/llama3.1-8b-uk-rep,Colombia,0.4880695794972687,0.6005640857733151,280
+checkpoints/llama3.1-8b-uk-rep,Morocco,0.4875556273595961,0.6055950000161707,273
+checkpoints/llama3.1-8b-uk-rep,Kazakhstan,0.4873862139081764,0.6034737291001742,196
+checkpoints/llama3.1-8b-uk-rep,North Macedonia,0.4838963271870047,0.6152710322277881,115
+checkpoints/llama3.1-8b-uk-rep,New Zealand,0.4820746312716586,0.6144348548907634,248
+checkpoints/llama3.1-8b-uk-rep,Romania,0.4814683892015982,0.6109391711512969,199
+checkpoints/llama3.1-8b-uk-rep,Colombia (Non-national sample),0.48122698930748653,0.6283768248696047,1
+checkpoints/llama3.1-8b-uk-rep,Serbia,0.48054233039643396,0.6197518634282889,199
+checkpoints/llama3.1-8b-uk-rep,Jordan (Non-national sample),0.4803354272588224,0.628144093994595,1
+checkpoints/llama3.1-8b-uk-rep,Albania,0.4789511841313624,0.6216020811581452,115
+checkpoints/llama3.1-8b-uk-rep,Bangladesh,0.4764306508504499,0.6195485401287757,255
+checkpoints/llama3.1-8b-uk-rep,Ethiopia,0.4755218866526211,0.6226808567926735,232
+checkpoints/llama3.1-8b-uk-rep,Uruguay,0.4752300931804697,0.62226543617698,199
+checkpoints/llama3.1-8b-uk-rep,Vietnam,0.47484927619505923,0.6295694569892905,317
+checkpoints/llama3.1-8b-uk-rep,Armenia,0.47463107434180546,0.616932806842529,199
+checkpoints/llama3.1-8b-uk-rep,Iraq,0.4744356029150044,0.6107858518465459,189
+checkpoints/llama3.1-8b-uk-rep,Cyprus,0.4740421065051411,0.6237165096560473,199
+checkpoints/llama3.1-8b-uk-rep,Belarus,0.4733948928687939,0.6268600613874552,115
+checkpoints/llama3.1-8b-uk-rep,Montenegro,0.47171495862776797,0.6269474089113981,115
+checkpoints/llama3.1-8b-uk-rep,Angola,0.47123245091999666,0.6715018727378004,2
+checkpoints/llama3.1-8b-uk-rep,Iran,0.46994337495885785,0.6221191465059461,194
+checkpoints/llama3.1-8b-uk-rep,Czechia,0.4697492912494166,0.6323811362690072,199
+checkpoints/llama3.1-8b-uk-rep,Nicaragua,0.46716906492809884,0.6246514625630346,250
+checkpoints/llama3.1-8b-uk-rep,Estonia,0.46513290020254994,0.6373339414613194,115
+checkpoints/llama3.1-8b-uk-rep,Andorra,0.46488992631580384,0.6347692625516104,198
+checkpoints/llama3.1-8b-uk-rep,Kyrgyzstan,0.4639260637437132,0.6358704069584803,195
+checkpoints/llama3.1-8b-uk-rep,Libya,0.4634124407238709,0.6335167819815515,199
+checkpoints/llama3.1-8b-uk-rep,Singapore,0.46238721924746723,0.6313014732495974,245
+checkpoints/llama3.1-8b-uk-rep,Georgia,0.4611641033513508,0.6384158007502116,115
+checkpoints/llama3.1-8b-uk-rep,Zimbabwe,0.4610435065511939,0.6369634609461593,199
+checkpoints/llama3.1-8b-uk-rep,Puerto Rico,0.46053322563511406,0.6303111266380945,199
+checkpoints/llama3.1-8b-uk-rep,Philippines (Non-national sample),0.46028978094658957,0.6345019779984329,1
+checkpoints/llama3.1-8b-uk-rep,Ecuador,0.4595705137659397,0.6358431062542685,199
+checkpoints/llama3.1-8b-uk-rep,Croatia,0.45937729939374294,0.6449161136773883,115
+checkpoints/llama3.1-8b-uk-rep,Austria,0.4584388239980757,0.6483351587667678,115
+checkpoints/llama3.1-8b-uk-rep,Guatemala,0.45817795308593595,0.632108354258029,201
+checkpoints/llama3.1-8b-uk-rep,Latvia,0.4577856158998821,0.6476614044315275,116
+checkpoints/llama3.1-8b-uk-rep,Bosnia Herzegovina,0.45741946813054984,0.6446054723612351,115
+checkpoints/llama3.1-8b-uk-rep,Great Britain,0.455490830119408,0.6480157540253774,199
+checkpoints/llama3.1-8b-uk-rep,Maldives,0.4539518862895549,0.6506095419257621,199
+checkpoints/llama3.1-8b-uk-rep,Northern Ireland,0.4531450129040392,0.6472789346470638,198
+checkpoints/llama3.1-8b-uk-rep,Tajikistan,0.4519658429362161,0.6345030339683785,190
+checkpoints/llama3.1-8b-uk-rep,Portugal,0.450970889593352,0.65367022089235,115
+checkpoints/llama3.1-8b-uk-rep,Slovenia,0.4494381274834163,0.6605831373020199,115
+checkpoints/llama3.1-8b-uk-rep,Myanmar,0.44865298201072057,0.642147686115628,196
+checkpoints/llama3.1-8b-uk-rep,Hong Kong SAR,0.446160323521823,0.6569944504154493,199
+checkpoints/llama3.1-8b-uk-rep,Mongolia,0.44524308794273143,0.6491680824419702,199
+checkpoints/llama3.1-8b-uk-rep,Finland,0.4448385345919744,0.6685189848287412,115
+checkpoints/llama3.1-8b-uk-rep,Denmark,0.44232100334082086,0.6687699708663813,175
+checkpoints/llama3.1-8b-uk-rep,Switzerland,0.4423160923370261,0.6732282326035077,115
+checkpoints/llama3.1-8b-uk-rep,Tanzania (Non-national sample),0.4412838371481681,0.6736029555228711,1
+checkpoints/llama3.1-8b-uk-rep,Azerbaijan,0.4399039336084639,0.6682920658595433,115
+checkpoints/llama3.1-8b-uk-rep,Macau SAR,0.4335274567550333,0.6697919173222826,198
+checkpoints/llama3.1-8b-uk-rep,Iceland,0.4327273944943809,0.685183001215096,114
+checkpoints/llama3.1-8b-uk-rep,Taiwan ROC,0.43022904949055996,0.6715680531368645,199
+checkpoints/llama3.1-8b-uk-rep,Norway,0.4287688794285713,0.6854820348517975,115
+checkpoints/llama3.1-8b-uk-rep,South Korea,0.41071320721944865,0.6965711084477859,199
+checkpoints/llama3.1-8b-uk-soft-panel,Poland (Non-national sample),0.741748640981346,0.31675116137086734,8
+checkpoints/llama3.1-8b-uk-soft-panel,Russia (Non-national sample),0.6988622885013147,0.38175144251390075,22
+checkpoints/llama3.1-8b-uk-soft-panel,India (Old national sample),0.6909843335739702,0.37308183915082876,83
+checkpoints/llama3.1-8b-uk-soft-panel,Nigeria (Non-national sample),0.6727404678304508,0.408690853061323,219
+checkpoints/llama3.1-8b-uk-soft-panel,Egypt (Non-national sample),0.672553258763809,0.40789219723318965,55
+checkpoints/llama3.1-8b-uk-soft-panel,China (Non-national sample),0.6680533061333398,0.40138053935058415,226
+checkpoints/llama3.1-8b-uk-soft-panel,India (Non-national sample),0.6656510704067723,0.41434735714373205,252
+checkpoints/llama3.1-8b-uk-soft-panel,Venezuela (Non-national sample),0.6550863956639252,0.4255453890281415,125
+checkpoints/llama3.1-8b-uk-soft-panel,Bolivia (Non-national sample),0.6506743892824348,0.42712916963022196,125
+checkpoints/llama3.1-8b-uk-soft-panel,Pakistan (Non-national sample),0.6487146251684711,0.43931688488559556,24
+checkpoints/llama3.1-8b-uk-soft-panel,Brazil (Non-national sample),0.6475244314719393,0.42965062829760764,185
+checkpoints/llama3.1-8b-uk-soft-panel,Ethiopia (Non-national sample),0.6390425201836691,0.43261101376872185,75
+checkpoints/llama3.1-8b-uk-soft-panel,Angola (Non-national sample),0.6387535064909617,0.4545733184810748,86
+checkpoints/llama3.1-8b-uk-soft-panel,Czech Rep.,0.6379681176189081,0.44089916047273303,239
+checkpoints/llama3.1-8b-uk-soft-panel,S. Africa (Non-national sample),0.6363371075938383,0.44380455651018674,73
+checkpoints/llama3.1-8b-uk-soft-panel,Palest. ter.,0.6337953505558401,0.44332397081123404,234
+checkpoints/llama3.1-8b-uk-soft-panel,Morocco (Non-national sample),0.6334538530725933,0.44645042277789104,77
+checkpoints/llama3.1-8b-uk-soft-panel,Kuwait,0.6318463680251996,0.4553192993202957,95
+checkpoints/llama3.1-8b-uk-soft-panel,Britain,0.6302917704004242,0.4490323840329795,647
+checkpoints/llama3.1-8b-uk-soft-panel,Indonesia (Non-national sample),0.6272029592820727,0.45602790666883813,105
+checkpoints/llama3.1-8b-uk-soft-panel,Israel,0.621294820064298,0.45964892627151444,344
+checkpoints/llama3.1-8b-uk-soft-panel,Senegal (Non-national sample),0.6202970395429216,0.4714760441724407,119
+checkpoints/llama3.1-8b-uk-soft-panel,Guatemala (Non-national sample),0.6201003043083828,0.4750511230926436,87
+checkpoints/llama3.1-8b-uk-soft-panel,Ivory Coast (Non-national sample),0.6197319962938842,0.47460090414938383,119
+checkpoints/llama3.1-8b-uk-soft-panel,S. Africa,0.6192227242227752,0.4705191967464412,330
+checkpoints/llama3.1-8b-uk-soft-panel,India (Current national sample),0.616922385488974,0.4748342017453185,229
+checkpoints/llama3.1-8b-uk-soft-panel,Ghana,0.6131481970264356,0.48192532289957946,243
+checkpoints/llama3.1-8b-uk-soft-panel,Uzbekistan,0.6123067582068795,0.48333038112478766,89
+checkpoints/llama3.1-8b-uk-soft-panel,Russia,0.6107477455614817,0.47302858204490283,712
+checkpoints/llama3.1-8b-uk-soft-panel,Bangladesh (Non-national sample),0.6102978754462806,0.4850786927164672,124
+checkpoints/llama3.1-8b-uk-soft-panel,Tanzania,0.6047847352190128,0.4904380386888198,245
+checkpoints/llama3.1-8b-uk-soft-panel,Mali,0.6025311120201212,0.49348147027105826,75
+checkpoints/llama3.1-8b-uk-soft-panel,Poland,0.6021786601198179,0.48422093080781664,578
+checkpoints/llama3.1-8b-uk-soft-panel,Honduras (Non-national sample),0.6018854885165941,0.5004201280908986,87
+checkpoints/llama3.1-8b-uk-soft-panel,Mali (Non-national sample),0.6010795993542294,0.4968323068866748,87
+checkpoints/llama3.1-8b-uk-soft-panel,Uganda,0.5967583951874962,0.49728162850636043,215
+checkpoints/llama3.1-8b-uk-soft-panel,Jordan,0.5955762173083152,0.48351621515199583,597
+checkpoints/llama3.1-8b-uk-soft-panel,Turkey,0.5951845571144173,0.4956944984412467,662
+checkpoints/llama3.1-8b-uk-soft-panel,France,0.5903534678063991,0.48924358260516515,758
+checkpoints/llama3.1-8b-uk-soft-panel,UK,0.5894078470696779,0.4954437928821134,846
+checkpoints/llama3.1-8b-uk-soft-panel,USA,0.5883339169358957,0.49732482922880994,846
+checkpoints/llama3.1-8b-uk-soft-panel,United States,0.5883339169358957,0.49732482922880994,846
+checkpoints/llama3.1-8b-uk-soft-panel,Senegal,0.5832122808610558,0.5114310148091503,155
+checkpoints/llama3.1-8b-uk-soft-panel,El Salvador,0.583074044975065,0.5014753538542623,92
+checkpoints/llama3.1-8b-uk-soft-panel,Egypt,0.5826008604454438,0.49612271884672554,421
+checkpoints/llama3.1-8b-uk-soft-panel,S. Korea,0.5807750054991588,0.5066791684451446,467
+checkpoints/llama3.1-8b-uk-soft-panel,Spain,0.5799942813288195,0.5033051468307872,670
+checkpoints/llama3.1-8b-uk-soft-panel,Germany,0.5785785645403099,0.508816317194054,844
+checkpoints/llama3.1-8b-uk-soft-panel,Mexico,0.5785086898125487,0.5061218683855142,598
+checkpoints/llama3.1-8b-uk-soft-panel,Indonesia,0.5784379145704054,0.508335569372366,594
+checkpoints/llama3.1-8b-uk-soft-panel,Taiwan,0.5761127090715624,0.5003659523085584,49
+checkpoints/llama3.1-8b-uk-soft-panel,Pakistan,0.5755370134421667,0.5140600805666581,563
+checkpoints/llama3.1-8b-uk-soft-panel,Argentina,0.5744953424063185,0.5101713748676168,571
+checkpoints/llama3.1-8b-uk-soft-panel,Italy,0.573854335801811,0.5156071360373743,609
+checkpoints/llama3.1-8b-uk-soft-panel,Lebanon,0.5688162376522444,0.5176018724602625,598
+checkpoints/llama3.1-8b-uk-soft-panel,Japan,0.5686066352120043,0.5197678411440583,708
+checkpoints/llama3.1-8b-uk-soft-panel,Burkina Faso,0.5657416022128002,0.534688340224998,48
+checkpoints/llama3.1-8b-uk-soft-panel,Honduras,0.565718813971936,0.5056519513484573,2
+checkpoints/llama3.1-8b-uk-soft-panel,Bulgaria,0.5629383551875483,0.5327311695705323,302
+checkpoints/llama3.1-8b-uk-soft-panel,Kenya,0.5619985205216437,0.5319929171260179,569
+checkpoints/llama3.1-8b-uk-soft-panel,Ukraine,0.5617031262613371,0.5316264882967053,475
+checkpoints/llama3.1-8b-uk-soft-panel,Vietnam (Non-national sample),0.5611488929024747,0.5331007124332094,68
+checkpoints/llama3.1-8b-uk-soft-panel,Brazil,0.5550535298188545,0.534592795716118,493
+checkpoints/llama3.1-8b-uk-soft-panel,Lithuania,0.5535280904296727,0.5376093361113998,237
+checkpoints/llama3.1-8b-uk-soft-panel,Canada,0.5480127778264419,0.5407855158290515,663
+checkpoints/llama3.1-8b-uk-soft-panel,Slovakia,0.5456578724624013,0.5442648127683014,386
+checkpoints/llama3.1-8b-uk-soft-panel,Ivory Coast,0.5439115139605848,0.5291238414810557,2
+checkpoints/llama3.1-8b-uk-soft-panel,Hungary,0.5433614702777799,0.550161247992002,302
+checkpoints/llama3.1-8b-uk-soft-panel,Tunisia,0.5427195294030079,0.5488139851154872,421
+checkpoints/llama3.1-8b-uk-soft-panel,Chile,0.5408906256119658,0.5486905650351253,403
+checkpoints/llama3.1-8b-uk-soft-panel,Nigeria,0.5407150108259292,0.5534402805634463,469
+checkpoints/llama3.1-8b-uk-soft-panel,Peru,0.5367209293228873,0.5600630743697378,417
+checkpoints/llama3.1-8b-uk-soft-panel,Philippines,0.520784313035934,0.5739503665443194,495
+checkpoints/llama3.1-8b-uk-soft-panel,Australia,0.5197059095495346,0.5722104472180819,538
+checkpoints/llama3.1-8b-uk-soft-panel,Malaysia,0.5183511407276958,0.5713630136431295,376
+checkpoints/llama3.1-8b-uk-soft-panel,Greece,0.5163688150320092,0.5736508941773386,467
+checkpoints/llama3.1-8b-uk-soft-panel,China,0.5152304640898652,0.575002649208325,289
+checkpoints/llama3.1-8b-uk-soft-panel,Netherlands,0.5082450197152064,0.5895215075028285,468
+checkpoints/llama3.1-8b-uk-soft-panel,Venezuela,0.5080074713194834,0.5814757953399747,345
+checkpoints/llama3.1-8b-uk-soft-panel,Belgium,0.5070182763184787,0.5780243154585802,103
+checkpoints/llama3.1-8b-uk-soft-panel,Sweden,0.5045859859722868,0.5913381143592095,411
+checkpoints/llama3.1-8b-uk-soft-panel,Bolivia,0.49550807511525286,0.5946125047569516,253
+checkpoints/llama3.1-8b-uk-soft-panel,Thailand,0.49205538795709,0.6022573357505686,252
+checkpoints/llama3.1-8b-uk-soft-panel,Colombia,0.48731967124849884,0.601668447090158,280
+checkpoints/llama3.1-8b-uk-soft-panel,Kazakhstan,0.48702826755193623,0.6046970476849912,196
+checkpoints/llama3.1-8b-uk-soft-panel,Morocco,0.48679303260763584,0.6064641281496975,273
+checkpoints/llama3.1-8b-uk-soft-panel,New Zealand,0.48361142803223445,0.6120384075930545,248
+checkpoints/llama3.1-8b-uk-soft-panel,North Macedonia,0.48186525866119373,0.6188771485238083,115
+checkpoints/llama3.1-8b-uk-soft-panel,Serbia,0.48040841188852657,0.6207324541684578,199
+checkpoints/llama3.1-8b-uk-soft-panel,Romania,0.4800667129127475,0.6130520166691551,199
+checkpoints/llama3.1-8b-uk-soft-panel,Colombia (Non-national sample),0.47851016787414635,0.6331839393432209,1
+checkpoints/llama3.1-8b-uk-soft-panel,Jordan (Non-national sample),0.47829330518858726,0.6325076890358727,1
+checkpoints/llama3.1-8b-uk-soft-panel,Albania,0.4780824525611481,0.623149072075679,115
+checkpoints/llama3.1-8b-uk-soft-panel,Bangladesh,0.4755107199102963,0.6216148144655251,255
+checkpoints/llama3.1-8b-uk-soft-panel,Uruguay,0.47465004369882047,0.623144901945791,199
+checkpoints/llama3.1-8b-uk-soft-panel,Vietnam,0.47401056060604413,0.6305439724946327,317
+checkpoints/llama3.1-8b-uk-soft-panel,Iraq,0.4738576109582641,0.6118902433567918,189
+checkpoints/llama3.1-8b-uk-soft-panel,Cyprus,0.47359535490912974,0.6243315089543815,199
+checkpoints/llama3.1-8b-uk-soft-panel,Belarus,0.47349861964999046,0.6273557633699317,115
+checkpoints/llama3.1-8b-uk-soft-panel,Armenia,0.47347330874604565,0.6192384604462788,199
+checkpoints/llama3.1-8b-uk-soft-panel,Ethiopia,0.4726663330973825,0.6265627493907873,232
+checkpoints/llama3.1-8b-uk-soft-panel,Czechia,0.47055780028372507,0.6315282647807499,199
+checkpoints/llama3.1-8b-uk-soft-panel,Montenegro,0.470166636321771,0.6299110882575233,115
+checkpoints/llama3.1-8b-uk-soft-panel,Iran,0.4686290207685102,0.6232703366855268,194
+checkpoints/llama3.1-8b-uk-soft-panel,Nicaragua,0.46587874690055,0.6265239646665609,250
+checkpoints/llama3.1-8b-uk-soft-panel,Estonia,0.46501295643769813,0.638567443305067,115
+checkpoints/llama3.1-8b-uk-soft-panel,Andorra,0.4634354433586647,0.6366140516945795,198
+checkpoints/llama3.1-8b-uk-soft-panel,Singapore,0.4625282409190781,0.6312677396581189,245
+checkpoints/llama3.1-8b-uk-soft-panel,Libya,0.4620283856922663,0.6350594284499331,199
+checkpoints/llama3.1-8b-uk-soft-panel,Kyrgyzstan,0.46173495426125677,0.6388288459348428,195
+checkpoints/llama3.1-8b-uk-soft-panel,Angola,0.46147207612923635,0.6855725264300899,2
+checkpoints/llama3.1-8b-uk-soft-panel,Puerto Rico,0.4590269461868792,0.6324731767807416,199
+checkpoints/llama3.1-8b-uk-soft-panel,Zimbabwe,0.45896239405502415,0.6402209087037086,199
+checkpoints/llama3.1-8b-uk-soft-panel,Philippines (Non-national sample),0.4586234851994234,0.6393090924720493,1
+checkpoints/llama3.1-8b-uk-soft-panel,Austria,0.4585369521516332,0.648952098629669,115
+checkpoints/llama3.1-8b-uk-soft-panel,Ecuador,0.45850766056027376,0.6376934647425846,199
+checkpoints/llama3.1-8b-uk-soft-panel,Georgia,0.4584678420321375,0.6432664742617353,115
+checkpoints/llama3.1-8b-uk-soft-panel,Croatia,0.45827592050869603,0.6471351114336545,115
+checkpoints/llama3.1-8b-uk-soft-panel,Latvia,0.45786554908120747,0.647471489267356,116
+checkpoints/llama3.1-8b-uk-soft-panel,Guatemala,0.4577465514275135,0.6327408520603823,201
+checkpoints/llama3.1-8b-uk-soft-panel,Great Britain,0.456483734532025,0.6463391774318095,199
+checkpoints/llama3.1-8b-uk-soft-panel,Bosnia Herzegovina,0.4555300293435047,0.6474980649631285,115
+checkpoints/llama3.1-8b-uk-soft-panel,Northern Ireland,0.4536052596585462,0.6472273192036362,198
+checkpoints/llama3.1-8b-uk-soft-panel,Maldives,0.45259848350372023,0.652416089445854,199
+checkpoints/llama3.1-8b-uk-soft-panel,Tajikistan,0.45125255976504275,0.6347637047306118,190
+checkpoints/llama3.1-8b-uk-soft-panel,Portugal,0.45105212594263316,0.6532092060803152,115
+checkpoints/llama3.1-8b-uk-soft-panel,Slovenia,0.44942347378235153,0.6615379703864033,115
+checkpoints/llama3.1-8b-uk-soft-panel,Hong Kong SAR,0.4474347501464947,0.6545379917866487,199
+checkpoints/llama3.1-8b-uk-soft-panel,Mongolia,0.44634846584035465,0.6464081292351502,199
+checkpoints/llama3.1-8b-uk-soft-panel,Myanmar,0.4461465265637929,0.6461330605238236,196
+checkpoints/llama3.1-8b-uk-soft-panel,Finland,0.4458888893810864,0.6672400738420707,115
+checkpoints/llama3.1-8b-uk-soft-panel,Denmark,0.44356710018031514,0.6667415030168157,175
+checkpoints/llama3.1-8b-uk-soft-panel,Switzerland,0.44305129554324313,0.6717599472819477,115
+checkpoints/llama3.1-8b-uk-soft-panel,Azerbaijan,0.4391290952556655,0.6685251906839619,115
+checkpoints/llama3.1-8b-uk-soft-panel,Tanzania (Non-national sample),0.4383233549322624,0.6784100699964872,1
+checkpoints/llama3.1-8b-uk-soft-panel,Macau SAR,0.4341874345402992,0.667839056343591,198
+checkpoints/llama3.1-8b-uk-soft-panel,Iceland,0.43296197330970493,0.6843450797398203,114
+checkpoints/llama3.1-8b-uk-soft-panel,Taiwan ROC,0.43068960053826016,0.6703255858436226,199
+checkpoints/llama3.1-8b-uk-soft-panel,Norway,0.4290826252839821,0.6849462071195823,115
+checkpoints/llama3.1-8b-uk-soft-panel,South Korea,0.41219165113903283,0.6928433306280272,199
+checkpoints/llama3.1-8b-uk-hard-panel,Poland (Non-national sample),0.741011005407595,0.3177755424422618,8
+checkpoints/llama3.1-8b-uk-hard-panel,Russia (Non-national sample),0.6974128555335779,0.3836230703302465,22
+checkpoints/llama3.1-8b-uk-hard-panel,India (Old national sample),0.691056549682001,0.37314368087261474,83
+checkpoints/llama3.1-8b-uk-hard-panel,Nigeria (Non-national sample),0.6726263771997645,0.4088127026784531,219
+checkpoints/llama3.1-8b-uk-hard-panel,Egypt (Non-national sample),0.6723213098643526,0.4082131870264881,55
+checkpoints/llama3.1-8b-uk-hard-panel,China (Non-national sample),0.6676022397477575,0.4018271472167672,226
+checkpoints/llama3.1-8b-uk-hard-panel,India (Non-national sample),0.6655478150736888,0.4145283806357798,252
+checkpoints/llama3.1-8b-uk-hard-panel,Venezuela (Non-national sample),0.6545609352336612,0.4262237095815498,125
+checkpoints/llama3.1-8b-uk-hard-panel,Bolivia (Non-national sample),0.6498662263828575,0.4280806781209271,125
+checkpoints/llama3.1-8b-uk-hard-panel,Pakistan (Non-national sample),0.6474760742642653,0.44098453497423423,24
+checkpoints/llama3.1-8b-uk-hard-panel,Brazil (Non-national sample),0.6469091486933058,0.4303581463913206,185
+checkpoints/llama3.1-8b-uk-hard-panel,Ethiopia (Non-national sample),0.6388549819630307,0.4327163628684022,75
+checkpoints/llama3.1-8b-uk-hard-panel,Angola (Non-national sample),0.6383069706325032,0.4550953553986061,86
+checkpoints/llama3.1-8b-uk-hard-panel,Czech Rep.,0.6378663452620909,0.44093223736103165,239
+checkpoints/llama3.1-8b-uk-hard-panel,S. Africa (Non-national sample),0.6360178443961203,0.4441700251963507,73
+checkpoints/llama3.1-8b-uk-hard-panel,Palest. ter.,0.6334447592875126,0.44392377360463237,234
+checkpoints/llama3.1-8b-uk-hard-panel,Morocco (Non-national sample),0.6332841779662655,0.4467125753876041,77
+checkpoints/llama3.1-8b-uk-hard-panel,Kuwait,0.6319390663559241,0.4554553142281378,95
+checkpoints/llama3.1-8b-uk-hard-panel,Britain,0.6304588490695306,0.4486594769241487,647
+checkpoints/llama3.1-8b-uk-hard-panel,Indonesia (Non-national sample),0.6261014615607553,0.4572900203143873,105
+checkpoints/llama3.1-8b-uk-hard-panel,Israel,0.6212171854337509,0.4595237288723495,344
+checkpoints/llama3.1-8b-uk-hard-panel,Guatemala (Non-national sample),0.619837769258517,0.4754553853923172,87
+checkpoints/llama3.1-8b-uk-hard-panel,Senegal (Non-national sample),0.6198038805636139,0.47227401375240297,119
+checkpoints/llama3.1-8b-uk-hard-panel,S. Africa,0.6192597585964147,0.47072913121711146,330
+checkpoints/llama3.1-8b-uk-hard-panel,Ivory Coast (Non-national sample),0.6192143022542127,0.4753831479246226,119
+checkpoints/llama3.1-8b-uk-hard-panel,India (Current national sample),0.6169367582816527,0.4750550268748979,229
+checkpoints/llama3.1-8b-uk-hard-panel,Ghana,0.613560145582559,0.4814925729426315,243
+checkpoints/llama3.1-8b-uk-hard-panel,Uzbekistan,0.6119517412961737,0.4841650705836319,89
+checkpoints/llama3.1-8b-uk-hard-panel,Russia,0.6109505391874082,0.47289200575429535,712
+checkpoints/llama3.1-8b-uk-hard-panel,Bangladesh (Non-national sample),0.6100919425026811,0.4854557882868374,124
+checkpoints/llama3.1-8b-uk-hard-panel,Tanzania,0.605053447702927,0.49018532305458234,245
+checkpoints/llama3.1-8b-uk-hard-panel,Mali,0.602449631119309,0.49378990929770245,75
+checkpoints/llama3.1-8b-uk-hard-panel,Poland,0.6021477200436595,0.48429799619582087,578
+checkpoints/llama3.1-8b-uk-hard-panel,Honduras (Non-national sample),0.6013954881372072,0.5010032911752486,87
+checkpoints/llama3.1-8b-uk-hard-panel,Mali (Non-national sample),0.6004943255319236,0.49776457500375354,87
+checkpoints/llama3.1-8b-uk-hard-panel,Uganda,0.5968450365446158,0.49731385487512686,215
+checkpoints/llama3.1-8b-uk-hard-panel,Jordan,0.596261008759455,0.4824951540721523,597
+checkpoints/llama3.1-8b-uk-hard-panel,Turkey,0.5957506280910102,0.49498498924110107,662
+checkpoints/llama3.1-8b-uk-hard-panel,France,0.5904279279134723,0.48918139556734197,758
+checkpoints/llama3.1-8b-uk-hard-panel,UK,0.5898466717758267,0.494871559577057,846
+checkpoints/llama3.1-8b-uk-hard-panel,USA,0.5884218264336696,0.4973171207098178,846
+checkpoints/llama3.1-8b-uk-hard-panel,United States,0.5884218264336696,0.4973171207098178,846
+checkpoints/llama3.1-8b-uk-hard-panel,Egypt,0.5841924486491885,0.4934511462098212,421
+checkpoints/llama3.1-8b-uk-hard-panel,Senegal,0.5841271449809446,0.5104994561843682,155
+checkpoints/llama3.1-8b-uk-hard-panel,El Salvador,0.5834832488625494,0.5012652118465873,92
+checkpoints/llama3.1-8b-uk-hard-panel,S. Korea,0.5808309902755295,0.5063563969518279,467
+checkpoints/llama3.1-8b-uk-hard-panel,Spain,0.5803287083870543,0.5026691229303083,670
+checkpoints/llama3.1-8b-uk-hard-panel,Indonesia,0.5793821225707053,0.506888289998426,594
+checkpoints/llama3.1-8b-uk-hard-panel,Germany,0.5791141145338409,0.507935751013099,844
+checkpoints/llama3.1-8b-uk-hard-panel,Mexico,0.5789506156209554,0.505625123255571,598
+checkpoints/llama3.1-8b-uk-hard-panel,Taiwan,0.57678949635768,0.49911454844792236,49
+checkpoints/llama3.1-8b-uk-hard-panel,Pakistan,0.5762059515164206,0.513407066803252,563
+checkpoints/llama3.1-8b-uk-hard-panel,Argentina,0.5753983716599775,0.5088151014523,571
+checkpoints/llama3.1-8b-uk-hard-panel,Honduras,0.5749217096415629,0.49440938670525203,2
+checkpoints/llama3.1-8b-uk-hard-panel,Italy,0.5740505716310853,0.5151965104914806,609
+checkpoints/llama3.1-8b-uk-hard-panel,Lebanon,0.569678356380075,0.5163171827189973,598
+checkpoints/llama3.1-8b-uk-hard-panel,Japan,0.5691536716121691,0.519237351137944,708
+checkpoints/llama3.1-8b-uk-hard-panel,Burkina Faso,0.5658127190309686,0.534926580562208,48
+checkpoints/llama3.1-8b-uk-hard-panel,Bulgaria,0.5633022654640992,0.532402757856025,302
+checkpoints/llama3.1-8b-uk-hard-panel,Kenya,0.5625283039200648,0.5315352421808118,569
+checkpoints/llama3.1-8b-uk-hard-panel,Ukraine,0.5622412082934221,0.5311799476652379,475
+checkpoints/llama3.1-8b-uk-hard-panel,Vietnam (Non-national sample),0.5615789339990294,0.5325103003018561,68
+checkpoints/llama3.1-8b-uk-hard-panel,Brazil,0.5551249615607587,0.5345821012152532,493
+checkpoints/llama3.1-8b-uk-hard-panel,Ivory Coast,0.5548476615761249,0.5246101470767078,2
+checkpoints/llama3.1-8b-uk-hard-panel,Lithuania,0.5541528923901625,0.5369603024701405,237
+checkpoints/llama3.1-8b-uk-hard-panel,Canada,0.548387636280191,0.5404488131488021,663
+checkpoints/llama3.1-8b-uk-hard-panel,Slovakia,0.5460570743558161,0.5442595650211145,386
+checkpoints/llama3.1-8b-uk-hard-panel,Tunisia,0.5442738032190784,0.5465152003976936,421
+checkpoints/llama3.1-8b-uk-hard-panel,Hungary,0.5439093313659492,0.5493909866578156,302
+checkpoints/llama3.1-8b-uk-hard-panel,Nigeria,0.5419554480419432,0.5518735078227505,469
+checkpoints/llama3.1-8b-uk-hard-panel,Chile,0.5416420195617014,0.5475433136455126,403
+checkpoints/llama3.1-8b-uk-hard-panel,Peru,0.5376656872604576,0.5588413510646724,417
+checkpoints/llama3.1-8b-uk-hard-panel,Philippines,0.5213225981049369,0.5734790656296453,495
+checkpoints/llama3.1-8b-uk-hard-panel,Australia,0.5205344915695156,0.5708156780303822,538
+checkpoints/llama3.1-8b-uk-hard-panel,Malaysia,0.518888383904452,0.5707158764114403,376
+checkpoints/llama3.1-8b-uk-hard-panel,Greece,0.5172542417149081,0.5724194443432652,467
+checkpoints/llama3.1-8b-uk-hard-panel,China,0.5155739221397118,0.5743323466411433,289
+checkpoints/llama3.1-8b-uk-hard-panel,Venezuela,0.5094427494579579,0.5790502075703232,345
+checkpoints/llama3.1-8b-uk-hard-panel,Netherlands,0.5087996163810612,0.5885935169423026,468
+checkpoints/llama3.1-8b-uk-hard-panel,Belgium,0.5080379975453918,0.5758928718299712,103
+checkpoints/llama3.1-8b-uk-hard-panel,Sweden,0.5052837948031906,0.5904314091534831,411
+checkpoints/llama3.1-8b-uk-hard-panel,Bolivia,0.4974069000650038,0.591780281304263,253
+checkpoints/llama3.1-8b-uk-hard-panel,Thailand,0.4924989664795024,0.6020601336481038,252
+checkpoints/llama3.1-8b-uk-hard-panel,Colombia,0.4892589827331018,0.5997503875293666,280
+checkpoints/llama3.1-8b-uk-hard-panel,Kazakhstan,0.4885217416670571,0.6029745471315688,196
+checkpoints/llama3.1-8b-uk-hard-panel,Morocco,0.4879512700116162,0.6057774537181346,273
+checkpoints/llama3.1-8b-uk-hard-panel,New Zealand,0.4841664406904129,0.6115897188682804,248
+checkpoints/llama3.1-8b-uk-hard-panel,Romania,0.4819600638916648,0.6105406473986217,199
+checkpoints/llama3.1-8b-uk-hard-panel,Serbia,0.48158522323244335,0.6191093681664064,199
+checkpoints/llama3.1-8b-uk-hard-panel,North Macedonia,0.4815744318088911,0.6205701365941912,115
+checkpoints/llama3.1-8b-uk-hard-panel,Colombia (Non-national sample),0.48121577455974596,0.6298011066542066,1
+checkpoints/llama3.1-8b-uk-hard-panel,Jordan (Non-national sample),0.4810239388689094,0.6286030853571738,1
+checkpoints/llama3.1-8b-uk-hard-panel,Albania,0.4788092060148528,0.6226542410087632,115
+checkpoints/llama3.1-8b-uk-hard-panel,Angola,0.4786087122427839,0.6607978496002966,2
+checkpoints/llama3.1-8b-uk-hard-panel,Bangladesh,0.47806019548584194,0.6175714198186598,255
+checkpoints/llama3.1-8b-uk-hard-panel,Iraq,0.47586816378912283,0.6089834910775538,189
+checkpoints/llama3.1-8b-uk-hard-panel,Uruguay,0.4756427021248016,0.623423079240144,199
+checkpoints/llama3.1-8b-uk-hard-panel,Cyprus,0.4752848059996515,0.6221326288928124,199
+checkpoints/llama3.1-8b-uk-hard-panel,Armenia,0.4746044088012174,0.6188804655240226,199
+checkpoints/llama3.1-8b-uk-hard-panel,Ethiopia,0.4746002414710886,0.6244154817819926,232
+checkpoints/llama3.1-8b-uk-hard-panel,Vietnam,0.4742753505309959,0.6315888455231814,317
+checkpoints/llama3.1-8b-uk-hard-panel,Belarus,0.47416565921436193,0.6275318809626486,115
+checkpoints/llama3.1-8b-uk-hard-panel,Czechia,0.4712013071962788,0.631330275073407,199
+checkpoints/llama3.1-8b-uk-hard-panel,Montenegro,0.47012315667306204,0.6310931754999318,115
+checkpoints/llama3.1-8b-uk-hard-panel,Iran,0.4697468756970029,0.6217377535198911,194
+checkpoints/llama3.1-8b-uk-hard-panel,Nicaragua,0.46771082185090784,0.6246042268316592,250
+checkpoints/llama3.1-8b-uk-hard-panel,Estonia,0.46587823878204176,0.6381810085297009,115
+checkpoints/llama3.1-8b-uk-hard-panel,Andorra,0.4655589557922968,0.6343125106573101,198
+checkpoints/llama3.1-8b-uk-hard-panel,Libya,0.46466246582160187,0.631628718846469,199
+checkpoints/llama3.1-8b-uk-hard-panel,Singapore,0.46413576630304554,0.6294133982064642,245
+checkpoints/llama3.1-8b-uk-hard-panel,Kyrgyzstan,0.46357239583476884,0.6360368903014306,195
+checkpoints/llama3.1-8b-uk-hard-panel,Philippines (Non-national sample),0.46132235393216714,0.6359262597830349,1
+checkpoints/llama3.1-8b-uk-hard-panel,Zimbabwe,0.4607408401949432,0.6380779947270782,199
+checkpoints/llama3.1-8b-uk-hard-panel,Puerto Rico,0.46062906798144226,0.6307334269361379,199
+checkpoints/llama3.1-8b-uk-hard-panel,Ecuador,0.4599671573540615,0.6360840954312704,199
+checkpoints/llama3.1-8b-uk-hard-panel,Austria,0.45990723467035416,0.6469909450300909,115
+checkpoints/llama3.1-8b-uk-hard-panel,Guatemala,0.45930014539709085,0.630453249124356,201
+checkpoints/llama3.1-8b-uk-hard-panel,Georgia,0.4592711578903382,0.6417566667503081,115
+checkpoints/llama3.1-8b-uk-hard-panel,Latvia,0.45865188274427654,0.645719621313539,116
+checkpoints/llama3.1-8b-uk-hard-panel,Croatia,0.45843894806091307,0.6475996588061791,115
+checkpoints/llama3.1-8b-uk-hard-panel,Great Britain,0.45780607524805567,0.6451188835792262,199
+checkpoints/llama3.1-8b-uk-hard-panel,Bosnia Herzegovina,0.45641747656227033,0.6459852994039995,115
+checkpoints/llama3.1-8b-uk-hard-panel,Maldives,0.4552767255301128,0.6493263427231665,199
+checkpoints/llama3.1-8b-uk-hard-panel,Northern Ireland,0.45515779007085844,0.6453214879124707,198
+checkpoints/llama3.1-8b-uk-hard-panel,Tajikistan,0.45334998207168986,0.6329811668523724,190
+checkpoints/llama3.1-8b-uk-hard-panel,Portugal,0.4522552356194794,0.6523058010349141,115
+checkpoints/llama3.1-8b-uk-hard-panel,Slovenia,0.4495651469888348,0.6619975108597193,115
+checkpoints/llama3.1-8b-uk-hard-panel,Myanmar,0.44860049941243296,0.6431212882414318,196
+checkpoints/llama3.1-8b-uk-hard-panel,Hong Kong SAR,0.44827707105570164,0.6543869965624304,199
+checkpoints/llama3.1-8b-uk-hard-panel,Finland,0.4473316564824555,0.6658924573601697,115
+checkpoints/llama3.1-8b-uk-hard-panel,Mongolia,0.4467505852464631,0.6469333797526711,199
+checkpoints/llama3.1-8b-uk-hard-panel,Denmark,0.4445066320782238,0.6661869011793369,175
+checkpoints/llama3.1-8b-uk-hard-panel,Switzerland,0.44378547160164145,0.6713427311485993,115
+checkpoints/llama3.1-8b-uk-hard-panel,Tanzania (Non-national sample),0.44070850074896817,0.6750272373074729,1
+checkpoints/llama3.1-8b-uk-hard-panel,Azerbaijan,0.43991404224264136,0.667811873021258,115
+checkpoints/llama3.1-8b-uk-hard-panel,Macau SAR,0.43473912530686903,0.6686634646235985,198
+checkpoints/llama3.1-8b-uk-hard-panel,Iceland,0.4341931087841831,0.683628030825467,114
+checkpoints/llama3.1-8b-uk-hard-panel,Taiwan ROC,0.4322325044662181,0.6686281099662967,199
+checkpoints/llama3.1-8b-uk-hard-panel,Norway,0.4301248247324579,0.684665590899864,115
+checkpoints/llama3.1-8b-uk-hard-panel,South Korea,0.41362573487693793,0.6922726467843262,199
