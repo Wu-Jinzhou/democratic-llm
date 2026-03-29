@@ -1,0 +1,102 @@
+{
+  "method": "mallows",
+  "models": [
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-hard-panel-control-k100",
+    "checkpoints/llama3.1-8b-hard-panel-control-k50"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "mallows": {
+    "consensus": [
+      "checkpoints/llama3.1-8b-hard-panel",
+      "checkpoints/llama3.1-8b-hard-panel-control-k100",
+      "checkpoints/llama3.1-8b-hard-panel-control-k50"
+    ],
+    "consensus_method": "bruteforce",
+    "phi": 0.1730096567971508,
+    "log_likelihood_train": -21337.534959801804,
+    "log_likelihood_test": -5337.281651701804,
+    "params": {
+      "test_fraction": 0.2,
+      "seed": 42,
+      "phi_max": 10.0,
+      "phi_grid": 200,
+      "phi_tol": 0.0001,
+      "kemeny_method": "bruteforce",
+      "kemeny_bruteforce_max": 8,
+      "kemeny_ilp_max": 12,
+      "kemeny_ilp_max_seconds": 60,
+      "bootstrap_samples": 1000,
+      "bootstrap_workers": 96
+    },
+    "mean_kendall_train": 1.3420833333333333,
+    "mean_kendall_test": 1.3476666666666666,
+    "n_train": 12000,
+    "n_test": 3000,
+    "bootstrap": {
+      "samples": 1000,
+      "seed": 42,
+      "workers": 96,
+      "exact_match_rate": 1.0,
+      "rank_probabilities": {
+        "checkpoints/llama3.1-8b-hard-panel": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "checkpoints/llama3.1-8b-hard-panel-control-k100": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "checkpoints/llama3.1-8b-hard-panel-control-k50": [
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    "pairwise_probabilities": {
+      "method": "exact",
+      "matrix": {
+        "checkpoints/llama3.1-8b-hard-panel": {
+          "checkpoints/llama3.1-8b-hard-panel-control-k100": 0.5431448489868665,
+          "checkpoints/llama3.1-8b-hard-panel-control-k50": 0.5716232306385804
+        },
+        "checkpoints/llama3.1-8b-hard-panel-control-k100": {
+          "checkpoints/llama3.1-8b-hard-panel": 0.4568551510131335,
+          "checkpoints/llama3.1-8b-hard-panel-control-k50": 0.5431448489868665
+        },
+        "checkpoints/llama3.1-8b-hard-panel-control-k50": {
+          "checkpoints/llama3.1-8b-hard-panel": 0.4283767693614196,
+          "checkpoints/llama3.1-8b-hard-panel-control-k100": 0.4568551510131335
+        }
+      }
+    }
+  },
+  "plackett_luce_compare": {
+    "log_likelihood_train": -21335.08914756614,
+    "log_likelihood_test": -5340.984155514632,
+    "results": [
+      {
+        "model": "checkpoints/llama3.1-8b-hard-panel",
+        "score": 0.17529470983883277,
+        "ability": 1.1915973403301319
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-hard-panel-control-k100",
+        "score": -0.05144372008413935,
+        "ability": 0.9498571063359496
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-hard-panel-control-k50",
+        "score": -0.12385098975469334,
+        "ability": 0.8835114833373334
+      }
+    ],
+    "max_iter": 1000,
+    "tol": 1e-06
+  }
+}

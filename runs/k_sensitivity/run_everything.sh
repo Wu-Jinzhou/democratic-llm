@@ -5,9 +5,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/_common.sh"
 
-RUN_TRAIN="${RUN_TRAIN:-1}"
-RUN_GENERATE="${RUN_GENERATE:-1}"
-RUN_JUDGE="${RUN_JUDGE:-1}"
+RUN_TRAIN="${RUN_TRAIN:-0}"
+RUN_GENERATE="${RUN_GENERATE:-0}"
+RUN_JUDGE="${RUN_JUDGE:-0}"
 RUN_SCORE="${RUN_SCORE:-1}"
 
 log "PRISM k-sensitivity run configuration:"

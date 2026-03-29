@@ -1,0 +1,4 @@
+,checkpoints/llama3.1-8b-hard-panel,checkpoints/llama3.1-8b-hard-panel-control-k100,checkpoints/llama3.1-8b-hard-panel-control-k50
+checkpoints/llama3.1-8b-hard-panel,0.5,0.5588666666666666,0.5768666666666666
+checkpoints/llama3.1-8b-hard-panel-control-k100,0.4411333333333333,0.5,0.5210666666666667
+checkpoints/llama3.1-8b-hard-panel-control-k50,0.4231333333333333,0.4789333333333333,0.5

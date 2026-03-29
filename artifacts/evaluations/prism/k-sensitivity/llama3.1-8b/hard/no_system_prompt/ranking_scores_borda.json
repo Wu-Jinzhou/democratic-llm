@@ -1,0 +1,68 @@
+{
+  "method": "borda",
+  "models": [
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-hard-panel-control-k100",
+    "checkpoints/llama3.1-8b-hard-panel-control-k50"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "bootstrap_samples": 1000,
+  "bootstrap_seed": 42,
+  "bootstrap_workers": 96,
+  "bootstrap_alpha": 0.05,
+  "borda": [
+    {
+      "model": "checkpoints/llama3.1-8b-hard-panel",
+      "borda": 17036.0,
+      "borda_avg": 1.1357333333333333,
+      "borda_avg_mean": 1.1360028982162476,
+      "borda_avg_std": 0.006633936893194914,
+      "borda_avg_ci_lower": 1.1226667165756226,
+      "borda_avg_ci_upper": 1.1489349603652954,
+      "copeland_mean": 4080.092041015625,
+      "copeland_std": 199.01806640625,
+      "copeland_ci_lower": 3680.0,
+      "copeland_ci_upper": 4468.0498046875,
+      "win_rate_mean": 0.5680014491081238,
+      "win_rate_std": 0.003316968446597457,
+      "win_rate_ci_lower": 0.5613333582878113,
+      "win_rate_ci_upper": 0.5744674801826477
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-hard-panel-control-k100",
+      "borda": 14433.0,
+      "borda_avg": 0.9622,
+      "borda_avg_mean": 0.9619770646095276,
+      "borda_avg_std": 0.006458697374910116,
+      "borda_avg_ci_lower": 0.9492650032043457,
+      "borda_avg_ci_upper": 0.975266695022583,
+      "copeland_mean": -1140.68798828125,
+      "copeland_std": 193.7609100341797,
+      "copeland_ci_lower": -1522.050048828125,
+      "copeland_ci_upper": -742.0,
+      "win_rate_mean": 0.4809885323047638,
+      "win_rate_std": 0.003229348687455058,
+      "win_rate_ci_lower": 0.47463250160217285,
+      "win_rate_ci_upper": 0.4876333475112915
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-hard-panel-control-k50",
+      "borda": 13531.0,
+      "borda_avg": 0.9020666666666667,
+      "borda_avg_mean": 0.9020199179649353,
+      "borda_avg_std": 0.006725221872329712,
+      "borda_avg_ci_lower": 0.8893966674804688,
+      "borda_avg_ci_upper": 0.9156683087348938,
+      "copeland_mean": -2939.404052734375,
+      "copeland_std": 201.7566375732422,
+      "copeland_ci_lower": -3318.10009765625,
+      "copeland_ci_upper": -2529.949951171875,
+      "win_rate_mean": 0.45100995898246765,
+      "win_rate_std": 0.003362610936164856,
+      "win_rate_ci_lower": 0.4446983337402344,
+      "win_rate_ci_upper": 0.4578341543674469
+    }
+  ]
+}

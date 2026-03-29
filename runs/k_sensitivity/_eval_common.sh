@@ -17,6 +17,7 @@ source "$SCRIPT_DIR/_common.sh"
 source "$RUNS_ROOT/community_alignment/_community_alignment_eval_common.sh"
 
 EVAL_ROOT="${EVAL_ROOT:-artifacts/evaluations/prism/k-sensitivity/llama3.1-8b}"
+CANONICAL_PRISM_RESPONSES_DIR="${CANONICAL_PRISM_RESPONSES_DIR:-artifacts/evaluations/prism/llama3.1-8b/no_system_prompt/responses}"
 
 if [[ -n "$USER_EVAL_DIR" ]]; then
   EVAL_DIR="$USER_EVAL_DIR"
@@ -42,4 +43,22 @@ fi
 safe_model_id() {
   local model_id="$1"
   printf '%s' "${model_id//\//__}" | tr ':' '_'
+}
+
+seed_missing_responses_from_canonical() {
+  local canonical_dir="$CANONICAL_PRISM_RESPONSES_DIR"
+  if [[ ! -d "$canonical_dir" ]]; then
+    return 0
+  fi
+
+  local model_id safe_id src_path dst_path
+  for model_id in "${MODEL_LIST[@]}"; do
+    safe_id="$(safe_model_id "$model_id")"
+    src_path="$canonical_dir/${safe_id}.jsonl"
+    dst_path="$RESPONSES_DIR/${safe_id}.jsonl"
+    if [[ -f "$src_path" && ! -f "$dst_path" ]]; then
+      cp "$src_path" "$dst_path"
+      log "Seeded cached responses for $model_id from $src_path"
+    fi
+  done
 }

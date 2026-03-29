@@ -1,0 +1,57 @@
+{
+  "method": "bradley-terry",
+  "models": [
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-hard-panel-control-k100",
+    "checkpoints/llama3.1-8b-hard-panel-control-k50"
+  ],
+  "num_comparisons": 9000,
+  "bt_mode": "majority",
+  "max_iter": 1000,
+  "tol": 1e-06,
+  "bootstrap_samples": 1000,
+  "bootstrap": {
+    "samples": 1000,
+    "seed": 42,
+    "alpha": 0.05,
+    "workers": 96
+  },
+  "results": [
+    {
+      "model": "checkpoints/llama3.1-8b-hard-panel",
+      "score": 0.1884621663167482,
+      "ability": 1.2073914020586152,
+      "wins": 3421.0,
+      "score_mean": 0.18881931800636517,
+      "score_std": 0.0209530879919587,
+      "score_ci_lower": 0.14911395369568728,
+      "score_ci_upper": 0.22868796493098043,
+      "ability_ci_lower": 1.160805259721904,
+      "ability_ci_upper": 1.256949765404659
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-hard-panel-control-k100",
+      "score": -0.04610931535679177,
+      "ability": 0.9549375671439615,
+      "wins": 2897.0,
+      "score_mean": -0.045551991995247065,
+      "score_std": 0.019982952063493566,
+      "score_ci_lower": -0.08368985198976636,
+      "score_ci_upper": -0.005826820617700145,
+      "ability_ci_lower": 0.9197164600951896,
+      "ability_ci_upper": 0.9941901223776509
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-hard-panel-control-k50",
+      "score": -0.14235285095995648,
+      "ability": 0.867315169497404,
+      "wins": 2682.0,
+      "score_mean": -0.1432673260111178,
+      "score_std": 0.020035341362511002,
+      "score_ci_lower": -0.18341646334280584,
+      "score_ci_upper": -0.10489373647040373,
+      "ability_ci_lower": 0.832421410535515,
+      "ability_ci_upper": 0.900420199331202
+    }
+  ]
+}

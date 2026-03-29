@@ -14,6 +14,8 @@ log "  NUM_JUDGES=$NUM_JUDGES"
 log "  SYSTEM_PROMPT=${SYSTEM_PROMPT:-<empty>}"
 log "  MODELS=${MODEL_LIST[*]}"
 
+seed_missing_responses_from_canonical
+
 CMD=(
   "$PYTHON" -u scripts/evaluate_constitution.py
   --questions-dir "$QUESTIONS_DIR"

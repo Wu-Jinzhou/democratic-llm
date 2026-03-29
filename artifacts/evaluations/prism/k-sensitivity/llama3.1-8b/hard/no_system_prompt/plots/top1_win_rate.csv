@@ -1,0 +1,4 @@
+model,top1_win_rate
+checkpoints/llama3.1-8b-hard-panel,0.4129333333333333
+checkpoints/llama3.1-8b-hard-panel-control-k100,0.30173333333333335
+checkpoints/llama3.1-8b-hard-panel-control-k50,0.2853333333333333

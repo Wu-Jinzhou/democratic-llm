@@ -1,0 +1,55 @@
+{
+  "method": "plackett-luce",
+  "models": [
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-soft-panel-control-k100",
+    "checkpoints/llama3.1-8b-soft-panel-control-k50"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "bootstrap_samples": 1000,
+  "bootstrap_seed": 42,
+  "bootstrap_workers": 96,
+  "bootstrap_alpha": 0.05,
+  "plackett_luce": {
+    "results": [
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel-control-k100",
+        "score": 0.115537494773827,
+        "ability": 1.1224766007655396,
+        "score_mean": 0.11582589520283387,
+        "score_std": 0.008434353050448446,
+        "score_ci_lower": 0.1004996548967648,
+        "score_ci_upper": 0.13225106106468376,
+        "ability_ci_lower": 1.1057232601153373,
+        "ability_ci_upper": 1.1413948431027745
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel-control-k50",
+        "score": 0.07573454236893887,
+        "ability": 1.0786761933210154,
+        "score_mean": 0.07557227360058245,
+        "score_std": 0.00813680641038096,
+        "score_ci_lower": 0.06001951776751986,
+        "score_ci_upper": 0.09215959640091421,
+        "ability_ci_lower": 1.0618572714264702,
+        "ability_ci_upper": 1.0965398119240133
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-soft-panel",
+        "score": -0.19127203714276575,
+        "ability": 0.8259078799682393,
+        "score_mean": -0.19139816880341598,
+        "score_std": 0.010461347310480432,
+        "score_ci_lower": -0.21100607441007124,
+        "score_ci_upper": -0.17096780231020411,
+        "ability_ci_lower": 0.8097691479964687,
+        "ability_ci_upper": 0.8428487108160734
+      }
+    ],
+    "max_iter": 1000,
+    "tol": 1e-06,
+    "bootstrap_samples": 1000
+  }
+}

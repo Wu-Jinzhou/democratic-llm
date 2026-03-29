@@ -1,0 +1,20 @@
+{
+  "method": "kemeny",
+  "models": [
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-hard-panel-control-k100",
+    "checkpoints/llama3.1-8b-hard-panel-control-k50"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "kemeny": {
+    "method": "bruteforce",
+    "ranking": [
+      "checkpoints/llama3.1-8b-hard-panel",
+      "checkpoints/llama3.1-8b-hard-panel-control-k100",
+      "checkpoints/llama3.1-8b-hard-panel-control-k50"
+    ],
+    "score": 24852.0
+  }
+}

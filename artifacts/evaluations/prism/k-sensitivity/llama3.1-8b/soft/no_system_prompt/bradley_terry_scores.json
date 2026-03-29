@@ -1,0 +1,57 @@
+{
+  "method": "bradley-terry",
+  "models": [
+    "checkpoints/llama3.1-8b-soft-panel",
+    "checkpoints/llama3.1-8b-soft-panel-control-k100",
+    "checkpoints/llama3.1-8b-soft-panel-control-k50"
+  ],
+  "num_comparisons": 9000,
+  "bt_mode": "majority",
+  "max_iter": 1000,
+  "tol": 1e-06,
+  "bootstrap_samples": 1000,
+  "bootstrap": {
+    "samples": 1000,
+    "seed": 42,
+    "alpha": 0.05,
+    "workers": 96
+  },
+  "results": [
+    {
+      "model": "checkpoints/llama3.1-8b-soft-panel-control-k100",
+      "score": 0.08065944615033604,
+      "ability": 1.0840016727573343,
+      "wins": 3181.0,
+      "score_mean": 0.0811417768285702,
+      "score_std": 0.018316099071813623,
+      "score_ci_lower": 0.04542663805187562,
+      "score_ci_upper": 0.11654359886410341,
+      "ability_ci_lower": 1.0464742304096257,
+      "ability_ci_upper": 1.123606497366294
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-soft-panel-control-k50",
+      "score": 0.03609693536435314,
+      "ability": 1.0367563399737196,
+      "wins": 3081.0,
+      "score_mean": 0.03606276567426795,
+      "score_std": 0.01904409213272379,
+      "score_ci_lower": -0.0009015651318337253,
+      "score_ci_upper": 0.07365957468597617,
+      "ability_ci_lower": 0.9990988411559023,
+      "ability_ci_upper": 1.0764402955894805
+    },
+    {
+      "model": "checkpoints/llama3.1-8b-soft-panel",
+      "score": -0.11675638151468933,
+      "ability": 0.8898019389612941,
+      "wins": 2738.0,
+      "score_mean": -0.11720454250283827,
+      "score_std": 0.022215861331504314,
+      "score_ci_lower": -0.16258459451190227,
+      "score_ci_upper": -0.07296850346083356,
+      "ability_ci_lower": 0.8499441865705066,
+      "ability_ci_upper": 0.9296301096958465
+    }
+  ]
+}

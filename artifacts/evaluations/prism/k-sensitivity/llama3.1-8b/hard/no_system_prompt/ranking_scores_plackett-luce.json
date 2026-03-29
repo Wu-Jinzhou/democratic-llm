@@ -1,0 +1,55 @@
+{
+  "method": "plackett-luce",
+  "models": [
+    "checkpoints/llama3.1-8b-hard-panel",
+    "checkpoints/llama3.1-8b-hard-panel-control-k100",
+    "checkpoints/llama3.1-8b-hard-panel-control-k50"
+  ],
+  "num_rankings": 15000,
+  "drop_models": [],
+  "drop_skipped": 0,
+  "bootstrap_samples": 1000,
+  "bootstrap_seed": 42,
+  "bootstrap_workers": 96,
+  "bootstrap_alpha": 0.05,
+  "plackett_luce": {
+    "results": [
+      {
+        "model": "checkpoints/llama3.1-8b-hard-panel",
+        "score": 0.1698754743085862,
+        "ability": 1.1851572596038897,
+        "score_mean": 0.1696055347199152,
+        "score_std": 0.009057846625084182,
+        "score_ci_lower": 0.15249851565485822,
+        "score_ci_upper": 0.1872979824864024,
+        "ability_ci_lower": 1.1647407332160824,
+        "ability_ci_upper": 1.205986594397286
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-hard-panel-control-k100",
+        "score": -0.041242511043426695,
+        "ability": 0.9595963890062489,
+        "score_mean": -0.04108731785167217,
+        "score_std": 0.008301154252812767,
+        "score_ci_lower": -0.057191073003851456,
+        "score_ci_upper": -0.02453960037283175,
+        "ability_ci_lower": 0.9444136001822129,
+        "ability_ci_upper": 0.9757590477312256
+      },
+      {
+        "model": "checkpoints/llama3.1-8b-hard-panel-control-k50",
+        "score": -0.12863296326515944,
+        "ability": 0.879296640493064,
+        "score_mean": -0.1285182168682431,
+        "score_std": 0.008729680150207253,
+        "score_ci_lower": -0.14668633720125085,
+        "score_ci_upper": -0.11155283947930256,
+        "ability_ci_lower": 0.8635648030931686,
+        "ability_ci_upper": 0.8944441281925982
+      }
+    ],
+    "max_iter": 1000,
+    "tol": 1e-06,
+    "bootstrap_samples": 1000
+  }
+}

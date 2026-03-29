@@ -18,6 +18,8 @@ source "$RUNS_ROOT/community_alignment/_community_alignment_common.sh"
 
 HARD_BASE_MODEL="${HARD_BASE_MODEL:-checkpoints/llama3.1-8b-hard-panel}"
 SOFT_BASE_MODEL="${SOFT_BASE_MODEL:-checkpoints/llama3.1-8b-soft-panel}"
+FULL_PRISM_MODEL="${FULL_PRISM_MODEL:-checkpoints/llama3.1-8b-full-prism}"
+US_REP_MODEL="${US_REP_MODEL:-checkpoints/llama3.1-8b-us-rep}"
 
 HARD_K50_DATASET="${HARD_K50_DATASET:-artifacts/data/hard_panel_control_k_50.jsonl}"
 HARD_K100_DATASET="${HARD_K100_DATASET:-artifacts/data/hard_panel_control_k_100.jsonl}"
