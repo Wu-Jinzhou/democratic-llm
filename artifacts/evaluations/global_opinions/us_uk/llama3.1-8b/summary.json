@@ -9,87 +9,87 @@
       "usa": {
         "model": "checkpoints/llama3.1-8b-full-prism",
         "country": "USA",
-        "mean_js_similarity": 0.5926098557757576,
-        "mean_total_variation": 0.49180308437494424,
+        "mean_js_similarity": 0.6796380131354786,
+        "mean_total_variation": 0.38266647511164914,
         "questions_used": 846
       },
       "uk": {
         "model": "checkpoints/llama3.1-8b-full-prism",
         "country": "UK",
-        "mean_js_similarity": 0.5934300015768236,
-        "mean_total_variation": 0.4903120728147722,
+        "mean_js_similarity": 0.6764220941161376,
+        "mean_total_variation": 0.3899127421849929,
         "questions_used": 846
       },
       "top_countries": [
         {
           "model": "checkpoints/llama3.1-8b-full-prism",
-          "country": "Poland (Non-national sample)",
-          "mean_js_similarity": 0.7422023566855189,
-          "mean_total_variation": 0.3160322605818279,
-          "questions_used": 8
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-full-prism",
-          "country": "Russia (Non-national sample)",
-          "mean_js_similarity": 0.6991611476541396,
-          "mean_total_variation": 0.38118764769130564,
-          "questions_used": 22
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-full-prism",
-          "country": "India (Old national sample)",
-          "mean_js_similarity": 0.6962870052101539,
-          "mean_total_variation": 0.36614472282082633,
-          "questions_used": 83
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-full-prism",
           "country": "Nigeria (Non-national sample)",
-          "mean_js_similarity": 0.678943814906597,
-          "mean_total_variation": 0.39998589826718045,
+          "mean_js_similarity": 0.7642786129932277,
+          "mean_total_variation": 0.28049003024639607,
           "questions_used": 219
         },
         {
           "model": "checkpoints/llama3.1-8b-full-prism",
           "country": "Egypt (Non-national sample)",
-          "mean_js_similarity": 0.6785040545449313,
-          "mean_total_variation": 0.3995852404242401,
+          "mean_js_similarity": 0.7560547589450615,
+          "mean_total_variation": 0.3000416345779326,
           "questions_used": 55
         },
         {
           "model": "checkpoints/llama3.1-8b-full-prism",
+          "country": "Guatemala (Non-national sample)",
+          "mean_js_similarity": 0.7529532907738474,
+          "mean_total_variation": 0.29252652211707497,
+          "questions_used": 87
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-full-prism",
+          "country": "Uzbekistan",
+          "mean_js_similarity": 0.7509370355767864,
+          "mean_total_variation": 0.290965675325046,
+          "questions_used": 89
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-full-prism",
+          "country": "Angola (Non-national sample)",
+          "mean_js_similarity": 0.7491763865377515,
+          "mean_total_variation": 0.30145987156626997,
+          "questions_used": 86
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-full-prism",
           "country": "India (Non-national sample)",
-          "mean_js_similarity": 0.6716754492772223,
-          "mean_total_variation": 0.40601525766653057,
+          "mean_js_similarity": 0.7487560326061027,
+          "mean_total_variation": 0.2954755335516858,
           "questions_used": 252
         },
         {
           "model": "checkpoints/llama3.1-8b-full-prism",
-          "country": "China (Non-national sample)",
-          "mean_js_similarity": 0.6708402652017029,
-          "mean_total_variation": 0.3971165193920773,
-          "questions_used": 226
+          "country": "Burkina Faso",
+          "mean_js_similarity": 0.7477626143470123,
+          "mean_total_variation": 0.2859427856526093,
+          "questions_used": 48
         },
         {
           "model": "checkpoints/llama3.1-8b-full-prism",
-          "country": "Venezuela (Non-national sample)",
-          "mean_js_similarity": 0.6600533671278774,
-          "mean_total_variation": 0.4182129145208308,
-          "questions_used": 125
+          "country": "Ivory Coast (Non-national sample)",
+          "mean_js_similarity": 0.7473479977138268,
+          "mean_total_variation": 0.2934293803789477,
+          "questions_used": 119
         },
         {
           "model": "checkpoints/llama3.1-8b-full-prism",
-          "country": "Bolivia (Non-national sample)",
-          "mean_js_similarity": 0.6542663860833934,
-          "mean_total_variation": 0.42216678392060747,
-          "questions_used": 125
+          "country": "Uganda",
+          "mean_js_similarity": 0.746791722991476,
+          "mean_total_variation": 0.2928090372724692,
+          "questions_used": 215
         },
         {
           "model": "checkpoints/llama3.1-8b-full-prism",
-          "country": "Brazil (Non-national sample)",
-          "mean_js_similarity": 0.6508227518939331,
-          "mean_total_variation": 0.4248114213600886,
-          "questions_used": 185
+          "country": "Honduras (Non-national sample)",
+          "mean_js_similarity": 0.7465459018710443,
+          "mean_total_variation": 0.2961776335929289,
+          "questions_used": 87
         }
       ]
     },
@@ -97,87 +97,87 @@
       "usa": {
         "model": "checkpoints/llama3.1-8b-soft-panel",
         "country": "USA",
-        "mean_js_similarity": 0.5895060347458109,
-        "mean_total_variation": 0.4959385078883377,
+        "mean_js_similarity": 0.671525394557821,
+        "mean_total_variation": 0.39454834189609395,
         "questions_used": 846
       },
       "uk": {
         "model": "checkpoints/llama3.1-8b-soft-panel",
         "country": "UK",
-        "mean_js_similarity": 0.5904390152685032,
-        "mean_total_variation": 0.4941926727634495,
+        "mean_js_similarity": 0.6675012794814675,
+        "mean_total_variation": 0.40292776286166676,
         "questions_used": 846
       },
       "top_countries": [
         {
           "model": "checkpoints/llama3.1-8b-soft-panel",
-          "country": "Poland (Non-national sample)",
-          "mean_js_similarity": 0.7390788614854072,
-          "mean_total_variation": 0.3203749973412212,
-          "questions_used": 8
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-soft-panel",
-          "country": "Russia (Non-national sample)",
-          "mean_js_similarity": 0.6939118883189349,
-          "mean_total_variation": 0.3880354311192088,
-          "questions_used": 22
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-soft-panel",
-          "country": "India (Old national sample)",
-          "mean_js_similarity": 0.6934640421270447,
-          "mean_total_variation": 0.3701568935589397,
-          "questions_used": 83
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-soft-panel",
           "country": "Nigeria (Non-national sample)",
-          "mean_js_similarity": 0.6745441491786928,
-          "mean_total_variation": 0.4058496683175789,
+          "mean_js_similarity": 0.757783619417764,
+          "mean_total_variation": 0.2913030301272823,
           "questions_used": 219
         },
         {
           "model": "checkpoints/llama3.1-8b-soft-panel",
-          "country": "Egypt (Non-national sample)",
-          "mean_js_similarity": 0.6737994221580288,
-          "mean_total_variation": 0.406021103979227,
-          "questions_used": 55
+          "country": "Uzbekistan",
+          "mean_js_similarity": 0.7530350871755822,
+          "mean_total_variation": 0.29152984631530643,
+          "questions_used": 89
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-soft-panel",
+          "country": "Honduras (Non-national sample)",
+          "mean_js_similarity": 0.74635030519294,
+          "mean_total_variation": 0.2995753065477842,
+          "questions_used": 87
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-soft-panel",
+          "country": "Guatemala (Non-national sample)",
+          "mean_js_similarity": 0.7460383540156504,
+          "mean_total_variation": 0.3013427396321659,
+          "questions_used": 87
         },
         {
           "model": "checkpoints/llama3.1-8b-soft-panel",
           "country": "India (Non-national sample)",
-          "mean_js_similarity": 0.6676576694204126,
-          "mean_total_variation": 0.4113732785178852,
+          "mean_js_similarity": 0.7456525942417196,
+          "mean_total_variation": 0.2999958812040166,
           "questions_used": 252
         },
         {
           "model": "checkpoints/llama3.1-8b-soft-panel",
-          "country": "China (Non-national sample)",
-          "mean_js_similarity": 0.6668243157327556,
-          "mean_total_variation": 0.4023659387881827,
-          "questions_used": 226
+          "country": "Angola (Non-national sample)",
+          "mean_js_similarity": 0.7434784297164374,
+          "mean_total_variation": 0.3107321140757709,
+          "questions_used": 86
         },
         {
           "model": "checkpoints/llama3.1-8b-soft-panel",
-          "country": "Venezuela (Non-national sample)",
-          "mean_js_similarity": 0.6549148313761083,
-          "mean_total_variation": 0.4251895088219148,
-          "questions_used": 125
+          "country": "Egypt (Non-national sample)",
+          "mean_js_similarity": 0.7428549454375949,
+          "mean_total_variation": 0.32003234888739357,
+          "questions_used": 55
         },
         {
           "model": "checkpoints/llama3.1-8b-soft-panel",
-          "country": "Bolivia (Non-national sample)",
-          "mean_js_similarity": 0.6492270637799372,
-          "mean_total_variation": 0.4286057037854309,
-          "questions_used": 125
+          "country": "Ivory Coast (Non-national sample)",
+          "mean_js_similarity": 0.7428055295589172,
+          "mean_total_variation": 0.30332860832707687,
+          "questions_used": 119
         },
         {
           "model": "checkpoints/llama3.1-8b-soft-panel",
-          "country": "Brazil (Non-national sample)",
-          "mean_js_similarity": 0.6465363257194904,
-          "mean_total_variation": 0.4304113218699873,
-          "questions_used": 185
+          "country": "Uganda",
+          "mean_js_similarity": 0.7400923048562671,
+          "mean_total_variation": 0.30363296907848597,
+          "questions_used": 215
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-soft-panel",
+          "country": "Burkina Faso",
+          "mean_js_similarity": 0.7362752819455896,
+          "mean_total_variation": 0.30494773938098624,
+          "questions_used": 48
         }
       ]
     },
@@ -185,87 +185,87 @@
       "usa": {
         "model": "checkpoints/llama3.1-8b-hard-panel",
         "country": "USA",
-        "mean_js_similarity": 0.5896756909866111,
-        "mean_total_variation": 0.4961251640595992,
+        "mean_js_similarity": 0.7191961013921212,
+        "mean_total_variation": 0.3250163791338863,
         "questions_used": 846
       },
       "uk": {
         "model": "checkpoints/llama3.1-8b-hard-panel",
         "country": "UK",
-        "mean_js_similarity": 0.5907489992636508,
-        "mean_total_variation": 0.4938562866271466,
+        "mean_js_similarity": 0.7228104730737848,
+        "mean_total_variation": 0.3236067276073398,
         "questions_used": 846
       },
       "top_countries": [
         {
           "model": "checkpoints/llama3.1-8b-hard-panel",
-          "country": "Poland (Non-national sample)",
-          "mean_js_similarity": 0.7438524964270491,
-          "mean_total_variation": 0.3134498477675087,
-          "questions_used": 8
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-hard-panel",
-          "country": "Russia (Non-national sample)",
-          "mean_js_similarity": 0.6994803813449813,
-          "mean_total_variation": 0.380738891044129,
-          "questions_used": 22
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-hard-panel",
           "country": "India (Old national sample)",
-          "mean_js_similarity": 0.6978266585298638,
-          "mean_total_variation": 0.364454766320854,
+          "mean_js_similarity": 0.7559887753917803,
+          "mean_total_variation": 0.28844121899209624,
           "questions_used": 83
         },
         {
           "model": "checkpoints/llama3.1-8b-hard-panel",
-          "country": "Nigeria (Non-national sample)",
-          "mean_js_similarity": 0.6737192927224124,
-          "mean_total_variation": 0.40781300607259674,
-          "questions_used": 219
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-hard-panel",
-          "country": "Egypt (Non-national sample)",
-          "mean_js_similarity": 0.6725202197773944,
-          "mean_total_variation": 0.40839460593746546,
-          "questions_used": 55
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-hard-panel",
-          "country": "China (Non-national sample)",
-          "mean_js_similarity": 0.6718440070260405,
-          "mean_total_variation": 0.396373390110545,
-          "questions_used": 226
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-hard-panel",
-          "country": "India (Non-national sample)",
-          "mean_js_similarity": 0.6667277151887406,
-          "mean_total_variation": 0.41320411669640306,
-          "questions_used": 252
+          "country": "Angola (Non-national sample)",
+          "mean_js_similarity": 0.7551655244397774,
+          "mean_total_variation": 0.28982706387645174,
+          "questions_used": 86
         },
         {
           "model": "checkpoints/llama3.1-8b-hard-panel",
           "country": "Venezuela (Non-national sample)",
-          "mean_js_similarity": 0.6570618342735628,
-          "mean_total_variation": 0.42371065070566466,
+          "mean_js_similarity": 0.7550036936973095,
+          "mean_total_variation": 0.28699635200863965,
           "questions_used": 125
         },
         {
           "model": "checkpoints/llama3.1-8b-hard-panel",
-          "country": "Bolivia (Non-national sample)",
-          "mean_js_similarity": 0.6529251126544473,
-          "mean_total_variation": 0.4242982532708826,
-          "questions_used": 125
+          "country": "Burkina Faso",
+          "mean_js_similarity": 0.7532564748728365,
+          "mean_total_variation": 0.2884251618531541,
+          "questions_used": 48
         },
         {
           "model": "checkpoints/llama3.1-8b-hard-panel",
-          "country": "Pakistan (Non-national sample)",
-          "mean_js_similarity": 0.6497074896644796,
-          "mean_total_variation": 0.43839621049901406,
-          "questions_used": 24
+          "country": "Czech Rep.",
+          "mean_js_similarity": 0.751198375939447,
+          "mean_total_variation": 0.2863927175602209,
+          "questions_used": 239
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country": "Guatemala (Non-national sample)",
+          "mean_js_similarity": 0.7502164200709677,
+          "mean_total_variation": 0.29197515347447106,
+          "questions_used": 87
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country": "Egypt (Non-national sample)",
+          "mean_js_similarity": 0.7498573539142624,
+          "mean_total_variation": 0.29601299031861783,
+          "questions_used": 55
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country": "Britain",
+          "mean_js_similarity": 0.7491486280914279,
+          "mean_total_variation": 0.29399626910255544,
+          "questions_used": 647
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country": "Nigeria (Non-national sample)",
+          "mean_js_similarity": 0.7486686702681058,
+          "mean_total_variation": 0.2990765011573292,
+          "questions_used": 219
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-hard-panel",
+          "country": "S. Africa",
+          "mean_js_similarity": 0.7486360842519056,
+          "mean_total_variation": 0.29245983178982493,
+          "questions_used": 330
         }
       ]
     },
@@ -273,87 +273,87 @@
       "usa": {
         "model": "checkpoints/llama3.1-8b-us-rep",
         "country": "USA",
-        "mean_js_similarity": 0.5860344708263621,
-        "mean_total_variation": 0.5011863570365697,
+        "mean_js_similarity": 0.7200340506071553,
+        "mean_total_variation": 0.3190837628908456,
         "questions_used": 846
       },
       "uk": {
         "model": "checkpoints/llama3.1-8b-us-rep",
         "country": "UK",
-        "mean_js_similarity": 0.5872814314610023,
-        "mean_total_variation": 0.49893506242812735,
+        "mean_js_similarity": 0.7257230700684002,
+        "mean_total_variation": 0.3168526743671014,
         "questions_used": 846
       },
       "top_countries": [
         {
           "model": "checkpoints/llama3.1-8b-us-rep",
-          "country": "Poland (Non-national sample)",
-          "mean_js_similarity": 0.7382307791133396,
-          "mean_total_variation": 0.3203740708886288,
-          "questions_used": 8
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-us-rep",
-          "country": "Russia (Non-national sample)",
-          "mean_js_similarity": 0.6912450554699352,
-          "mean_total_variation": 0.3915393425482595,
-          "questions_used": 22
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-us-rep",
           "country": "India (Old national sample)",
-          "mean_js_similarity": 0.6887359724912469,
-          "mean_total_variation": 0.37769800359426486,
+          "mean_js_similarity": 0.7694963683368734,
+          "mean_total_variation": 0.2666703096389736,
           "questions_used": 83
         },
         {
           "model": "checkpoints/llama3.1-8b-us-rep",
-          "country": "Nigeria (Non-national sample)",
-          "mean_js_similarity": 0.6690709877991249,
-          "mean_total_variation": 0.4141903099990213,
-          "questions_used": 219
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-us-rep",
-          "country": "Egypt (Non-national sample)",
-          "mean_js_similarity": 0.6672881707856622,
-          "mean_total_variation": 0.4160629461200754,
-          "questions_used": 55
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-us-rep",
-          "country": "China (Non-national sample)",
-          "mean_js_similarity": 0.6652317597188374,
-          "mean_total_variation": 0.40567288033909205,
-          "questions_used": 226
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-us-rep",
-          "country": "India (Non-national sample)",
-          "mean_js_similarity": 0.6621955622753568,
-          "mean_total_variation": 0.41906938809769395,
-          "questions_used": 252
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-us-rep",
           "country": "Venezuela (Non-national sample)",
-          "mean_js_similarity": 0.6505299857939209,
-          "mean_total_variation": 0.43261365594951223,
+          "mean_js_similarity": 0.7689934286859369,
+          "mean_total_variation": 0.26603288523086793,
           "questions_used": 125
         },
         {
           "model": "checkpoints/llama3.1-8b-us-rep",
           "country": "Bolivia (Non-national sample)",
-          "mean_js_similarity": 0.6466863431731349,
-          "mean_total_variation": 0.433061647955741,
+          "mean_js_similarity": 0.7673876373165496,
+          "mean_total_variation": 0.2700293954575694,
           "questions_used": 125
         },
         {
           "model": "checkpoints/llama3.1-8b-us-rep",
-          "country": "Brazil (Non-national sample)",
-          "mean_js_similarity": 0.6427848095432076,
-          "mean_total_variation": 0.43658582549784136,
-          "questions_used": 185
+          "country": "Angola (Non-national sample)",
+          "mean_js_similarity": 0.7656792066298808,
+          "mean_total_variation": 0.2760789902452459,
+          "questions_used": 86
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country": "Czech Rep.",
+          "mean_js_similarity": 0.7627456168929183,
+          "mean_total_variation": 0.272493699572684,
+          "questions_used": 239
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country": "Poland (Non-national sample)",
+          "mean_js_similarity": 0.7543635409296603,
+          "mean_total_variation": 0.30253508616389874,
+          "questions_used": 8
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country": "Guatemala (Non-national sample)",
+          "mean_js_similarity": 0.7531861320890217,
+          "mean_total_variation": 0.2866933362056121,
+          "questions_used": 87
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country": "Ghana",
+          "mean_js_similarity": 0.7527224209160523,
+          "mean_total_variation": 0.2912739349547307,
+          "questions_used": 243
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country": "S. Africa",
+          "mean_js_similarity": 0.7510796929960883,
+          "mean_total_variation": 0.28977935725257387,
+          "questions_used": 330
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-us-rep",
+          "country": "Britain",
+          "mean_js_similarity": 0.7504062390115609,
+          "mean_total_variation": 0.28938426230371184,
+          "questions_used": 647
         }
       ]
     },
@@ -361,87 +361,87 @@
       "usa": {
         "model": "checkpoints/llama3.1-8b-uk-rep",
         "country": "USA",
-        "mean_js_similarity": 0.5891833091942411,
-        "mean_total_variation": 0.4958287528305257,
+        "mean_js_similarity": 0.7119446842057947,
+        "mean_total_variation": 0.3335944551871005,
         "questions_used": 846
       },
       "uk": {
         "model": "checkpoints/llama3.1-8b-uk-rep",
         "country": "UK",
-        "mean_js_similarity": 0.5903115046560051,
-        "mean_total_variation": 0.49364875479494646,
+        "mean_js_similarity": 0.7167715263830436,
+        "mean_total_variation": 0.33041510054535916,
         "questions_used": 846
       },
       "top_countries": [
         {
           "model": "checkpoints/llama3.1-8b-uk-rep",
-          "country": "Poland (Non-national sample)",
-          "mean_js_similarity": 0.7416331784568292,
-          "mean_total_variation": 0.3176856681534872,
-          "questions_used": 8
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-uk-rep",
-          "country": "Russia (Non-national sample)",
-          "mean_js_similarity": 0.7002292342995183,
-          "mean_total_variation": 0.37987355479648566,
-          "questions_used": 22
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-uk-rep",
-          "country": "India (Old national sample)",
-          "mean_js_similarity": 0.691877528080469,
-          "mean_total_variation": 0.37188550142765237,
-          "questions_used": 83
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-uk-rep",
           "country": "Egypt (Non-national sample)",
-          "mean_js_similarity": 0.6761105971311586,
-          "mean_total_variation": 0.4019824981394807,
+          "mean_js_similarity": 0.7708190202001043,
+          "mean_total_variation": 0.26782917282418034,
           "questions_used": 55
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-rep",
-          "country": "Nigeria (Non-national sample)",
-          "mean_js_similarity": 0.6756552356144978,
-          "mean_total_variation": 0.4039771170471138,
-          "questions_used": 219
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-uk-rep",
-          "country": "India (Non-national sample)",
-          "mean_js_similarity": 0.6689783614879721,
-          "mean_total_variation": 0.4091375090230562,
-          "questions_used": 252
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-uk-rep",
-          "country": "China (Non-national sample)",
-          "mean_js_similarity": 0.6683567596980927,
-          "mean_total_variation": 0.40039480097240987,
-          "questions_used": 226
+          "country": "Angola (Non-national sample)",
+          "mean_js_similarity": 0.7686625040351774,
+          "mean_total_variation": 0.2717441095385991,
+          "questions_used": 86
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-rep",
           "country": "Venezuela (Non-national sample)",
-          "mean_js_similarity": 0.6570942847000786,
-          "mean_total_variation": 0.4218217781482769,
+          "mean_js_similarity": 0.7646922214328186,
+          "mean_total_variation": 0.2757773323368118,
           "questions_used": 125
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-rep",
-          "country": "Bolivia (Non-national sample)",
-          "mean_js_similarity": 0.6513919801365813,
-          "mean_total_variation": 0.4255694761710362,
-          "questions_used": 125
+          "country": "India (Old national sample)",
+          "mean_js_similarity": 0.7633326897021283,
+          "mean_total_variation": 0.27509858624578776,
+          "questions_used": 83
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-rep",
-          "country": "Pakistan (Non-national sample)",
-          "mean_js_similarity": 0.6509977063209997,
-          "mean_total_variation": 0.4357275690627557,
-          "questions_used": 24
+          "country": "Ghana",
+          "mean_js_similarity": 0.758547808898685,
+          "mean_total_variation": 0.2796794360795885,
+          "questions_used": 243
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-uk-rep",
+          "country": "Nigeria (Non-national sample)",
+          "mean_js_similarity": 0.7578876891666728,
+          "mean_total_variation": 0.28560912530968247,
+          "questions_used": 219
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-uk-rep",
+          "country": "Guatemala (Non-national sample)",
+          "mean_js_similarity": 0.7560034400918302,
+          "mean_total_variation": 0.28106749688108146,
+          "questions_used": 87
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-uk-rep",
+          "country": "India (Non-national sample)",
+          "mean_js_similarity": 0.7514931760339434,
+          "mean_total_variation": 0.2895245767033955,
+          "questions_used": 252
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-uk-rep",
+          "country": "Britain",
+          "mean_js_similarity": 0.7513831657083213,
+          "mean_total_variation": 0.2895414214955773,
+          "questions_used": 647
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-uk-rep",
+          "country": "Tanzania",
+          "mean_js_similarity": 0.7501014165149094,
+          "mean_total_variation": 0.2870268135408723,
+          "questions_used": 245
         }
       ]
     },
@@ -449,87 +449,87 @@
       "usa": {
         "model": "checkpoints/llama3.1-8b-uk-soft-panel",
         "country": "USA",
-        "mean_js_similarity": 0.5883339169358957,
-        "mean_total_variation": 0.49732482922880994,
+        "mean_js_similarity": 0.7239321471544459,
+        "mean_total_variation": 0.31643592066895393,
         "questions_used": 846
       },
       "uk": {
         "model": "checkpoints/llama3.1-8b-uk-soft-panel",
         "country": "UK",
-        "mean_js_similarity": 0.5894078470696779,
-        "mean_total_variation": 0.4954437928821134,
+        "mean_js_similarity": 0.7276594574372803,
+        "mean_total_variation": 0.31623836950172834,
         "questions_used": 846
       },
       "top_countries": [
         {
           "model": "checkpoints/llama3.1-8b-uk-soft-panel",
-          "country": "Poland (Non-national sample)",
-          "mean_js_similarity": 0.741748640981346,
-          "mean_total_variation": 0.31675116137086734,
-          "questions_used": 8
+          "country": "Angola (Non-national sample)",
+          "mean_js_similarity": 0.7835943292190405,
+          "mean_total_variation": 0.2540044089215509,
+          "questions_used": 86
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-soft-panel",
-          "country": "Russia (Non-national sample)",
-          "mean_js_similarity": 0.6988622885013147,
-          "mean_total_variation": 0.38175144251390075,
-          "questions_used": 22
+          "country": "Venezuela (Non-national sample)",
+          "mean_js_similarity": 0.7788223685015796,
+          "mean_total_variation": 0.2568814453876019,
+          "questions_used": 125
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-uk-soft-panel",
+          "country": "Egypt (Non-national sample)",
+          "mean_js_similarity": 0.7758131437621341,
+          "mean_total_variation": 0.2643797212342573,
+          "questions_used": 55
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-uk-soft-panel",
+          "country": "Bolivia (Non-national sample)",
+          "mean_js_similarity": 0.7708428947853593,
+          "mean_total_variation": 0.26508057228288123,
+          "questions_used": 125
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-uk-soft-panel",
+          "country": "Guatemala (Non-national sample)",
+          "mean_js_similarity": 0.7682163478291161,
+          "mean_total_variation": 0.26856121251401005,
+          "questions_used": 87
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-soft-panel",
           "country": "India (Old national sample)",
-          "mean_js_similarity": 0.6909843335739702,
-          "mean_total_variation": 0.37308183915082876,
+          "mean_js_similarity": 0.7676803080798997,
+          "mean_total_variation": 0.2681369500533938,
           "questions_used": 83
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-soft-panel",
           "country": "Nigeria (Non-national sample)",
-          "mean_js_similarity": 0.6727404678304508,
-          "mean_total_variation": 0.408690853061323,
+          "mean_js_similarity": 0.7669642054314306,
+          "mean_total_variation": 0.27270481775849614,
           "questions_used": 219
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-soft-panel",
-          "country": "Egypt (Non-national sample)",
-          "mean_js_similarity": 0.672553258763809,
-          "mean_total_variation": 0.40789219723318965,
-          "questions_used": 55
+          "country": "Czech Rep.",
+          "mean_js_similarity": 0.7662999869535853,
+          "mean_total_variation": 0.26874672930397314,
+          "questions_used": 239
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-soft-panel",
-          "country": "China (Non-national sample)",
-          "mean_js_similarity": 0.6680533061333398,
-          "mean_total_variation": 0.40138053935058415,
-          "questions_used": 226
+          "country": "Honduras (Non-national sample)",
+          "mean_js_similarity": 0.7657574962712727,
+          "mean_total_variation": 0.27268051056787734,
+          "questions_used": 87
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-soft-panel",
-          "country": "India (Non-national sample)",
-          "mean_js_similarity": 0.6656510704067723,
-          "mean_total_variation": 0.41434735714373205,
-          "questions_used": 252
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-uk-soft-panel",
-          "country": "Venezuela (Non-national sample)",
-          "mean_js_similarity": 0.6550863956639252,
-          "mean_total_variation": 0.4255453890281415,
-          "questions_used": 125
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-uk-soft-panel",
-          "country": "Bolivia (Non-national sample)",
-          "mean_js_similarity": 0.6506743892824348,
-          "mean_total_variation": 0.42712916963022196,
-          "questions_used": 125
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-uk-soft-panel",
-          "country": "Pakistan (Non-national sample)",
-          "mean_js_similarity": 0.6487146251684711,
-          "mean_total_variation": 0.43931688488559556,
-          "questions_used": 24
+          "country": "Ivory Coast (Non-national sample)",
+          "mean_js_similarity": 0.7642448184392581,
+          "mean_total_variation": 0.27037521549865384,
+          "questions_used": 119
         }
       ]
     },
@@ -537,87 +537,87 @@
       "usa": {
         "model": "checkpoints/llama3.1-8b-uk-hard-panel",
         "country": "USA",
-        "mean_js_similarity": 0.5884218264336696,
-        "mean_total_variation": 0.4973171207098178,
+        "mean_js_similarity": 0.7202389608234326,
+        "mean_total_variation": 0.32023242024877446,
         "questions_used": 846
       },
       "uk": {
         "model": "checkpoints/llama3.1-8b-uk-hard-panel",
         "country": "UK",
-        "mean_js_similarity": 0.5898466717758267,
-        "mean_total_variation": 0.494871559577057,
+        "mean_js_similarity": 0.7230229869276723,
+        "mean_total_variation": 0.32184091440661206,
         "questions_used": 846
       },
       "top_countries": [
         {
           "model": "checkpoints/llama3.1-8b-uk-hard-panel",
-          "country": "Poland (Non-national sample)",
-          "mean_js_similarity": 0.741011005407595,
-          "mean_total_variation": 0.3177755424422618,
-          "questions_used": 8
+          "country": "Venezuela (Non-national sample)",
+          "mean_js_similarity": 0.763035044117765,
+          "mean_total_variation": 0.2699530495666125,
+          "questions_used": 125
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-hard-panel",
-          "country": "Russia (Non-national sample)",
-          "mean_js_similarity": 0.6974128555335779,
-          "mean_total_variation": 0.3836230703302465,
-          "questions_used": 22
+          "country": "Angola (Non-national sample)",
+          "mean_js_similarity": 0.762743184977219,
+          "mean_total_variation": 0.2755114308225814,
+          "questions_used": 86
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-hard-panel",
           "country": "India (Old national sample)",
-          "mean_js_similarity": 0.691056549682001,
-          "mean_total_variation": 0.37314368087261474,
+          "mean_js_similarity": 0.760621154597905,
+          "mean_total_variation": 0.2802129914679143,
           "questions_used": 83
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-hard-panel",
+          "country": "Bolivia (Non-national sample)",
+          "mean_js_similarity": 0.7602749491234752,
+          "mean_total_variation": 0.2740080558024142,
+          "questions_used": 125
+        },
+        {
+          "model": "checkpoints/llama3.1-8b-uk-hard-panel",
           "country": "Nigeria (Non-national sample)",
-          "mean_js_similarity": 0.6726263771997645,
-          "mean_total_variation": 0.4088127026784531,
+          "mean_js_similarity": 0.7594292246105631,
+          "mean_total_variation": 0.2810392538847755,
           "questions_used": 219
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-hard-panel",
-          "country": "Egypt (Non-national sample)",
-          "mean_js_similarity": 0.6723213098643526,
-          "mean_total_variation": 0.4082131870264881,
-          "questions_used": 55
+          "country": "Czech Rep.",
+          "mean_js_similarity": 0.7590305641394749,
+          "mean_total_variation": 0.27716837093323765,
+          "questions_used": 239
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-hard-panel",
-          "country": "China (Non-national sample)",
-          "mean_js_similarity": 0.6676022397477575,
-          "mean_total_variation": 0.4018271472167672,
-          "questions_used": 226
+          "country": "Guatemala (Non-national sample)",
+          "mean_js_similarity": 0.7519007873948045,
+          "mean_total_variation": 0.28525312281903853,
+          "questions_used": 87
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-hard-panel",
-          "country": "India (Non-national sample)",
-          "mean_js_similarity": 0.6655478150736888,
-          "mean_total_variation": 0.4145283806357798,
-          "questions_used": 252
+          "country": "Britain",
+          "mean_js_similarity": 0.7513736727015475,
+          "mean_total_variation": 0.289054516437346,
+          "questions_used": 647
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-hard-panel",
-          "country": "Venezuela (Non-national sample)",
-          "mean_js_similarity": 0.6545609352336612,
-          "mean_total_variation": 0.4262237095815498,
-          "questions_used": 125
+          "country": "Ghana",
+          "mean_js_similarity": 0.749511846893482,
+          "mean_total_variation": 0.2907871211766755,
+          "questions_used": 243
         },
         {
           "model": "checkpoints/llama3.1-8b-uk-hard-panel",
-          "country": "Bolivia (Non-national sample)",
-          "mean_js_similarity": 0.6498662263828575,
-          "mean_total_variation": 0.4280806781209271,
-          "questions_used": 125
-        },
-        {
-          "model": "checkpoints/llama3.1-8b-uk-hard-panel",
-          "country": "Pakistan (Non-national sample)",
-          "mean_js_similarity": 0.6474760742642653,
-          "mean_total_variation": 0.44098453497423423,
-          "questions_used": 24
+          "country": "Israel",
+          "mean_js_similarity": 0.7463646272152539,
+          "mean_total_variation": 0.2941918737334042,
+          "questions_used": 344
         }
       ]
     }
