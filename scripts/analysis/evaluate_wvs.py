@@ -19,7 +19,7 @@ REPO_ROOT = SCRIPT_DIR.parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.append(str(REPO_ROOT))
 
-from dempo.utils import DEFAULT_CHAT_TEMPLATE, append_jsonl, build_chat_prompt, read_jsonl
+from dempo.utils import append_jsonl, read_jsonl
 from dempo.wvs import COUNTRY_INFO, required_wvs_columns
 
 
@@ -45,8 +45,6 @@ def load_hf_model(model_id: str, hf_token: str | None):
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "left"
-    if not getattr(tokenizer, "chat_template", None):
-        tokenizer.chat_template = DEFAULT_CHAT_TEMPLATE
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
         token=hf_token,
@@ -57,21 +55,20 @@ def load_hf_model(model_id: str, hf_token: str | None):
     return model, tokenizer
 
 
-def build_messages(question: dict, system_prompt: str | None) -> List[dict]:
-    option_lines = [f"{label}. {question['options'][label]}" for label in OPTION_LABELS]
-    content = (
-        "Please answer the following World Values Survey question by choosing exactly one option.\n\n"
-        f"Question: {question['question_text']}\n\n"
-        "Options:\n"
-        + "\n".join(option_lines)
-        + "\n\nRespond with a single capital letter: A, B, C, or D."
-    )
-    messages: List[dict] = []
+def build_prompt(question: dict, system_prompt: str | None) -> str:
+    option_lines = [f"({label}) {question['options'][label]}" for label in OPTION_LABELS]
+    lines: List[str] = []
     system_prompt = (system_prompt or "").strip()
     if system_prompt:
-        messages.append({"role": "system", "content": system_prompt})
-    messages.append({"role": "user", "content": content})
-    return messages
+        lines.append(f"System: {system_prompt}")
+    lines.append(f"Human: {question['question_text']}")
+    lines.append("")
+    lines.append("Here are the options:")
+    lines.append("")
+    lines.extend(option_lines)
+    lines.append("")
+    lines.append("Assistant: If had to select one of the options, my answer would be (")
+    return "\n".join(lines)
 
 
 def option_token_sets(tokenizer) -> Dict[str, List[int]]:
@@ -91,14 +88,35 @@ def option_token_sets(tokenizer) -> Dict[str, List[int]]:
     return token_sets
 
 
+def decode_top_tokens(tokenizer, token_ids: Iterable[int], probs: Iterable[float]) -> List[dict]:
+    rows: List[dict] = []
+    for token_id, prob in zip(token_ids, probs):
+        rows.append(
+            {
+                "token_id": int(token_id),
+                "token_str": tokenizer.decode([int(token_id)]),
+                "probability": float(prob),
+            }
+        )
+    return rows
+
+
+def final_prompt_logits(logits: torch.Tensor, attention_mask: torch.Tensor, padding_side: str) -> torch.Tensor:
+    if padding_side == "left":
+        return logits[:, -1, :]
+    last_positions = attention_mask.sum(dim=1) - 1
+    return logits[torch.arange(logits.size(0), device=logits.device), last_positions]
+
+
 def compute_question_probabilities(
     model,
     tokenizer,
     questions: Sequence[dict],
     batch_size: int,
     system_prompt: str | None,
+    topk: int,
 ) -> List[dict]:
-    prompts = [build_chat_prompt(tokenizer, build_messages(question, system_prompt)) for question in questions]
+    prompts = [build_prompt(question, system_prompt) for question in questions]
     option_tokens = option_token_sets(tokenizer)
     rows: List[dict] = []
     for start in tqdm(range(0, len(questions), batch_size), desc="Scoring WVS question batches"):
@@ -107,29 +125,44 @@ def compute_question_probabilities(
         inputs = tokenizer(batch_prompts, return_tensors="pt", padding=True).to(model.device)
         with torch.inference_mode():
             logits = model(**inputs).logits
-        if getattr(tokenizer, "padding_side", "right") == "left":
-            last_logits = logits[:, -1, :]
-        else:
-            last_positions = inputs["attention_mask"].sum(dim=1) - 1
-            last_logits = logits[torch.arange(logits.size(0), device=logits.device), last_positions]
+        last_logits = final_prompt_logits(
+            logits,
+            inputs["attention_mask"],
+            getattr(tokenizer, "padding_side", "right"),
+        ).to(dtype=torch.float32)
+        log_probs = torch.log_softmax(last_logits, dim=-1)
+        top_values, top_indices = torch.topk(log_probs, k=min(topk, log_probs.size(-1)), dim=-1)
         for idx, question in enumerate(batch_questions):
-            label_logits = []
+            raw_option_probs: Dict[str, float] = {}
             for label in OPTION_LABELS:
-                token_ids = torch.tensor(option_tokens[label], device=last_logits.device)
-                label_logits.append(torch.logsumexp(last_logits[idx, token_ids], dim=0))
-            # Cast to fp32 before moving to CPU/NumPy; some PyTorch builds do not support
-            # exporting CPU bfloat16 tensors directly to NumPy.
-            label_logits_tensor = torch.stack(label_logits).to(dtype=torch.float32)
-            label_probs = torch.softmax(label_logits_tensor, dim=0).detach().cpu().numpy()
+                token_ids = torch.tensor(option_tokens[label], device=log_probs.device)
+                raw_prob = torch.exp(torch.logsumexp(log_probs[idx, token_ids], dim=0)).item()
+                raw_option_probs[label] = float(raw_prob)
+            option_total_probability_mass = float(sum(raw_option_probs.values()))
+            if option_total_probability_mass > 0:
+                normalized_option_probabilities = {
+                    label: float(raw_option_probs[label] / option_total_probability_mass)
+                    for label in OPTION_LABELS
+                }
+            else:
+                normalized_option_probabilities = {label: 0.0 for label in OPTION_LABELS}
             rows.append(
                 {
                     "question_id": int(question["question_id"]),
                     "question_code": question["question_code"],
                     "section": question["section"],
+                    "question_text": question["question_text"],
+                    "options": question["options"],
                     "scoring_position": "prompt_final_token",
-                    "probabilities": {
-                        label: float(label_probs[pos]) for pos, label in enumerate(OPTION_LABELS)
-                    },
+                    "raw_option_probabilities": raw_option_probs,
+                    "option_total_probability_mass": option_total_probability_mass,
+                    "normalized_option_probabilities": normalized_option_probabilities,
+                    "probabilities": normalized_option_probabilities,
+                    "top_next_tokens": decode_top_tokens(
+                        tokenizer,
+                        top_indices[idx].detach().cpu().tolist(),
+                        torch.exp(top_values[idx]).detach().cpu().tolist(),
+                    ),
                 }
             )
     return rows
@@ -143,10 +176,19 @@ def load_or_compute_question_probabilities(
     hf_token: str | None,
     system_prompt: str | None,
     overwrite: bool,
+    topk: int,
 ) -> List[dict]:
     if output_path.exists() and not overwrite:
         rows = read_jsonl(output_path)
-        if rows and all(row.get("scoring_position") == "prompt_final_token" for row in rows[: min(len(rows), 8)]):
+        probe = rows[: min(len(rows), 8)]
+        if rows and all(
+            row.get("scoring_position") == "prompt_final_token"
+            and "raw_option_probabilities" in row
+            and "normalized_option_probabilities" in row
+            and "option_total_probability_mass" in row
+            and "top_next_tokens" in row
+            for row in probe
+        ):
             return rows
     output_path.parent.mkdir(parents=True, exist_ok=True)
     model, tokenizer = load_hf_model(model_id, hf_token)
@@ -157,6 +199,7 @@ def load_or_compute_question_probabilities(
             questions=questions,
             batch_size=batch_size,
             system_prompt=system_prompt,
+            topk=topk,
         )
     finally:
         del model
@@ -249,7 +292,13 @@ def summarize_model_against_countries(
     country_distributions: Sequence[dict],
 ) -> List[dict]:
     model_map = {
-        int(row["question_id"]): np.array([row["probabilities"][label] for label in OPTION_LABELS], dtype=float)
+        int(row["question_id"]): np.array(
+            [
+                (row.get("normalized_option_probabilities") or row["probabilities"])[label]
+                for label in OPTION_LABELS
+            ],
+            dtype=float,
+        )
         for row in question_probs
     }
     country_question_map: Dict[tuple[str, int], np.ndarray] = {}
@@ -347,6 +396,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Recompute model question probabilities even if cached outputs exist.",
     )
+    parser.add_argument(
+        "--topk",
+        type=int,
+        default=20,
+        help="How many top next tokens to save per question for diagnostics.",
+    )
     return parser.parse_args()
 
 
@@ -383,6 +438,7 @@ def main() -> None:
             hf_token=args.hf_token,
             system_prompt=args.system_prompt,
             overwrite=args.overwrite,
+            topk=args.topk,
         )
         summary_rows = summarize_model_against_countries(
             model_id=model_id,
