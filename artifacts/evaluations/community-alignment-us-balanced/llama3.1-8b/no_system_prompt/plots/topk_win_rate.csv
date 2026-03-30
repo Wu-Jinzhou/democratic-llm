@@ -1,0 +1,6 @@
+model,top3_win_rate
+checkpoints/community-alignment/llama3.1-8b-soft-us-k350,0.21126666666666666
+checkpoints/community-alignment/llama3.1-8b-full-us,0.202
+checkpoints/community-alignment/llama3.1-8b-hard-us-k350,0.2286
+checkpoints/community-alignment/llama3.1-8b-us-balanced-subset,0.19926666666666668
+meta-llama/Llama-3.1-8B,0.15886666666666666

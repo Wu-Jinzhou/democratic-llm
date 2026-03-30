@@ -142,6 +142,14 @@ def decode_top_tokens(tokenizer, token_ids: Iterable[int], probs: Iterable[float
     return rows
 
 
+def final_prompt_logits(logits: torch.Tensor, attention_mask: torch.Tensor, padding_side: str) -> torch.Tensor:
+    # With left padding, the final prompt token is always at the last column.
+    if padding_side == "left":
+        return logits[:, -1, :]
+    last_positions = attention_mask.sum(dim=1) - 1
+    return logits[torch.arange(logits.size(0), device=logits.device), last_positions]
+
+
 def compute_question_probabilities(
     model,
     tokenizer,
@@ -159,8 +167,11 @@ def compute_question_probabilities(
         inputs = tokenizer(batch_prompts, return_tensors="pt", padding=True).to(model.device)
         with torch.inference_mode():
             logits = model(**inputs).logits
-        last_positions = inputs["attention_mask"].sum(dim=1) - 1
-        last_logits = logits[torch.arange(logits.size(0), device=logits.device), last_positions].to(dtype=torch.float32)
+        last_logits = final_prompt_logits(
+            logits,
+            inputs["attention_mask"],
+            getattr(tokenizer, "padding_side", "right"),
+        ).to(dtype=torch.float32)
         log_probs = torch.log_softmax(last_logits, dim=-1)
         top_values, top_indices = torch.topk(log_probs, k=min(topk, log_probs.size(-1)), dim=-1)
         for idx, question in enumerate(batch_questions):
@@ -189,6 +200,7 @@ def compute_question_probabilities(
                     "raw_option_probabilities": raw_option_probs,
                     "option_total_probability_mass": option_total_probability_mass,
                     "normalized_option_probabilities": normalized_option_probabilities,
+                    "scoring_position": "prompt_final_token",
                     "top_next_tokens": decode_top_tokens(
                         tokenizer,
                         top_indices[idx].detach().cpu().tolist(),
@@ -210,7 +222,9 @@ def load_or_compute_question_probabilities(
     topk: int,
 ) -> List[dict]:
     if output_path.exists() and not overwrite:
-        return read_jsonl(output_path)
+        rows = read_jsonl(output_path)
+        if rows and all(row.get("scoring_position") == "prompt_final_token" for row in rows[: min(len(rows), 8)]):
+            return rows
     output_path.parent.mkdir(parents=True, exist_ok=True)
     model, tokenizer = load_hf_model(model_id, hf_token)
     try:

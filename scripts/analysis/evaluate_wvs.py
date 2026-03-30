@@ -107,8 +107,11 @@ def compute_question_probabilities(
         inputs = tokenizer(batch_prompts, return_tensors="pt", padding=True).to(model.device)
         with torch.inference_mode():
             logits = model(**inputs).logits
-        last_positions = inputs["attention_mask"].sum(dim=1) - 1
-        last_logits = logits[torch.arange(logits.size(0), device=logits.device), last_positions]
+        if getattr(tokenizer, "padding_side", "right") == "left":
+            last_logits = logits[:, -1, :]
+        else:
+            last_positions = inputs["attention_mask"].sum(dim=1) - 1
+            last_logits = logits[torch.arange(logits.size(0), device=logits.device), last_positions]
         for idx, question in enumerate(batch_questions):
             label_logits = []
             for label in OPTION_LABELS:
@@ -123,6 +126,7 @@ def compute_question_probabilities(
                     "question_id": int(question["question_id"]),
                     "question_code": question["question_code"],
                     "section": question["section"],
+                    "scoring_position": "prompt_final_token",
                     "probabilities": {
                         label: float(label_probs[pos]) for pos, label in enumerate(OPTION_LABELS)
                     },
@@ -141,7 +145,9 @@ def load_or_compute_question_probabilities(
     overwrite: bool,
 ) -> List[dict]:
     if output_path.exists() and not overwrite:
-        return read_jsonl(output_path)
+        rows = read_jsonl(output_path)
+        if rows and all(row.get("scoring_position") == "prompt_final_token" for row in rows[: min(len(rows), 8)]):
+            return rows
     output_path.parent.mkdir(parents=True, exist_ok=True)
     model, tokenizer = load_hf_model(model_id, hf_token)
     try:
